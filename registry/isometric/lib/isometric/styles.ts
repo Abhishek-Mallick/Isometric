@@ -80,6 +80,8 @@ export const css = [
   `${SVG} :where(.glow.tone-left,.glow.tone-right){fill:color-mix(in oklab,var(--_accent) 42%,var(--_plate))}`,
   `${SVG} :where(.solid){fill:var(--_accent);stroke:var(--_accent)}`,
   `${SVG} :where(.ink){fill:var(--_hi)}`,
+  // glass: see-through, so what is behind it shows
+  `${SVG} :where(.glass){fill:color-mix(in oklab,var(--_plate) 35%,transparent);stroke:var(--_edge)}`,
   // curved solids: facets hide their seams, the outline is drawn on top
   `${SVG} :where(.facet){stroke:var(--_plate);stroke-width:calc(var(--_sw) * 0.6)}`,
   `${SVG} :where(.facet.glow,.facet.tint,.facet.tone-left,.facet.tone-right){stroke:none}`,
