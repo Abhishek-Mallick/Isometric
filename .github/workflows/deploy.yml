@@ -1,0 +1,71 @@
+name: Deploy
+
+# Deploys https://isometric.buildlab.in to GitHub Pages on every push to main.
+# Forks deploy only when the repository variable ENABLE_PAGES is "true";
+# SITE_URL overrides the address (default https://<owner>.github.io/<repo>).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.repository == 'Abhishek-Mallick/isometric' || vars.ENABLE_PAGES == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Resolve site URL
+        env:
+          CUSTOM_SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          if [ "$GITHUB_REPOSITORY" = "Abhishek-Mallick/isometric" ]; then
+            SITE_URL="https://isometric.buildlab.in"
+          elif [ -n "$CUSTOM_SITE_URL" ]; then
+            SITE_URL="$CUSTOM_SITE_URL"
+          else
+            OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+            SITE_URL="https://$OWNER.github.io/${GITHUB_REPOSITORY#*/}"
+          fi
+          SITE_URL="${SITE_URL%/}"
+          REST="${SITE_URL#*://}"
+          case "$REST" in */*) BASE_PATH="/${REST#*/}" ;; *) BASE_PATH="" ;; esac
+          {
+            echo "BASE_PATH=$BASE_PATH"
+            echo "REGISTRY_URL=$SITE_URL/r"
+            echo "NEXT_PUBLIC_SITE_URL=$SITE_URL"
+          } >> "$GITHUB_ENV"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm build
+      - run: pnpm registry:validate
+      - name: Custom domain
+        if: github.repository == 'Abhishek-Mallick/isometric'
+        run: echo "isometric.buildlab.in" > out/CNAME
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
