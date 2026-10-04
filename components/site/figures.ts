@@ -13,6 +13,10 @@ import { Heart } from "@/registry/isometric/ui/isometric/heart"
 import { Reactor } from "@/registry/isometric/ui/isometric/reactor"
 import { Pulley } from "@/registry/isometric/ui/isometric/pulley"
 import { Church } from "@/registry/isometric/ui/isometric/church"
+import { Block } from "@/registry/isometric/ui/isometric/block"
+import { Chest } from "@/registry/isometric/ui/isometric/chest"
+import { Torch } from "@/registry/isometric/ui/isometric/torch"
+import { Tree } from "@/registry/isometric/ui/isometric/tree"
 import { Rack } from "@/registry/isometric/ui/isometric/rack"
 import { Skyline } from "@/registry/isometric/ui/isometric/skyline"
 import { Stack } from "@/registry/isometric/ui/isometric/stack"
@@ -22,5 +26,5 @@ import { Steps } from "@/registry/isometric/ui/isometric/steps"
 export const figures: Record<string, React.ComponentType<{ intensity?: number; onRead?: (t: string) => void; className?: string; "aria-label"?: string }>> = {
   skyline: Skyline, stack: Stack, keys: Keys, rack: Rack, laptop: Laptop, bars: Bars,
   steps: Steps, files: Files, cylinders: Cylinders, parcel: Parcel, nodes: Nodes, cube: Cube,
-  "pc-case": PcCase, heart: Heart, reactor: Reactor, pulley: Pulley, church: Church,
+  "pc-case": PcCase, heart: Heart, reactor: Reactor, pulley: Pulley, church: Church, block: Block, chest: Chest, torch: Torch, tree: Tree,
 }

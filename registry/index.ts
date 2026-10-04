@@ -63,7 +63,7 @@ export const interactiveProps: Prop[] = [
 /** An interactive object: a figure whose parts can be clicked and reached from the keyboard. */
 const object = (name: string, title: string, description: string, intensity: string, extra: Partial<Item> = {}): Item => ({
   ...figure(name, title, description, intensity, extra),
-  category: "object",
+  category: extra.category ?? "object",
   interactive: true,
 })
 
@@ -108,7 +108,7 @@ export const items: Item[] = [
       "The engine behind every figure: orthographic projection, meshes with hidden faces removed, picking, springs, one shared animation loop that sleeps offscreen, and the React factory.",
     category: "foundation",
     type: "registry:lib",
-    files: [lib("iso.ts"), lib("motion.ts"), lib("stage.ts"), lib("styles.ts"), lib("figure.tsx"), lib("mesh.ts"), lib("scene.ts"), lib("entity.ts")],
+    files: [lib("iso.ts"), lib("motion.ts"), lib("stage.ts"), lib("styles.ts"), lib("figure.tsx"), lib("mesh.ts"), lib("scene.ts"), lib("entity.ts"), lib("blocks.ts")],
   },
   {
     name: "iso-depth",
@@ -193,6 +193,117 @@ const [liked, setLiked] = useState(false)
 <Church lit onActivate={(part) => part === "bell" && playChime()} />`,
   }),
   object("reactor", "Reactor", "A ring-core reactor: a glowing core inside ten coils. The coils charge as the pointer comes near and the ring turns; click to fire a pulse.", "Sets how fast it charges. Reads `charge 80%`."),
+
+  object("block", "Block", "One block you can mine, in nine materials. Each click cracks it; the last breaks it into fragments and drops an item, and the block grows back.", "Sets how hard you hit: fewer clicks to break it. Reads `Stone · 2 of 4`.", {
+    category: "blocks",
+    props: [{ name: "type", type: `"grass" | "dirt" | "stone" | "ore" | "sand" | "log" | "planks" | "leaves" | "glass"`, default: `"grass"`, description: "The material." }],
+    usage: `import { Block } from "@/components/ui/isometric/block"
+
+<Block type="ore" onActivate={() => addToInventory("ore")} />`,
+  }),
+  object("chest", "Chest", "A wooden chest with an iron latch. Click to lift the lid on its hinge; what is inside floats up and turns.", "Sets how far the items rise. Reads `Chest open · 3 items`.", {
+    category: "blocks",
+    props: [{ name: "items", type: "BlockType[]", default: `["ore", "planks", "grass"]`, description: "What is inside, up to four block types." }],
+  }),
+  object("torch", "Torch", "A torch set in a stone block. Its flame flickers and lights a ring around it; click to snuff it out in a curl of smoke, and again to light it.", "Sets how much the flame flickers. Reads `Torch · lit`.", {
+    category: "blocks",
+    props: [{ name: "lit", type: "boolean", default: "true", description: "Start lit." }],
+  }),
+  object("tree", "Tree", "A block tree: a log trunk under a crown of leaves. It sways while the pointer is over it; click to shake a few leaves loose.", "Sets how hard it sways. Reads `Tree`.", { category: "blocks" }),
+
+  {
+    name: "block-icon",
+    title: "Block Icon",
+    description: "A block as a small static icon in its material's tint, plus the recessed slot that holds one. Plain SVG, so it renders on the server.",
+    category: "blocks",
+    type: "registry:ui",
+    files: [ui("block-icon")],
+    internal: ["isometric-engine"],
+    shadcn: ["utils"],
+    usage: `import { BlockIcon, BlockSlot } from "@/components/ui/isometric/block-icon"
+
+<BlockIcon type="ore" className="size-6" />
+<BlockSlot item={{ type: "planks", count: 32 }} selected />`,
+    props: [
+      { name: "type", type: "BlockType", description: "The material to draw." },
+      { name: "label", type: "string", description: "The accessible name; defaults to the material. Pass an empty string to hide it." },
+    ],
+  },
+  {
+    name: "hotbar",
+    title: "Hotbar",
+    description: "A row of nine slots. Click a slot, use the arrow keys, scroll over it, or press 1 to 9 anywhere on the page.",
+    category: "blocks",
+    type: "registry:ui",
+    files: [ui("hotbar")],
+    internal: ["block-icon"],
+    shadcn: ["utils"],
+    usage: `import { Hotbar } from "@/components/ui/isometric/hotbar"
+
+<Hotbar
+  items={[{ type: "grass", count: 64 }, { type: "stone", count: 12 }, { type: "planks", count: 30 }, null, { type: "ore", count: 3 }]}
+  onValueChange={(slot) => setSlot(slot)}
+/>`,
+    props: [
+      { name: "items", type: "({ type: BlockType; count?: number } | null)[]", description: "Up to nine items; null for an empty slot." },
+      { name: "value", type: "number", description: "The chosen slot, controlled. Use defaultValue to leave it uncontrolled." },
+      { name: "onValueChange", type: "(index: number) => void", description: "Called when a slot is chosen." },
+      { name: "hotkeys", type: "boolean", default: "true", description: "Let the number keys choose a slot from anywhere on the page, except while typing." },
+    ],
+  },
+  {
+    name: "inventory",
+    title: "Inventory",
+    description: "A grid of slots holding blocks and their counts. Click a slot, or move with the arrow keys.",
+    category: "blocks",
+    type: "registry:ui",
+    files: [ui("inventory")],
+    internal: ["block-icon"],
+    shadcn: ["utils"],
+    usage: `import { Inventory } from "@/components/ui/isometric/inventory"
+
+<Inventory columns={6} size={18} items={[{ type: "log", count: 16 }, { type: "sand", count: 40 }]} />`,
+    props: [
+      { name: "items", type: "SlotItem[]", description: "The items, in slot order." },
+      { name: "columns", type: "number", default: "9", description: "Slots per row." },
+      { name: "size", type: "number", description: "Total slots; the rest are empty." },
+      { name: "value", type: "number", description: "The chosen slot, controlled." },
+      { name: "onValueChange", type: "(index: number) => void", description: "Called when a slot is chosen." },
+    ],
+  },
+  {
+    name: "hearts-meter",
+    title: "Hearts Meter",
+    description: "Health as a row of pixel hearts, with halves. A heart that is lost blinks once.",
+    category: "blocks",
+    type: "registry:ui",
+    files: [ui("hearts-meter")],
+    shadcn: ["utils"],
+    usage: `import { HeartsMeter } from "@/components/ui/isometric/hearts-meter"
+
+<HeartsMeter value={7.5} max={10} />`,
+    props: [
+      { name: "value", type: "number", description: "Health in hearts, in steps of a half." },
+      { name: "max", type: "number", default: "10", description: "How many hearts make full health." },
+    ],
+  },
+  {
+    name: "xp-bar",
+    title: "XP Bar",
+    description: "Experience: a segmented bar with the level standing over its middle.",
+    category: "blocks",
+    type: "registry:ui",
+    files: [ui("xp-bar")],
+    shadcn: ["utils"],
+    usage: `import { XpBar } from "@/components/ui/isometric/xp-bar"
+
+<XpBar level={12} value={0.64} />`,
+    props: [
+      { name: "level", type: "number", description: "The current level." },
+      { name: "value", type: "number", description: "Progress through the level, from 0 to 1." },
+      { name: "segments", type: "number", default: "18", description: "How many segments the bar is made of." },
+    ],
+  },
 
   primitive(
     "iso-button",

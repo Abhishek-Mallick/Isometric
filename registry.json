@@ -40,6 +40,10 @@
         {
           "path": "registry/isometric/lib/isometric/entity.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "registry/isometric/lib/isometric/blocks.ts",
+          "type": "registry:lib"
         }
       ],
       "categories": [
@@ -371,6 +375,171 @@
       ]
     },
     {
+      "name": "block",
+      "type": "registry:ui",
+      "title": "Block",
+      "description": "One block you can mine, in nine materials. Each click cracks it; the last breaks it into fragments and drops an item, and the block grows back.",
+      "registryDependencies": [
+        "https://isometric.buildlab.in/r/isometric-engine.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/block.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "blocks"
+      ]
+    },
+    {
+      "name": "chest",
+      "type": "registry:ui",
+      "title": "Chest",
+      "description": "A wooden chest with an iron latch. Click to lift the lid on its hinge; what is inside floats up and turns.",
+      "registryDependencies": [
+        "https://isometric.buildlab.in/r/isometric-engine.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/chest.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "blocks"
+      ]
+    },
+    {
+      "name": "torch",
+      "type": "registry:ui",
+      "title": "Torch",
+      "description": "A torch set in a stone block. Its flame flickers and lights a ring around it; click to snuff it out in a curl of smoke, and again to light it.",
+      "registryDependencies": [
+        "https://isometric.buildlab.in/r/isometric-engine.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/torch.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "blocks"
+      ]
+    },
+    {
+      "name": "tree",
+      "type": "registry:ui",
+      "title": "Tree",
+      "description": "A block tree: a log trunk under a crown of leaves. It sways while the pointer is over it; click to shake a few leaves loose.",
+      "registryDependencies": [
+        "https://isometric.buildlab.in/r/isometric-engine.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/tree.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "blocks"
+      ]
+    },
+    {
+      "name": "block-icon",
+      "type": "registry:ui",
+      "title": "Block Icon",
+      "description": "A block as a small static icon in its material's tint, plus the recessed slot that holds one. Plain SVG, so it renders on the server.",
+      "registryDependencies": [
+        "utils",
+        "https://isometric.buildlab.in/r/isometric-engine.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/block-icon.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "blocks"
+      ]
+    },
+    {
+      "name": "hotbar",
+      "type": "registry:ui",
+      "title": "Hotbar",
+      "description": "A row of nine slots. Click a slot, use the arrow keys, scroll over it, or press 1 to 9 anywhere on the page.",
+      "registryDependencies": [
+        "utils",
+        "https://isometric.buildlab.in/r/block-icon.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/hotbar.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "blocks"
+      ]
+    },
+    {
+      "name": "inventory",
+      "type": "registry:ui",
+      "title": "Inventory",
+      "description": "A grid of slots holding blocks and their counts. Click a slot, or move with the arrow keys.",
+      "registryDependencies": [
+        "utils",
+        "https://isometric.buildlab.in/r/block-icon.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/inventory.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "blocks"
+      ]
+    },
+    {
+      "name": "hearts-meter",
+      "type": "registry:ui",
+      "title": "Hearts Meter",
+      "description": "Health as a row of pixel hearts, with halves. A heart that is lost blinks once.",
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/hearts-meter.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "blocks"
+      ]
+    },
+    {
+      "name": "xp-bar",
+      "type": "registry:ui",
+      "title": "XP Bar",
+      "description": "Experience: a segmented bar with the level standing over its middle.",
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/xp-bar.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "blocks"
+      ]
+    },
+    {
       "name": "iso-button",
       "type": "registry:ui",
       "title": "Iso Button",
@@ -619,6 +788,15 @@
         "https://isometric.buildlab.in/r/pulley.json",
         "https://isometric.buildlab.in/r/church.json",
         "https://isometric.buildlab.in/r/reactor.json",
+        "https://isometric.buildlab.in/r/block.json",
+        "https://isometric.buildlab.in/r/chest.json",
+        "https://isometric.buildlab.in/r/torch.json",
+        "https://isometric.buildlab.in/r/tree.json",
+        "https://isometric.buildlab.in/r/block-icon.json",
+        "https://isometric.buildlab.in/r/hotbar.json",
+        "https://isometric.buildlab.in/r/inventory.json",
+        "https://isometric.buildlab.in/r/hearts-meter.json",
+        "https://isometric.buildlab.in/r/xp-bar.json",
         "https://isometric.buildlab.in/r/iso-button.json",
         "https://isometric.buildlab.in/r/iso-card.json",
         "https://isometric.buildlab.in/r/iso-switch.json",

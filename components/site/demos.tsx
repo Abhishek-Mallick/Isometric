@@ -15,6 +15,12 @@ import { IsoSwitch } from "@/registry/isometric/ui/isometric/iso-switch"
 import { IsoTabs, IsoTabsContent, IsoTabsList, IsoTabsTrigger } from "@/registry/isometric/ui/isometric/iso-tabs"
 import { IsoToggleGroup, IsoToggleGroupItem } from "@/registry/isometric/ui/isometric/iso-toggle-group"
 import { Bars } from "@/registry/isometric/ui/isometric/bars"
+import { BLOCK_TYPES } from "@/registry/isometric/lib/isometric/blocks"
+import { BlockIcon, BlockSlot } from "@/registry/isometric/ui/isometric/block-icon"
+import { HeartsMeter } from "@/registry/isometric/ui/isometric/hearts-meter"
+import { Hotbar } from "@/registry/isometric/ui/isometric/hotbar"
+import { Inventory } from "@/registry/isometric/ui/isometric/inventory"
+import { XpBar } from "@/registry/isometric/ui/isometric/xp-bar"
 import { Steps } from "@/registry/isometric/ui/isometric/steps"
 
 function ProgressDemo() {
@@ -26,6 +32,31 @@ function ProgressDemo() {
     </div>
   )
 }
+
+function HealthDemo() {
+  const [hp, setHp] = React.useState(8.5)
+  return (
+    <div className="grid justify-items-center gap-5">
+      <HeartsMeter value={hp} />
+      <div className="flex gap-3">
+        <IsoButton size="sm" variant="outline" depth={3} onClick={() => setHp((h) => Math.max(0, h - 1.5))}>Take a hit</IsoButton>
+        <IsoButton size="sm" depth={3} onClick={() => setHp((h) => Math.min(10, h + 1))}>Heal</IsoButton>
+      </div>
+    </div>
+  )
+}
+
+function XpDemo() {
+  const [xp, setXp] = React.useState({ level: 7, value: 0.45 })
+  return (
+    <div className="grid w-full max-w-md justify-items-center gap-5">
+      <XpBar level={xp.level} value={xp.value} className="w-full" />
+      <IsoButton size="sm" depth={3} onClick={() => setXp(({ level, value }) => (value + 0.2 >= 1 ? { level: level + 1, value: value + 0.2 - 1 } : { level, value: value + 0.2 }))}>Gain experience</IsoButton>
+    </div>
+  )
+}
+
+const bar = [{ type: "grass", count: 64 }, { type: "stone", count: 24 }, { type: "planks", count: 31 }, { type: "log", count: 8 }, { type: "ore", count: 3 }, null, { type: "glass", count: 12 }, { type: "sand", count: 40 }, { type: "leaves", count: 5 }] as const
 
 /** A live preview for every primitive, by registry name. */
 export const demos: Record<string, () => React.ReactNode> = {
@@ -99,6 +130,21 @@ export const demos: Record<string, () => React.ReactNode> = {
   ),
   "iso-progress": () => <ProgressDemo />,
   "iso-input": () => <IsoInput placeholder="name@example.com" type="email" className="max-w-sm" aria-label="Email" />,
+  "block-icon": () => (
+    <div className="grid justify-items-center gap-6">
+      <div className="flex flex-wrap justify-center gap-3">{BLOCK_TYPES.map((t) => <BlockIcon key={t} type={t} className="size-10" />)}</div>
+      <div className="flex gap-2"><BlockSlot item={{ type: "ore", count: 3 }} /><BlockSlot item={{ type: "planks", count: 32 }} selected /><BlockSlot item={null} /></div>
+    </div>
+  ),
+  hotbar: () => (
+    <div className="grid justify-items-center gap-3">
+      <Hotbar items={[...bar]} hotkeys={false} />
+      <p className="text-xs text-muted-foreground">Focus it and use the arrow keys, or scroll over it.</p>
+    </div>
+  ),
+  inventory: () => <Inventory columns={6} size={18} items={[...bar, { type: "dirt", count: 18 }, { type: "stone", count: 64 }]} />,
+  "hearts-meter": () => <HealthDemo />,
+  "xp-bar": () => <XpDemo />,
   "iso-grid": () => (
     <div className="relative grid h-56 w-full place-items-center overflow-hidden rounded-md">
       <IsoGrid className="absolute inset-0" />
