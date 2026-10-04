@@ -4,7 +4,7 @@ import { type Entity, entityMount } from "@/registry/isometric/lib/isometric/ent
 import { createFigure } from "@/registry/isometric/lib/isometric/figure"
 import type { Vec2, Vec3 } from "@/registry/isometric/lib/isometric/iso"
 import { box, extrude, rotateX, rotateZ, scale, translate } from "@/registry/isometric/lib/isometric/mesh"
-import { reducedMotion, spring, step, type Spring } from "@/registry/isometric/lib/isometric/motion"
+import { reducedMotion, spring, stepAll, type Spring } from "@/registry/isometric/lib/isometric/motion"
 
 /**
  * Heart — a heart, cut from a slab and stood up, beating. Point at it and it
@@ -42,7 +42,7 @@ const entity: Entity<State, HeartProps> = {
   pointer: (s, e, ctx) => { s.hot = !!e?.part; s.bpm.to = ctx.value * (s.hot ? 1.6 : 1) },
   step: (s, dt, ctx) => {
     if (!s.hot) s.bpm.to = ctx.value
-    const moving = step(s.bpm, dt) || step(s.fill, dt)
+    const moving = stepAll([s.bpm, s.fill], dt)
     if (!reducedMotion()) s.phase = (s.phase + (dt * s.bpm.x) / 60) % 1
     for (const b of s.bits) {
       b.v[2] -= 70 * dt
