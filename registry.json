@@ -7,7 +7,7 @@
       "name": "isometric-engine",
       "type": "registry:lib",
       "title": "Isometric Engine",
-      "description": "The engine behind every figure: orthographic projection, solids drawn in fine lines, springs, one shared animation loop that sleeps offscreen, and the React factory.",
+      "description": "The engine behind every figure: orthographic projection, meshes with hidden faces removed, picking, springs, one shared animation loop that sleeps offscreen, and the React factory.",
       "files": [
         {
           "path": "registry/isometric/lib/isometric/iso.ts",
@@ -27,6 +27,18 @@
         },
         {
           "path": "registry/isometric/lib/isometric/figure.tsx",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/isometric/lib/isometric/mesh.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/isometric/lib/isometric/scene.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/isometric/lib/isometric/entity.ts",
           "type": "registry:lib"
         }
       ],

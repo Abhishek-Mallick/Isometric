@@ -25,6 +25,8 @@ export type FigureOptions = {
   label?: string
   /** The figure's caption each time it changes, e.g. `"step 3 of 5"`. */
   onRead?: (text: string) => void
+  /** Interactive figures: called with a part's name when it is clicked, or chosen with Enter. */
+  onActivate?: (part: string) => void
 }
 
 export type FigureProps<P = object> = FigureOptions & Partial<P> & Omit<React.ComponentProps<"div">, "children" | keyof FigureOptions>
@@ -55,7 +57,7 @@ const report = (err: unknown) => {
 export function createFigure<P extends object>(name: string, spec: FigureSpec<P>) {
   const keys = Object.keys(spec.defaults) as (keyof P)[]
 
-  function Figure({ ref, intensity, theme = "auto", label, onRead, style, ...rest }: FigureProps<P> & { ref?: React.Ref<HTMLDivElement> }) {
+  function Figure({ ref, intensity, theme = "auto", label, onRead, onActivate, style, ...rest }: FigureProps<P> & { ref?: React.Ref<HTMLDivElement> }) {
     const own = {} as P
     const attrs: Record<string, unknown> = {}
     for (const [k, v] of Object.entries(rest)) {
@@ -68,9 +70,10 @@ export function createFigure<P extends object>(name: string, spec: FigureSpec<P>
     const node = React.useRef<HTMLDivElement | null>(null)
     const engine = React.useRef<ReturnType<Mount<P>> | null>(null)
     const read = React.useRef(onRead)
+    const act = React.useRef(onActivate)
     const live = React.useRef<HTMLSpanElement | null>(null)
 
-    useIsoLayoutEffect(() => { read.current = onRead })
+    useIsoLayoutEffect(() => { read.current = onRead; act.current = onActivate })
 
     useIsoLayoutEffect(() => {
       const host = node.current!
@@ -92,7 +95,8 @@ export function createFigure<P extends object>(name: string, spec: FigureSpec<P>
           try { read.current?.(next) } catch (err) { report(err) }
         },
       }
-      const e = spec.mount({ stage: host, svg, read: readout }, scale(intensity, spec.range), props)
+      const activated = (part: string) => { try { act.current?.(part) } catch (err) { report(err) } }
+      const e = spec.mount({ stage: host, svg, read: readout, activated }, scale(intensity, spec.range), props)
       if (text === null) readout.textContent = spec.rest
       engine.current = e
       return () => { e.destroy(); svg.remove(); engine.current = null }

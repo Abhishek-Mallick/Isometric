@@ -62,6 +62,27 @@ export const css = [
   `${SVG} :where(.dot.dim){fill:var(--_edge)}`,
   `${SVG} :where(.dot.off){fill:var(--_lo)}`,
   `${SVG} :where(.dot.accent){fill:var(--_accent)}`,
+  // mesh faces from the scene: outlined by default, brighter when lit or pointed at
+  `${SVG} :where(.face){stroke:var(--_edge)}`,
+  `${SVG} :where(.face.lo){stroke:var(--_lo)}`,
+  `${SVG} :where(.face.mid){stroke:var(--_mid)}`,
+  `${SVG} :where(.face.hi){stroke:var(--_hi)}`,
+  `${SVG} :where(.face.accent,.line.accent){stroke:var(--_accent)}`,
+  // shading by the way a face turns, and material tints mixed into the plate
+  `${SVG} :where(.tone-left){fill:color-mix(in oklab,var(--_edge) 9%,var(--_plate))}`,
+  `${SVG} :where(.tone-right){fill:color-mix(in oklab,var(--_edge) 18%,var(--_plate))}`,
+  `${SVG} :where(.tint){fill:color-mix(in oklab,var(--tint) 34%,var(--_plate))}`,
+  `${SVG} :where(.tint.tone-top){fill:color-mix(in oklab,var(--tint) 26%,var(--_plate))}`,
+  `${SVG} :where(.tint.tone-left){fill:color-mix(in oklab,var(--tint) 40%,var(--_plate))}`,
+  `${SVG} :where(.tint.tone-right){fill:color-mix(in oklab,var(--tint) 52%,var(--_plate))}`,
+  // what is lit: a screen, a lamp, a glowing core
+  `${SVG} :where(.glow){fill:color-mix(in oklab,var(--_accent) 30%,var(--_plate))}`,
+  `${SVG} :where(.glow.tone-left,.glow.tone-right){fill:color-mix(in oklab,var(--_accent) 42%,var(--_plate))}`,
+  `${SVG} :where(.solid){fill:var(--_accent);stroke:var(--_accent)}`,
+  `${SVG} :where(.ink){fill:var(--_hi)}`,
+  // curved solids: facets hide their seams, the outline is drawn on top
+  `${SVG} :where(.facet){stroke:var(--_plate);stroke-width:calc(var(--_sw) * 0.6)}`,
+  `${SVG} :where(.facet.glow,.facet.tint,.facet.tone-left,.facet.tone-right){stroke:none}`,
 ].join("")
 
 const done = new WeakSet<Document | ShadowRoot>()

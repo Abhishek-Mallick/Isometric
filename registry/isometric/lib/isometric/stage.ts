@@ -14,7 +14,13 @@ import { setReducedMotion } from "./motion"
 
 /** Where an engine writes its caption. */
 export type Readout = { textContent: string | null }
-export type Stage = { stage: HTMLElement; svg: SVGSVGElement; read: Readout }
+export type Stage = {
+  stage: HTMLElement
+  svg: SVGSVGElement
+  read: Readout
+  /** Tells the host a part was activated (clicked, or Enter on it). */
+  activated?: (part: string) => void
+}
 export type Engine<P = object> = {
   /** A new intensity, already mapped to the engine's own number. */
   set(value: number): void

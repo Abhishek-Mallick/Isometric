@@ -82,10 +82,10 @@ export const items: Item[] = [
     name: "isometric-engine",
     title: "Isometric Engine",
     description:
-      "The engine behind every figure: orthographic projection, solids drawn in fine lines, springs, one shared animation loop that sleeps offscreen, and the React factory.",
+      "The engine behind every figure: orthographic projection, meshes with hidden faces removed, picking, springs, one shared animation loop that sleeps offscreen, and the React factory.",
     category: "foundation",
     type: "registry:lib",
-    files: [lib("iso.ts"), lib("motion.ts"), lib("stage.ts"), lib("styles.ts"), lib("figure.tsx")],
+    files: [lib("iso.ts"), lib("motion.ts"), lib("stage.ts"), lib("styles.ts"), lib("figure.tsx"), lib("mesh.ts"), lib("scene.ts"), lib("entity.ts")],
   },
   {
     name: "iso-depth",
