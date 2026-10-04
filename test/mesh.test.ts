@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { camera, fit, type Vec3 } from "@/registry/isometric/lib/isometric/iso"
-import { box, centroid, cylinder, dot, extrude, gable, merge, normal, pyramid, rotateX, rotateZ, scale, translate, type Mesh } from "@/registry/isometric/lib/isometric/mesh"
+import { box, centroid, cylinder, dot, extrude, gable, merge, normal, pane, pyramid, rotateX, rotateZ, scale, translate, type Mesh } from "@/registry/isometric/lib/isometric/mesh"
 import { compose, toCamera } from "@/registry/isometric/lib/isometric/scene"
 
 /** Every face's normal points away from the solid's centre. */
@@ -84,6 +84,16 @@ describe("scene", () => {
     expect(e[0]).toBeGreaterThan(0)
     expect(e[1]).toBeGreaterThan(0)
     expect(e[2]).toBeGreaterThan(0)
+  })
+
+  it("a pane faces the way it is told, whichever way its points run", () => {
+    const pts: Vec3[] = [[0, 0, 0], [0, 4, 0], [0, 4, 4], [0, 0, 4]]
+    for (const order of [pts, pts.slice().reverse()]) {
+      const m = pane(order, [1, 0, 0])
+      expect(dot(normal(m, m.f[0]), [1, 0, 0])).toBeGreaterThan(0)
+    }
+    expect(compose(cam(), [{ mesh: pane(pts, [1, 0, 0]) }])).toHaveLength(1)
+    expect(compose(cam(), [{ mesh: pane(pts, [-1, 0, 0]) }])).toHaveLength(0)
   })
 
   it("merge and translate keep the face count", () => {

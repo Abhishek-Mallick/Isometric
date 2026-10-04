@@ -155,3 +155,12 @@ export function merge(...ms: Mesh[]): Mesh {
   }
   return { v, f, soft: soft.some(Boolean) ? soft : undefined }
 }
+
+/**
+ * A flat polygon of world points, turned to face `toward`: a window pane, a
+ * doorway, a sign on a wall. One face, so the scene hides it from behind.
+ */
+export function pane(pts: readonly Vec3[], toward: Vec3): Mesh {
+  const m: Mesh = { v: pts.slice(), f: [pts.map((_, i) => i)] }
+  return dot(normal(m, m.f[0]), toward) < 0 ? { v: m.v, f: [m.f[0].slice().reverse()] } : m
+}
