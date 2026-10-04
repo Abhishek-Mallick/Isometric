@@ -20,3 +20,6 @@ public/components
 # playwright
 test-results
 playwright-report
+
+# local planning notes
+TODO.md
