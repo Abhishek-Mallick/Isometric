@@ -2,8 +2,8 @@
 
 ## 0. Before opening the PR (the validator fetches your live registry)
 
-1. Create `github.com/Abhishek-Mallick/isometric` and push:
-   `git remote add origin git@github.com:Abhishek-Mallick/isometric.git && git push -u origin main`
+1. Create `github.com/Abhishek-Mallick/Isometric` and push:
+   `git remote add origin git@github.com:Abhishek-Mallick/Isometric.git && git push -u origin main`
 2. Repo → Settings → Pages → Source: **GitHub Actions**. Custom domain: `isometric.buildlab.in`.
 3. DNS at buildlab.in: `CNAME isometric → abhishek-mallick.github.io`.
 4. Wait for the Deploy workflow, then check these return JSON:
@@ -58,7 +58,7 @@ Isometric is an open-source (MIT) registry of isometric line figures and UI prim
 | Registry index | https://isometric.buildlab.in/r/registry.json |
 | Example item | https://isometric.buildlab.in/r/skyline.json |
 | llms.txt | https://isometric.buildlab.in/llms.txt |
-| Source (MIT) | https://github.com/Abhishek-Mallick/isometric |
+| Source (MIT) | https://github.com/Abhishek-Mallick/Isometric |
 
 ### Try it
 

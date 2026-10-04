@@ -21,4 +21,4 @@ The first release.
 - Theming through shadcn's tokens, with `--iso-*` overrides.
 - The documentation site, `llms.txt`, and Markdown for every component.
 
-[0.1.0]: https://github.com/Abhishek-Mallick/isometric/releases/tag/v0.1.0
+[0.1.0]: https://github.com/Abhishek-Mallick/Isometric/releases/tag/v0.1.0

@@ -90,7 +90,7 @@ ${sections}
 
 - [Registry index](${REGISTRY_URL}/registry.json): machine-readable list of every item
 - [Full docs](${HOMEPAGE}/llms-full.txt): install and usage for every item in one file
-- [Source](https://github.com/Abhishek-Mallick/isometric)
+- [Source](https://github.com/Abhishek-Mallick/Isometric)
 `
 
 mkdirSync("public/components", { recursive: true })
