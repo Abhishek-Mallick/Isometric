@@ -2,7 +2,7 @@
 // `scripts/generate-registry.mts` turns it into registry.json, llms.txt and
 // per-component markdown; the site reads it for its pages.
 
-export type Category = "foundation" | "figure" | "ui"
+export type Category = "foundation" | "figure" | "object" | "blocks" | "ui" | "world"
 
 export type Prop = { name: string; type: string; default?: string; description: string }
 
@@ -24,12 +24,23 @@ export type Item = {
   props?: Prop[]
   /** For figures: what `intensity` changes, and the caption it reads out. */
   intensity?: string
+  /** Figures with parts you can click and reach from the keyboard. */
+  interactive?: boolean
 }
+
+/** Figures render as live drawings on the site: every item that documents an intensity. */
+export const isFigure = (i: Item) => !!i.intensity
+
+/** The order categories appear in on the site. */
+export const categoryOrder: Category[] = ["object", "blocks", "figure", "world", "ui", "foundation"]
 
 export const categoryLabels: Record<Category, string> = {
   foundation: "Foundations",
   figure: "Figures",
+  object: "Interactive objects",
+  blocks: "Blocks",
   ui: "Primitives",
+  world: "World",
 }
 
 const ui = (name: string) => ({ path: `registry/isometric/ui/isometric/${name}.tsx`, type: "registry:ui" })
@@ -44,7 +55,19 @@ export const figureProps: Prop[] = [
   { name: "...props", type: `React.ComponentProps<"div">`, description: "Any div attribute. The figure fills its parent's width at a 5:4 aspect ratio." },
 ]
 
-const figure = (name: string, title: string, description: string, intensity: string, extra: Partial<Item> = {}): Item => {
+/** The extra option interactive figures take. */
+export const interactiveProps: Prop[] = [
+  { name: "onActivate", type: "(part: string) => void", description: "Called with a part's id when it is clicked, or chosen with Enter. Tab focuses the figure; the arrow keys move between parts." },
+]
+
+/** An interactive object: a figure whose parts can be clicked and reached from the keyboard. */
+const object = (name: string, title: string, description: string, intensity: string, extra: Partial<Item> = {}): Item => ({
+  ...figure(name, title, description, intensity, extra),
+  category: "object",
+  interactive: true,
+})
+
+function figure(name: string, title: string, description: string, intensity: string, extra: Partial<Item> = {}): Item {
   const component = title.replace(/\s/g, "")
   return {
     name,
@@ -135,6 +158,16 @@ export const items: Item[] = [
   figure("parcel", "Parcel", "A sealed box. Its flaps fold open as the pointer comes near, and a cube rises out.", "Swings the flaps further. Reads `open 140°`."),
   figure("nodes", "Nodes", "A network of a hub and eight nodes. A pulse runs the shortest route to the node nearest the pointer.", "Makes the pulse travel faster. Reads `hub → e`."),
   figure("cube", "Cube", "A three by three cube. The pointer's height picks a layer and moving across twists it; it settles on a quarter turn.", "Twists further across one sweep. Reads `top · 90°`."),
+
+  object("pc-case", "PC Case", "A tower you can take apart: slide the glass panel off, lift the memory out, pull the graphics card, and press power to spin every fan.", "Sets how far parts come out and how fast the fans spin. Reads `Graphics card out`.", {
+    props: [
+      { name: "open", type: "boolean", default: "false", description: "Start with the side panel off." },
+      { name: "on", type: "boolean", default: "false", description: "Start powered on." },
+    ],
+    usage: `import { PcCase } from "@/components/ui/isometric/pc-case"
+
+<PcCase open onActivate={(part) => console.log(part)} />`,
+  }),
 
   primitive(
     "iso-button",

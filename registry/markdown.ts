@@ -1,9 +1,9 @@
-import { figureProps, type Item } from "./index.ts"
+import { figureProps, interactiveProps, isFigure, type Item } from "./index.ts"
 
 /** Markdown for one item: served as /components/<name>.md and in llms-full.txt. */
 export function componentMarkdown(item: Item, { homepage, registryUrl }: { homepage: string; registryUrl: string }) {
   const deps = [...(item.dependencies ?? []), ...(item.internal ?? []).map((n) => `@isometric/${n}`)]
-  const props = [...(item.category === "figure" ? figureProps : []), ...(item.props ?? [])]
+  const props = [...(isFigure(item) ? figureProps : []), ...(item.interactive ? interactiveProps : []), ...(item.props ?? [])]
   return [
     `# ${item.title}`,
     "",

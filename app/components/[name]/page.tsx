@@ -12,7 +12,7 @@ import { Footer, Header } from "@/components/site/header"
 import { InstallTabs, type InstallData } from "@/components/site/install-tabs"
 import { Sheet } from "@/components/site/sheet"
 import { IsoGrid } from "@/registry/isometric/ui/isometric/iso-grid"
-import { docItems, figureProps, itemsByName, type Prop } from "@/registry/index"
+import { docItems, figureProps, interactiveProps, isFigure as figureItem, itemsByName, type Prop } from "@/registry/index"
 
 export const dynamicParams = false
 
@@ -73,8 +73,8 @@ export default async function ComponentPage({ params }: { params: Promise<{ name
 
   const index = docItems.indexOf(item)
   const prev = docItems[index - 1], next = docItems[index + 1]
-  const isFigure = item.category === "figure"
-  const props = [...(isFigure ? figureProps : []), ...(item.props ?? [])]
+  const isFigure = figureItem(item)
+  const props = [...(isFigure ? figureProps : []), ...(item.interactive ? interactiveProps : []), ...(item.props ?? [])]
   const files = itemFiles(item)
   const deps = [...(item.dependencies ?? []), ...(item.internal ?? []).map((n) => `@isometric/${n}`)]
 
@@ -94,7 +94,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ name
           </header>
 
           {isFigure ? (
-            <Sheet name={item.name} title={item.title} controls />
+            <Sheet name={item.name} title={item.title} controls interactive={item.interactive} />
           ) : (
             <div className="relative grid min-h-64 place-items-center overflow-hidden rounded-lg border bg-card px-6 py-12">
               <IsoGrid className="absolute inset-0 opacity-70" cell={22} />

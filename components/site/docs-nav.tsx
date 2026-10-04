@@ -1,7 +1,7 @@
 import Link from "next/link"
 
 import { cn } from "@/lib/utils"
-import { categoryLabels, docItems } from "@/registry/index"
+import { categoryLabels, categoryOrder, docItems } from "@/registry/index"
 
 /** The side index of every page, grouped as the registry groups them. */
 export function DocsNav({ current }: { current?: string }) {
@@ -26,7 +26,7 @@ export function DocsNav({ current }: { current?: string }) {
         {link("/docs#theming", "Theming", false)}
         {link("/components", "All components", current === "components")}
       </div>
-      {(["figure", "ui", "foundation"] as const).map((cat) => (
+      {categoryOrder.filter((cat) => docItems.some((i) => i.category === cat)).map((cat) => (
         <div key={cat} className="grid gap-0.5">
           <p className="px-2.5 pb-1 text-xs font-medium text-foreground">{categoryLabels[cat]}</p>
           {docItems.filter((i) => i.category === cat).map((i) => link(`/components/${i.name}`, i.title, current === i.name))}

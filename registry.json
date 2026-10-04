@@ -281,6 +281,24 @@
       ]
     },
     {
+      "name": "pc-case",
+      "type": "registry:ui",
+      "title": "PC Case",
+      "description": "A tower you can take apart: slide the glass panel off, lift the memory out, pull the graphics card, and press power to spin every fan.",
+      "registryDependencies": [
+        "https://isometric.buildlab.in/r/isometric-engine.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/pc-case.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "object"
+      ]
+    },
+    {
       "name": "iso-button",
       "type": "registry:ui",
       "title": "Iso Button",
@@ -524,6 +542,7 @@
         "https://isometric.buildlab.in/r/parcel.json",
         "https://isometric.buildlab.in/r/nodes.json",
         "https://isometric.buildlab.in/r/cube.json",
+        "https://isometric.buildlab.in/r/pc-case.json",
         "https://isometric.buildlab.in/r/iso-button.json",
         "https://isometric.buildlab.in/r/iso-card.json",
         "https://isometric.buildlab.in/r/iso-switch.json",

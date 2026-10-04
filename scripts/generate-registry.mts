@@ -8,7 +8,7 @@
 
 import { mkdirSync, writeFileSync } from "node:fs"
 
-import { categoryLabels, docItems, items, type Item } from "../registry/index.ts"
+import { categoryLabels, categoryOrder, docItems, items, type Item } from "../registry/index.ts"
 import { componentMarkdown } from "../registry/markdown.ts"
 
 const REGISTRY_URL = (process.env.REGISTRY_URL ?? "https://isometric.buildlab.in/r").replace(/\/$/, "")
@@ -69,7 +69,7 @@ Colours follow your shadcn tokens in light and dark; override them with the
 --iso-* custom properties.
 `
 
-const sections = (Object.keys(categoryLabels) as (keyof typeof categoryLabels)[])
+const sections = categoryOrder
   .map((cat) => {
     const list = docItems.filter((i) => i.category === cat)
     if (!list.length) return ""

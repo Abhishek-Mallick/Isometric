@@ -13,10 +13,12 @@ import { IsoSlider } from "@/registry/isometric/ui/isometric/iso-slider"
  * corner that reads what the figure is doing. With `controls`, the block also
  * holds the intensity slider.
  */
-export function Sheet({ name, title, controls = false, className, defaultIntensity = 0.5 }: {
+export function Sheet({ name, title, controls = false, interactive = false, className, defaultIntensity = 0.5 }: {
   name: string
   title: string
   controls?: boolean
+  /** Show how to operate the parts. */
+  interactive?: boolean
   className?: string
   defaultIntensity?: number
 }) {
@@ -31,8 +33,9 @@ export function Sheet({ name, title, controls = false, className, defaultIntensi
       </div>
       <figcaption className="relative flex flex-wrap items-stretch border-t text-sm">
         <span className="flex min-w-28 items-center border-r px-4 py-2.5 font-medium">{title}</span>
-        <span className="flex min-w-36 flex-1 items-center px-4 py-2.5 font-mono text-[12px] text-muted-foreground tabular-nums" aria-live="polite">
-          {read || " "}
+        <span className="flex min-w-36 flex-1 flex-col justify-center px-4 py-2 font-mono text-[12px] text-muted-foreground tabular-nums">
+          <span aria-live="polite">{read || "\u00a0"}</span>
+          {interactive ? <span className="font-sans text-[11px] opacity-80">Click a part, or Tab then the arrow keys and Enter</span> : null}
         </span>
         {controls ? (
           <label className="flex w-full items-center gap-3 border-t px-4 py-1.5 sm:w-64 sm:border-t-0 sm:border-l">

@@ -22,6 +22,21 @@ for (const item of docItems) {
   })
 }
 
+for (const item of docItems.filter((i) => i.interactive)) {
+  test(`${item.name} is operable from the keyboard`, async ({ page }) => {
+    await page.goto(`/components/${item.name}/`)
+    const figure = page.locator(`[data-iso="${item.name}"]`).first()
+    await expect(figure).toHaveAttribute("role", "group")
+    await figure.focus()
+    const caption = page.locator("figcaption [aria-live]")
+    await page.keyboard.press("ArrowRight")
+    const named = await caption.innerText()
+    expect(named.trim().length).toBeGreaterThan(0)
+    await page.keyboard.press("Enter")
+    await expect(caption).not.toHaveText(named)
+  })
+}
+
 test("home, docs and llms.txt are served", async ({ page, request }) => {
   await page.goto("/")
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()

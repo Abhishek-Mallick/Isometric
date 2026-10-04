@@ -8,6 +8,7 @@ import { Keys } from "@/registry/isometric/ui/isometric/keys"
 import { Laptop } from "@/registry/isometric/ui/isometric/laptop"
 import { Nodes } from "@/registry/isometric/ui/isometric/nodes"
 import { Parcel } from "@/registry/isometric/ui/isometric/parcel"
+import { PcCase } from "@/registry/isometric/ui/isometric/pc-case"
 import { Rack } from "@/registry/isometric/ui/isometric/rack"
 import { Skyline } from "@/registry/isometric/ui/isometric/skyline"
 import { Stack } from "@/registry/isometric/ui/isometric/stack"
@@ -17,4 +18,5 @@ import { Steps } from "@/registry/isometric/ui/isometric/steps"
 export const figures: Record<string, React.ComponentType<{ intensity?: number; onRead?: (t: string) => void; className?: string; "aria-label"?: string }>> = {
   skyline: Skyline, stack: Stack, keys: Keys, rack: Rack, laptop: Laptop, bars: Bars,
   steps: Steps, files: Files, cylinders: Cylinders, parcel: Parcel, nodes: Nodes, cube: Cube,
+  "pc-case": PcCase,
 }
