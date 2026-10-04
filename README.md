@@ -13,9 +13,18 @@
   </p>
   <p>
     <a href="./LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-black" /></a>
-    <a href="https://github.com/Abhishek-Mallick/isometric/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Abhishek-Mallick/isometric/actions/workflows/ci.yml/badge.svg" /></a>
+    <a href="https://github.com/Abhishek-Mallick/Isometric/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Abhishek-Mallick/Isometric/actions/workflows/ci.yml/badge.svg" /></a>
   </p>
 </div>
+
+<br />
+
+<a href="https://isometric.buildlab.in">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/hero-dark.png" />
+    <img alt="The Isometric site: a headline beside a live Stack figure on an isometric grid, its top layer lit where the pointer is" src=".github/assets/hero-light.png" />
+  </picture>
+</a>
 
 <br />
 
@@ -28,6 +37,23 @@ Isometric is a collection of drawings and controls that stand in three dimension
 - **A small engine** (`lib/isometric`): orthographic projection, solids painted back to front, springs, and one shared animation loop that sleeps offscreen and when nothing moves. No dependencies beyond React.
 - **Your theme, unchanged.** Everything reads shadcn's tokens, so it follows your palette and `.dark`. Tune it with `--iso-*` custom properties.
 - **Docs for humans and agents**: every component page has a live preview, install command, props table and source, plus [`llms.txt`](https://isometric.buildlab.in/llms.txt) and per-component Markdown.
+
+## Components
+
+| Figures | | Primitives | |
+| --- | --- | --- | --- |
+| [Skyline](https://isometric.buildlab.in/components/skyline) | Towers rise around the pointer | [Iso Button](https://isometric.buildlab.in/components/iso-button) | Stands on its depth, sinks when pressed |
+| [Stack](https://isometric.buildlab.in/components/stack) | An app window in four layers | [Iso Card](https://isometric.buildlab.in/components/iso-card) | A slab, composed like shadcn's Card |
+| [Keys](https://isometric.buildlab.in/components/keys) | A keyboard that presses back | [Iso Switch](https://isometric.buildlab.in/components/iso-switch) | A block in a recessed groove |
+| [Rack](https://isometric.buildlab.in/components/rack) | Server units slide out | [Iso Tabs](https://isometric.buildlab.in/components/iso-tabs) | The chosen tile stands up |
+| [Laptop](https://isometric.buildlab.in/components/laptop) | The lid follows the pointer | [Iso Slider](https://isometric.buildlab.in/components/iso-slider) | A cube on a rail, with ticks |
+| [Bars](https://isometric.buildlab.in/components/bars) | A bar chart from your data | [Iso Toggle Group](https://isometric.buildlab.in/components/iso-toggle-group) | Keys that stay down when on |
+| [Steps](https://isometric.buildlab.in/components/steps) | Progress as a staircase | [Iso Kbd](https://isometric.buildlab.in/components/iso-kbd) | A keycap for shortcuts |
+| [Files](https://isometric.buildlab.in/components/files) | Sheets rise from a folder | [Iso Badge](https://isometric.buildlab.in/components/iso-badge) | A small slab for status |
+| [Cylinders](https://isometric.buildlab.in/components/cylinders) | A database stack that parts | [Iso Progress](https://isometric.buildlab.in/components/iso-progress) | Blocks that stand up as they fill |
+| [Parcel](https://isometric.buildlab.in/components/parcel) | A box that opens as you near | [Iso Input](https://isometric.buildlab.in/components/iso-input) | A recessed well |
+| [Nodes](https://isometric.buildlab.in/components/nodes) | A pulse routes through a network | [Iso Grid](https://isometric.buildlab.in/components/iso-grid) | An isometric lattice backdrop |
+| [Cube](https://isometric.buildlab.in/components/cube) | Layers twist and settle | | |
 
 ## Installation
 
