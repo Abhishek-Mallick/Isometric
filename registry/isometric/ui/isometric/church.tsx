@@ -153,3 +153,6 @@ export const Church = createFigure<ChurchProps>("Church", {
   defaults: { lit: false },
   mount: entityMount(entity),
 })
+
+/** The entity behind the figure, for hosts that place many objects together, such as the world. */
+export { entity as churchEntity }

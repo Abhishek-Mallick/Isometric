@@ -24,6 +24,12 @@ export type Drawable = {
   /** Added to the depth: positive paints later (in front). */
   bias?: number
   /**
+   * Painted in layer order first, then by depth. A world gives every
+   * drawable of one object the same layer (the depth of its footprint), so
+   * objects are ordered as wholes and each keeps its own inner order.
+   */
+  layer?: number
+  /**
    * Curved solids: their facets are filled without lines, and only the
    * edges where the curve turns away from the camera, or meets a flat face,
    * are drawn. That is the true outline, concave parts included.
@@ -38,7 +44,7 @@ export type Drawable = {
 }
 
 /** Lines that are not solids: rope, wires, sparks. Painted with a drawable's depth. */
-export type Stroke = { pts: Vec3[]; cls?: string; part?: string; bias?: number; closed?: boolean }
+export type Stroke = { pts: Vec3[]; cls?: string; part?: string; bias?: number; layer?: number; closed?: boolean }
 
 type Out = { d: string; cls: string; tint?: string; polys?: Vec2[][]; part?: string }
 
@@ -79,7 +85,7 @@ export function compose(c: Camera, items: readonly (Drawable | Stroke)[]): Out[]
       const mid: Vec3 = [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2]
       return { it, i, depth: depthOf(mid) + (it.bias ?? 0) }
     })
-    .sort((a, b) => a.depth - b.depth || a.i - b.i)
+    .sort((a, b) => (a.it.layer ?? 0) - (b.it.layer ?? 0) || a.depth - b.depth || a.i - b.i)
 
   const out: Out[] = []
   for (const { it } of ordered) {

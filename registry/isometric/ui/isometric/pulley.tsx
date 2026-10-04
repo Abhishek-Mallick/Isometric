@@ -136,3 +136,6 @@ export const Pulley = createFigure<PulleyProps>("Pulley", {
   defaults: { ratio: 2, load: 40 },
   mount: entityMount(entity),
 })
+
+/** The entity behind the figure, for hosts that place many objects together, such as the world. */
+export { entity as pulleyEntity }

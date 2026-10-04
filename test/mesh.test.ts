@@ -59,6 +59,14 @@ describe("scene", () => {
     expect(out[out.length - 1].part).toBe("far")
   })
 
+  it("layers order whole objects before depth", () => {
+    const out = compose(cam(), [
+      { mesh: box(6, 6, 0, 8, 8, 2), part: "near", layer: 0 },
+      { mesh: box(0, 0, 0, 2, 2, 2), part: "far", layer: 1 },
+    ])
+    expect(out[out.length - 1].part).toBe("far")
+  })
+
   it("smooth solids hide facet lines and add one outline", () => {
     const out = compose(cam(), [{ mesh: cylinder(5, 5, 0, 3, 4, 20), smooth: true }])
     // the visible facets become one seamless path with a subpath per facet

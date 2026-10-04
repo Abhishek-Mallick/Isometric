@@ -74,3 +74,6 @@ export const Torch = createFigure<TorchProps>("Torch", {
   defaults: { lit: true },
   mount: entityMount(entity),
 })
+
+/** The entity behind the figure, for hosts that place many objects together, such as the world. */
+export { entity as torchEntity }
