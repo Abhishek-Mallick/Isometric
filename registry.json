@@ -317,6 +317,24 @@
       ]
     },
     {
+      "name": "pulley",
+      "type": "registry:ui",
+      "title": "Pulley",
+      "description": "A block and tackle on a frame. Drag the rope's handle down and the load rises by the pull divided by the ratio, with the wheels turning as the rope runs.",
+      "registryDependencies": [
+        "https://isometric.buildlab.in/r/isometric-engine.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/pulley.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "object"
+      ]
+    },
+    {
       "name": "reactor",
       "type": "registry:ui",
       "title": "Reactor",
@@ -580,6 +598,7 @@
         "https://isometric.buildlab.in/r/cube.json",
         "https://isometric.buildlab.in/r/pc-case.json",
         "https://isometric.buildlab.in/r/heart.json",
+        "https://isometric.buildlab.in/r/pulley.json",
         "https://isometric.buildlab.in/r/reactor.json",
         "https://isometric.buildlab.in/r/iso-button.json",
         "https://isometric.buildlab.in/r/iso-card.json",

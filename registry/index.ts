@@ -177,6 +177,15 @@ const [liked, setLiked] = useState(false)
 
 <Heart liked={liked} onActivate={() => setLiked(!liked)} />`,
   }),
+  object("pulley", "Pulley", "A block and tackle on a frame. Drag the rope's handle down and the load rises by the pull divided by the ratio, with the wheels turning as the rope runs.", "Sets how much rope a drag pulls. Reads `pull 24 · lift 6 · 4:1`.", {
+    props: [
+      { name: "ratio", type: "2 | 4", default: "2", description: "Mechanical advantage: how many lines of rope hold the load." },
+      { name: "load", type: "number", default: "40", description: "The load in kilograms, used in the caption." },
+    ],
+    usage: `import { Pulley } from "@/components/ui/isometric/pulley"
+
+<Pulley ratio={4} load={120} />`,
+  }),
   object("reactor", "Reactor", "A ring-core reactor: a glowing core inside ten coils. The coils charge as the pointer comes near and the ring turns; click to fire a pulse.", "Sets how fast it charges. Reads `charge 80%`."),
 
   primitive(
