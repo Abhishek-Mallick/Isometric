@@ -7,6 +7,7 @@
   <p>
     <a href="https://isometric.buildlab.in">Website</a> ·
     <a href="https://isometric.buildlab.in/components">Components</a> ·
+    <a href="https://isometric.buildlab.in/playground">Playground</a> ·
     <a href="https://isometric.buildlab.in/llms.txt">llms.txt</a> ·
     <a href="./CHANGELOG.md">Changelog</a> ·
     <a href=".github/CONTRIBUTING.md">Contributing</a>
@@ -28,13 +29,16 @@
 
 <br />
 
-Isometric is a collection of drawings and controls that stand in three dimensions, drawn in fine lines. The **figures** are SVG drawings that answer the pointer: a skyline that rises where you point, a laptop whose lid follows you, a bar chart drawn from your data. The **primitives** are buttons, cards, tabs and the rest, each standing on a depth drawn in the same lines and sinking into it when pressed. You install the source with the shadcn CLI, so every component is yours to edit.
+Isometric is a collection of drawings and controls that stand in three dimensions, drawn in fine lines. The **figures** are SVG drawings that answer the pointer: a skyline that rises where you point, a laptop whose lid follows you, a bar chart drawn from your data. The **interactive objects** are made of parts you can operate: slide the panel off a PC, ring a church bell, haul a pulley. The **Blocks** kit is mineable blocks with game UI to match, and the **World** puts everything in one town you can explore and build in. The **primitives** are buttons, cards, tabs and the rest, each standing on a depth drawn in the same lines. You install the source with the shadcn CLI, so every component is yours to edit.
 
 ## What's included
 
 - **12 figures**: Skyline, Stack, Keys, Rack, Laptop, Bars, Steps, Files, Cylinders, Parcel, Nodes and Cube. Each takes the same options (`intensity`, `theme`, `label`, `onRead`) and reads out what it is doing.
+- **5 interactive objects**: PC Case, Heart, Reactor, Pulley and Church. Every part answers a click and the keyboard, and reports through `onActivate`.
+- **The Blocks kit**: Block, Chest, Torch and Tree, with a Block Icon, Hotbar, Inventory, Hearts Meter and XP Bar.
+- **World**: a town of every object on block terrain, with pan, zoom, day and night, and a build mode. See it in the [playground](https://isometric.buildlab.in/playground).
 - **11 primitives**: Button, Card, Switch, Tabs, Slider, Toggle Group, Kbd, Badge, Progress, Input and Grid, built on Radix UI with keyboard and screen-reader support.
-- **A small engine** (`lib/isometric`): orthographic projection, solids painted back to front, springs, and one shared animation loop that sleeps offscreen and when nothing moves. No dependencies beyond React.
+- **A small engine** (`lib/isometric`): orthographic projection, meshes with hidden faces removed and true outlines for curved solids, picking, springs, and one shared animation loop that sleeps offscreen and when nothing moves. No dependencies beyond React.
 - **Your theme, unchanged.** Everything reads shadcn's tokens, so it follows your palette and `.dark`. Tune it with `--iso-*` custom properties.
 - **Docs for humans and agents**: every component page has a live preview, install command, props table and source, plus [`llms.txt`](https://isometric.buildlab.in/llms.txt) and per-component Markdown.
 
@@ -55,12 +59,30 @@ Isometric is a collection of drawings and controls that stand in three dimension
 | [Nodes](https://isometric.buildlab.in/components/nodes) | A pulse routes through a network | [Iso Grid](https://isometric.buildlab.in/components/iso-grid) | An isometric lattice backdrop |
 | [Cube](https://isometric.buildlab.in/components/cube) | Layers twist and settle | | |
 
+### Interactive objects and Blocks
+
+| Objects | | Blocks | |
+| --- | --- | --- | --- |
+| [PC Case](https://isometric.buildlab.in/components/pc-case) | Panel off, memory out, power on | [Block](https://isometric.buildlab.in/components/block) | Mine it; it grows back |
+| [Heart](https://isometric.buildlab.in/components/heart) | Beats, and likes with a burst | [Chest](https://isometric.buildlab.in/components/chest) | The lid lifts, items rise |
+| [Reactor](https://isometric.buildlab.in/components/reactor) | Coils charge, pulses fire | [Torch](https://isometric.buildlab.in/components/torch) | Flickers; snuff and relight |
+| [Pulley](https://isometric.buildlab.in/components/pulley) | Haul the rope, 2:1 or 4:1 | [Tree](https://isometric.buildlab.in/components/tree) | Sways, sheds leaves |
+| [Church](https://isometric.buildlab.in/components/church) | Doors, bell and lit windows | [Hotbar](https://isometric.buildlab.in/components/hotbar) · [Inventory](https://isometric.buildlab.in/components/inventory) · [Hearts Meter](https://isometric.buildlab.in/components/hearts-meter) · [XP Bar](https://isometric.buildlab.in/components/xp-bar) | Game UI to match |
+
+<a href="https://isometric.buildlab.in/playground">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/playground-dark.png" />
+    <img alt="The playground: a small isometric town on block terrain with a church, a reactor in the square, a pulley yard, trees, torches and a stack of placed blocks" src=".github/assets/playground-light.png" />
+  </picture>
+</a>
+
 ## Installation
 
 Isometric needs React 19, Tailwind CSS v4 and a `components.json` (run `npx shadcn@latest init` first).
 
 ```bash
 npx shadcn@latest add @isometric/skyline @isometric/iso-button
+npx shadcn@latest add @isometric/church @isometric/world
 npx shadcn@latest add @isometric/all   # everything
 ```
 

@@ -1,6 +1,6 @@
 {
   "name": "isometric",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Isometric line figures and UI primitives for React. Installable with the shadcn CLI.",
   "homepage": "https://isometric.buildlab.in",
