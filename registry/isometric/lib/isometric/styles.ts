@@ -2,8 +2,9 @@
  * Isometric — the figures' stylesheet, and the one function that installs it
  * in a document or a shadow root.
  *
- * Every selector sits inside `:where()`, so each rule has zero specificity
- * and any rule of yours wins. The public theme is seven custom properties:
+ * Every selector sits inside `:where()` and the sheet sits in the `base`
+ * cascade layer, so any rule of yours wins: Tailwind's utilities (which live
+ * in a later layer), and any style of yours outside a layer. The public theme is seven custom properties:
  *
  *   --iso-plate   the fill of every face: the colour the figure sits on
  *   --iso-hi      what is lit
@@ -39,7 +40,7 @@ const fixed = (p: Palette) =>
 const EASE = "cubic-bezier(0.2,0.7,0.1,1)"
 const SVG = ":where([data-iso]>svg)"
 
-export const css = [
+const rules = [
   `:where([data-iso]){display:block;position:relative;aspect-ratio:5/4;touch-action:pan-y;user-select:none;-webkit-user-select:none;--_sw:var(--iso-stroke,0.9);--_accent:var(--iso-accent,var(--_hi));${tokens(LIGHT)}}`,
   `:where(.dark,[data-theme="dark"]) :where([data-iso]){${tokens(DARK)}}`,
   `:where([data-iso][data-iso-theme="light"]){${fixed(LIGHT)}}`,
@@ -85,6 +86,8 @@ export const css = [
   // curved solids: their facets are one filled path with no lines; the outline is drawn on top
   `${SVG} :where(.facet){stroke:none}`,
 ].join("")
+
+export const css = `@layer base{${rules}}`
 
 const done = new WeakSet<Document | ShadowRoot>()
 
