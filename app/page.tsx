@@ -5,10 +5,13 @@ import { CopyButton } from "@/components/site/copy-button"
 import { Panel } from "@/components/site/demos"
 import { Footer, Header } from "@/components/site/header"
 import { Plate, Sheet } from "@/components/site/sheet"
-import { docItems } from "@/registry/index"
+import { docItems, isFigure } from "@/registry/index"
+import { IsoGrid } from "@/registry/isometric/ui/isometric/iso-grid"
 import { IsoButton } from "@/registry/isometric/ui/isometric/iso-button"
 
 const figures = docItems.filter((i) => i.category === "figure")
+const objects = docItems.filter((i) => i.category === "object")
+const blocks = docItems.filter((i) => i.category === "blocks")
 const primitives = docItems.filter((i) => i.category === "ui")
 
 export default function Home() {
@@ -23,8 +26,8 @@ export default function Home() {
               Drawings that stand up off the page.
             </h1>
             <p className="sheet-in max-w-[46ch] text-[17px] leading-relaxed text-pretty text-muted-foreground" style={{ "--i": 1 } as React.CSSProperties}>
-              {figures.length} isometric line figures that answer the pointer, and {primitives.length} UI primitives that stand on their own
-              depth. React and Tailwind, installed as source with the shadcn CLI, themed by the tokens you already have.
+              Isometric line figures that answer the pointer, objects you can take apart, a block kit, and UI primitives that stand on
+              their own depth. React and Tailwind, installed as source with the shadcn CLI, themed by the tokens you already have.
             </p>
             <div className="sheet-in flex flex-wrap items-center gap-4" style={{ "--i": 2 } as React.CSSProperties}>
               <div className="flex h-10 items-center gap-1 rounded-md border bg-card pr-1 pl-3.5 font-mono text-[13px]">
@@ -40,6 +43,49 @@ export default function Home() {
           <div className="sheet-in" style={{ "--i": 3 } as React.CSSProperties}>
             <Sheet name="stack" title="Stack" controls defaultIntensity={0.6} />
           </div>
+        </section>
+
+        <section aria-labelledby="objects" className="mx-auto max-w-[1200px] px-5 py-14">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div className="grid gap-1.5">
+              <h2 id="objects" className="text-2xl font-medium tracking-tight">Interactive objects</h2>
+              <p className="max-w-[60ch] text-muted-foreground">Things with parts. Slide the panel off the PC, ring the church bell, haul the pulley. Every part answers a click, and the keyboard.</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {objects.map((f) => <Plate key={f.name} name={f.name} title={f.title} href={`/components/${f.name}`} />)}
+          </div>
+        </section>
+
+        <section aria-labelledby="playground" className="mx-auto max-w-[1200px] px-5 py-10">
+          <div className="relative grid gap-6 overflow-hidden rounded-lg border bg-card p-6 sm:p-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <IsoGrid className="absolute inset-0" cell={26} />
+            <div className="relative grid gap-2">
+              <h2 id="playground" className="text-2xl font-medium tracking-tight">A whole town, all of it working</h2>
+              <p className="max-w-[58ch] text-muted-foreground">
+                The playground puts every object on one map: a church, a reactor in the square, a pulley yard, a PC, trees and torches. Look
+                around, click anything, and build with blocks. It installs as one component too.
+              </p>
+            </div>
+            <IsoButton variant="solid" size="lg" depth={5} asChild className="relative">
+              <Link href="/playground">Open the playground</Link>
+            </IsoButton>
+          </div>
+        </section>
+
+        <section aria-labelledby="blocks" className="mx-auto max-w-[1200px] px-5 py-14">
+          <div className="mb-6 grid gap-1.5">
+            <h2 id="blocks" className="text-2xl font-medium tracking-tight">Blocks</h2>
+            <p className="max-w-[60ch] text-muted-foreground">Mine a block, open a chest, snuff a torch. With a hotbar, an inventory, a hearts meter and an XP bar to go with them.</p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {blocks.filter(isFigure).map((f) => <Plate key={f.name} name={f.name} title={f.title} href={`/components/${f.name}`} />)}
+          </div>
+          <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-sm">
+            {blocks.filter((b) => !isFigure(b)).map((b) => (
+              <li key={b.name}><Link href={`/components/${b.name}`} className="text-muted-foreground transition-colors hover:text-foreground">{b.title}</Link></li>
+            ))}
+          </ul>
         </section>
 
         <section aria-labelledby="figures" className="mx-auto max-w-[1200px] px-5 py-14">

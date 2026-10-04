@@ -67,9 +67,17 @@ export default function Docs() {
           </P>
           <CodeBlock code={`<Bars\n  data={[12, 18, 9, 24]}\n  labels={["Q1", "Q2", "Q3", "Q4"]}\n  intensity={0.8}\n  onRead={(text) => setCaption(text)} // "Q2 · 18"\n/>`} />
 
+          <H2 id="objects">Interactive objects</H2>
+          <P>
+            Objects such as the PC Case, Church and Pulley are made of parts. Clicking a part activates it; dragging works where it makes sense
+            (the pulley's rope). From the keyboard, Tab focuses the object, the arrow keys move between its parts, Enter or Space activates one,
+            and Escape lets go. The caption names the part and what happened, and is read out to screen readers.
+          </P>
+          <CodeBlock code={`<Church\n  lit\n  onActivate={(part) => {\n    if (part === "bell") playChime()\n  }}\n/>`} />
+
           <H2 id="notes">Accessibility and performance</H2>
           <ul className="grid max-w-[68ch] list-disc gap-2 pl-5 text-muted-foreground marker:text-border">
-            <li>A figure is an image with a description you can replace with <C>label</C> or <C>aria-label</C>.</li>
+            <li>A figure is an image with a description you can replace with <C>label</C> or <C>aria-label</C>; an interactive object is a focusable group with a live caption.</li>
             <li>With reduced motion, springs land in one step and the Nodes pulse holds still; every figure still answers the pointer.</li>
             <li>All figures on a page share one animation loop. A figure that is off screen, or at rest, does no work.</li>
             <li>On the server a figure is an empty 5:4 box, so nothing shifts when it draws.</li>

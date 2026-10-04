@@ -47,7 +47,7 @@ const PLACES: Placement[] = [
   { key: "ore", title: "Ore block", entity: blockEntity, range: [6, 4, 2], size: 0.34, at: [17.5 * B, 12.5 * B, LEVEL], props: { type: "ore" } },
   { key: "tree-1", title: "Tree", entity: treeEntity, range: [0.3, 1, 2], size: 0.5, at: [4.5 * B, 8 * B, LEVEL] },
   { key: "tree-2", title: "Tree", entity: treeEntity, range: [0.3, 1, 2], size: 0.5, at: [9 * B, 15.5 * B, LEVEL] },
-  { key: "tree-3", title: "Tree", entity: treeEntity, range: [0.3, 1, 2], size: 0.5, at: [17.5 * B, 17.5 * B, LEVEL] },
+  { key: "tree-3", title: "Tree", entity: treeEntity, range: [0.3, 1, 2], size: 0.5, at: [6 * B, 2.5 * B, LEVEL] },
   ...[[8.6, 8.6], [12.4, 8.6], [8.6, 12.4], [12.4, 12.4]].map(([x, y], i): Placement => ({ key: `torch-${i + 1}`, title: "Torch", entity: torchEntity, range: [0, 1, 2.5], size: 0.3, at: [x * B, y * B, LEVEL] })),
 ]
 

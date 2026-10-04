@@ -11,7 +11,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2 rounded-sm font-medium tracking-tight focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
           <Logo className="size-5" />
           Isometric
-          <span className="text-xs font-normal text-muted-foreground">v0.1</span>
+          <span className="text-xs font-normal text-muted-foreground">v0.2</span>
         </Link>
         <nav className="ml-auto flex items-center gap-1 text-sm text-muted-foreground">
           <Link href="/components" className="rounded-md px-2.5 py-1.5 transition-colors hover:text-foreground">Components</Link>
