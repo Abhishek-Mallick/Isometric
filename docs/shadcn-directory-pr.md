@@ -2,13 +2,18 @@
 
 ## 0. Before opening the PR (the validator fetches your live registry)
 
-1. Create `github.com/Abhishek-Mallick/Isometric` and push:
-   `git remote add origin git@github.com:Abhishek-Mallick/Isometric.git && git push -u origin main`
-2. Repo → Settings → Pages → Source: **GitHub Actions**. Custom domain: `isometric.buildlab.in`.
-3. DNS at buildlab.in: `CNAME isometric → abhishek-mallick.github.io`.
-4. Wait for the Deploy workflow, then check these return JSON:
-   - https://isometric.buildlab.in/r/registry.json
-   - https://isometric.buildlab.in/r/skyline.json
+Done: the repository is public, the site deploys to GitHub Pages, and these
+return JSON:
+
+- https://isometric.buildlab.in/r/registry.json
+- https://isometric.buildlab.in/r/skyline.json
+
+## Logo
+
+The logo is [`public/logo.svg`](../public/logo.svg), served at
+https://isometric.buildlab.in/logo.svg: a cube in the figures' lines with its
+top face lit. It draws in `currentColor`, so it takes the text colour of the
+shadcn directory in light and dark, and shows black when opened on its own.
 
 ## 1. Entry to append to `apps/v4/registry/directory.json`
 
@@ -20,7 +25,8 @@ Add as the last element of the array:
     "homepage": "https://isometric.buildlab.in",
     "url": "https://isometric.buildlab.in/r/{name}.json",
     "description": "Isometric line figures and UI primitives for React. SVG drawings that answer the pointer, and buttons, cards and tabs that stand on their own depth.",
-    "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='var(--foreground)' stroke-width='1.6' stroke-linejoin='round'><path d='M16 4 27 10.3v12.6L16 29.2 5 22.9V10.3z'/><path d='M5 10.3 16 16.6 27 10.3M16 16.6v12.6'/></svg>"
+    "author": "Abhishek Mallick",
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linejoin='round'><path d='M16 3.5 26.8 9.75 16 16 5.2 9.75z' fill='currentColor'/><path d='M5.2 9.75v12.5L16 28.5l10.8-6.25V9.75M16 16v12.5'/></svg>"
   }
 ```
 
