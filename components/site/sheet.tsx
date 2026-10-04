@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 
 import { cn } from "@/lib/utils"
 import { figures } from "@/components/site/figures"
@@ -58,7 +59,7 @@ export function Plate({ name, title, href }: { name: string; title: string; href
   const Figure = figures[name]
   const [read, setRead] = React.useState("")
   return (
-    <a
+    <Link
       href={href}
       className="group relative block overflow-hidden rounded-lg border bg-card transition-colors hover:border-[color-mix(in_oklab,var(--ink)_45%,var(--border))] focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
     >
@@ -67,6 +68,6 @@ export function Plate({ name, title, href }: { name: string; title: string; href
         <span className="font-medium">{title}</span>
         <span className="truncate font-mono text-[11px] text-muted-foreground tabular-nums">{read}</span>
       </div>
-    </a>
+    </Link>
   )
 }

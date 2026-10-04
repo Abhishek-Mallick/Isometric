@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { highlight } from "@/lib/highlight"
-import { installCommand, siteConfig } from "@/lib/site"
+import { installCommand, siteConfig, withBase } from "@/lib/site"
 import { itemFiles } from "@/lib/source"
 import { CodeBlock } from "@/components/site/code-block"
 import { Demo } from "@/components/site/demos"
@@ -87,9 +87,9 @@ export default async function ComponentPage({ params }: { params: Promise<{ name
             <h1 className="text-3xl font-medium tracking-tight">{item.title}</h1>
             <p className="max-w-[62ch] text-[17px] text-muted-foreground">{item.description}</p>
             <p className="text-sm text-muted-foreground">
-              <a className="underline-offset-4 hover:text-foreground hover:underline" href={`/components/${item.name}.md`}>Markdown</a>
+              <a className="underline-offset-4 hover:text-foreground hover:underline" href={withBase(`/components/${item.name}.md`)}>Markdown</a>
               <span className="px-2">/</span>
-              <a className="underline-offset-4 hover:text-foreground hover:underline" href={`/r/${item.name}.json`}>Registry JSON</a>
+              <a className="underline-offset-4 hover:text-foreground hover:underline" href={withBase(`/r/${item.name}.json`)}>Registry JSON</a>
             </p>
           </header>
 

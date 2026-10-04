@@ -7,7 +7,8 @@ import { siteConfig } from "@/lib/site"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
+  // the origin only: Next adds the base path to relative metadata URLs itself
+  metadataBase: new URL(new URL(siteConfig.url).origin),
   title: { default: "Isometric: line figures and UI for React", template: "%s · Isometric" },
   description: siteConfig.description,
   openGraph: { title: "Isometric", description: siteConfig.description, url: siteConfig.url, siteName: "Isometric", type: "website" },

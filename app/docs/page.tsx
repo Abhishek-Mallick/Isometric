@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import { registryUrl } from "@/lib/site"
+import { registryUrl, withBase } from "@/lib/site"
 import { CodeBlock } from "@/components/site/code-block"
 import { DocsShell } from "@/components/site/docs-nav"
 import { Footer, Header } from "@/components/site/header"
@@ -78,7 +78,7 @@ export default function Docs() {
 
           <H2 id="agents">For agents</H2>
           <P>
-            <a className="text-foreground underline underline-offset-4" href="/llms.txt">/llms.txt</a> indexes every item, and every component page
+            <a className="text-foreground underline underline-offset-4" href={withBase("/llms.txt")}>/llms.txt</a> indexes every item, and every component page
             has a Markdown version at <C>/components/&lt;name&gt;.md</C>.
           </P>
         </article>

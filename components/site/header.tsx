@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { siteConfig } from "@/lib/site"
+import { siteConfig, withBase } from "@/lib/site"
 import { Logo } from "@/components/site/logo"
 import { ThemeToggle } from "@/components/site/theme-toggle"
 
@@ -31,8 +31,8 @@ export function Footer() {
         <span className="flex items-center gap-2 text-foreground"><Logo className="size-4" /> Isometric</span>
         <span>MIT licensed. Built by <a className="underline-offset-4 hover:text-foreground hover:underline" href="https://github.com/Abhishek-Mallick">Abhishek Mallick</a>.</span>
         <span className="ml-auto flex gap-5">
-          <a className="hover:text-foreground" href="/llms.txt">llms.txt</a>
-          <a className="hover:text-foreground" href="/r/registry.json">registry.json</a>
+          <a className="hover:text-foreground" href={withBase("/llms.txt")}>llms.txt</a>
+          <a className="hover:text-foreground" href={withBase("/r/registry.json")}>registry.json</a>
           <a className="hover:text-foreground" href={siteConfig.github}>Source</a>
         </span>
       </div>
