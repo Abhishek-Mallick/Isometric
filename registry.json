@@ -299,6 +299,42 @@
       ]
     },
     {
+      "name": "heart",
+      "type": "registry:ui",
+      "title": "Heart",
+      "description": "A heart cut from a slab, beating. Point at it to quicken the pulse; click to like it, and it fills and throws off a burst of cubes.",
+      "registryDependencies": [
+        "https://isometric.buildlab.in/r/isometric-engine.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/heart.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "object"
+      ]
+    },
+    {
+      "name": "reactor",
+      "type": "registry:ui",
+      "title": "Reactor",
+      "description": "A ring-core reactor: a glowing core inside ten coils. The coils charge as the pointer comes near and the ring turns; click to fire a pulse.",
+      "registryDependencies": [
+        "https://isometric.buildlab.in/r/isometric-engine.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/reactor.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "object"
+      ]
+    },
+    {
       "name": "iso-button",
       "type": "registry:ui",
       "title": "Iso Button",
@@ -543,6 +579,8 @@
         "https://isometric.buildlab.in/r/nodes.json",
         "https://isometric.buildlab.in/r/cube.json",
         "https://isometric.buildlab.in/r/pc-case.json",
+        "https://isometric.buildlab.in/r/heart.json",
+        "https://isometric.buildlab.in/r/reactor.json",
         "https://isometric.buildlab.in/r/iso-button.json",
         "https://isometric.buildlab.in/r/iso-card.json",
         "https://isometric.buildlab.in/r/iso-switch.json",

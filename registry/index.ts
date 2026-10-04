@@ -169,6 +169,16 @@ export const items: Item[] = [
 <PcCase open onActivate={(part) => console.log(part)} />`,
   }),
 
+  object("heart", "Heart", "A heart cut from a slab, beating. Point at it to quicken the pulse; click to like it, and it fills and throws off a burst of cubes.", "Sets the resting pulse. Reads `Liked · 96 bpm`.", {
+    props: [{ name: "liked", type: "boolean", description: "Whether it is liked. Clicking toggles it; pass it to control it." }],
+    usage: `import { Heart } from "@/components/ui/isometric/heart"
+
+const [liked, setLiked] = useState(false)
+
+<Heart liked={liked} onActivate={() => setLiked(!liked)} />`,
+  }),
+  object("reactor", "Reactor", "A ring-core reactor: a glowing core inside ten coils. The coils charge as the pointer comes near and the ring turns; click to fire a pulse.", "Sets how fast it charges. Reads `charge 80%`."),
+
   primitive(
     "iso-button",
     "Iso Button",
