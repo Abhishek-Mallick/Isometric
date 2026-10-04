@@ -11,8 +11,8 @@ return JSON:
 ## Logo
 
 The logo is [`public/logo.svg`](../public/logo.svg), served at
-https://isometric.buildlab.in/logo.svg: a cube in the figures' lines with its
-top face lit. It draws in `currentColor`, so it takes the text colour of the
+https://isometric.buildlab.in/logo.svg: a solid cube with its three faces
+shaded from lit to shadow. It draws in `currentColor`, so it takes the text colour of the
 shadcn directory in light and dark, and shows black when opened on its own.
 
 ## 1. Entry to append to `apps/v4/registry/directory.json`
@@ -26,7 +26,7 @@ Add as the last element of the array:
     "url": "https://isometric.buildlab.in/r/{name}.json",
     "description": "Isometric line figures and UI primitives for React. SVG drawings that answer the pointer, and buttons, cards and tabs that stand on their own depth.",
     "author": "Abhishek Mallick",
-    "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='currentColor' stroke-width='1.75' stroke-linejoin='round'><path d='M16 3.5 26.8 9.75 16 16 5.2 9.75z' fill='currentColor'/><path d='M5.2 9.75v12.5L16 28.5l10.8-6.25V9.75M16 16v12.5'/></svg>"
+    "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='currentColor' stroke='currentColor' stroke-width='1.5' stroke-linejoin='round'><path d='M16 3.5 26.8 9.75 16 16 5.2 9.75z'/><path d='M5.2 9.75 16 16v12.5L5.2 22.25z' fill-opacity='.55'/><path d='M26.8 9.75 16 16v12.5l10.8-6.25z' fill-opacity='.22'/></svg>"
   }
 ```
 
