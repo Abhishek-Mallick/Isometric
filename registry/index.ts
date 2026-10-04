@@ -186,6 +186,12 @@ const [liked, setLiked] = useState(false)
 
 <Pulley ratio={4} load={120} />`,
   }),
+  object("church", "Church", "A small stone church: a nave under a tiled roof, buttresses between pointed windows, a rose window over arched doors, and a tower with an open belfry and a spire. The doors open, the bell rings and the windows light.", "Sets how far the bell swings. Reads `Ding`.", {
+    props: [{ name: "lit", type: "boolean", default: "false", description: "Start with the windows lit." }],
+    usage: `import { Church } from "@/components/ui/isometric/church"
+
+<Church lit onActivate={(part) => part === "bell" && playChime()} />`,
+  }),
   object("reactor", "Reactor", "A ring-core reactor: a glowing core inside ten coils. The coils charge as the pointer comes near and the ring turns; click to fire a pulse.", "Sets how fast it charges. Reads `charge 80%`."),
 
   primitive(

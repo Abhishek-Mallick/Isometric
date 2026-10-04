@@ -335,6 +335,24 @@
       ]
     },
     {
+      "name": "church",
+      "type": "registry:ui",
+      "title": "Church",
+      "description": "A small stone church: a nave under a tiled roof, buttresses between pointed windows, a rose window over arched doors, and a tower with an open belfry and a spire. The doors open, the bell rings and the windows light.",
+      "registryDependencies": [
+        "https://isometric.buildlab.in/r/isometric-engine.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/church.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "object"
+      ]
+    },
+    {
       "name": "reactor",
       "type": "registry:ui",
       "title": "Reactor",
@@ -599,6 +617,7 @@
         "https://isometric.buildlab.in/r/pc-case.json",
         "https://isometric.buildlab.in/r/heart.json",
         "https://isometric.buildlab.in/r/pulley.json",
+        "https://isometric.buildlab.in/r/church.json",
         "https://isometric.buildlab.in/r/reactor.json",
         "https://isometric.buildlab.in/r/iso-button.json",
         "https://isometric.buildlab.in/r/iso-card.json",
