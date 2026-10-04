@@ -1,4 +1,4 @@
-import { hull, round, type Camera, type Vec2, type Vec3 } from "./iso"
+import { round, type Camera, type Vec2, type Vec3 } from "./iso"
 import { centroid, dot, normal, type Mesh } from "./mesh"
 
 /**
@@ -24,8 +24,9 @@ export type Drawable = {
   /** Added to the depth: positive paints later (in front). */
   bias?: number
   /**
-   * Curved solids: their side facets are filled without lines, and the
-   * outline of the whole solid is drawn instead, like the prisms of 0.1.
+   * Curved solids: their facets are filled without lines, and only the
+   * edges where the curve turns away from the camera, or meets a flat face,
+   * are drawn. That is the true outline, concave parts included.
    */
   smooth?: boolean
   /** Shade each face by the way it faces: lid, left and right get tone classes. */
@@ -39,7 +40,7 @@ export type Drawable = {
 /** Lines that are not solids: rope, wires, sparks. Painted with a drawable's depth. */
 export type Stroke = { pts: Vec3[]; cls?: string; part?: string; bias?: number; closed?: boolean }
 
-type Out = { d: string; cls: string; tint?: string; poly?: Vec2[]; part?: string }
+type Out = { d: string; cls: string; tint?: string; polys?: Vec2[][]; part?: string }
 
 /** The world direction toward the camera, for culling and depth. */
 export function toCamera(c: Camera): Vec3 {
@@ -90,21 +91,52 @@ export function compose(c: Camera, items: readonly (Drawable | Stroke)[]): Out[]
     const pts = m.v.map(P)
     const base = it.cls ?? ""
     const faces = m.f
-      .map((f) => ({ f, n: normal(m, f) }))
+      .map((f, k) => ({ f, k, n: normal(m, f) }))
       .filter(({ n }) => dot(n, eye) > 1e-9)
-      .map(({ f, n }) => ({ f, n, depth: depthOf(centroid(m, f)) }))
+      .map(({ f, k, n }) => ({ f, k, n, depth: depthOf(centroid(m, f)) }))
       .sort((a, b) => a.depth - b.depth)
-    for (const { f, n } of faces) {
+    // A facet of a curved surface is marked by the mesh, or is any upright face of a smooth solid.
+    // The visible facets are filled as one path, so no seams show between them. They go first:
+    // on a solid, visible faces only overlap where a flat face is in front.
+    const softSeen = new Set<number>()
+    for (const { k, n } of faces) {
+      const up = n[2] / (Math.hypot(n[0], n[1], n[2]) || 1)
+      if (it.smooth && (m.soft ? m.soft[k] : Math.abs(up) < 0.2)) softSeen.add(k)
+    }
+    if (softSeen.size) {
+      const polys = faces.filter(({ k }) => softSeen.has(k)).map(({ f }) => f.map((i) => pts[i]))
+      const cls = `face facet ${base}${it.tint ? " tint" : ""}`.trim()
+      out.push({ d: polys.map((p) => path(p)).join(""), cls, tint: it.tint, polys: it.inert ? undefined : polys, part: it.part })
+    }
+    for (const { f, k, n } of faces) {
+      if (softSeen.has(k)) continue
       const poly = f.map((i) => pts[i])
-      const len = Math.hypot(n[0], n[1], n[2]) || 1
-      const up = n[2] / len
+      const up = n[2] / (Math.hypot(n[0], n[1], n[2]) || 1)
       let cls = `face ${base}`
-      if (it.smooth && Math.abs(up) < 0.2) cls += " facet"
       if (it.shade) cls += up > 0.5 ? " tone-top" : n[0] * cos - n[1] * sin < 0 ? " tone-left" : " tone-right"
       if (it.tint) cls += " tint"
-      out.push({ d: path(poly), cls: cls.trim(), tint: it.tint, poly: it.inert ? undefined : poly, part: it.part })
+      out.push({ d: path(poly), cls: cls.trim(), tint: it.tint, polys: it.inert ? undefined : [poly], part: it.part })
     }
-    if (it.smooth) out.push({ d: path(hull(pts)), cls: `line edge ${base}`.trim(), part: it.part })
+    if (softSeen.size) {
+      // an edge of a visible facet is drawn unless the face across it is also a visible facet
+      const across = new Map<string, number[]>()
+      m.f.forEach((f, k) => f.forEach((a, i) => {
+        const b = f[(i + 1) % f.length], key = a < b ? `${a},${b}` : `${b},${a}`
+        across.set(key, [...(across.get(key) ?? []), k])
+      }))
+      let d = ""
+      for (const k of softSeen) {
+        const f = m.f[k]
+        f.forEach((a, i) => {
+          const b = f[(i + 1) % f.length], key = a < b ? `${a},${b}` : `${b},${a}`
+          const other = across.get(key)!.find((o) => o !== k)
+          if (other !== undefined && softSeen.has(other)) return
+          // shared with a facet we drew first: draw once
+          d += `M${round(pts[a][0])} ${round(pts[a][1])}L${round(pts[b][0])} ${round(pts[b][1])}`
+        })
+      }
+      out.push({ d, cls: `line edge ${base}`.trim(), part: it.part })
+    }
   }
   return out
 }
@@ -128,7 +160,7 @@ export function scene(parent: SVGElement) {
         else el.style.removeProperty("--tint")
       })
       for (let i = out.length; i < pool.length; i++) if (pool[i].getAttribute("d")) pool[i].setAttribute("d", "")
-      picks = out.filter((o) => o.poly && o.part).map((o) => ({ poly: o.poly!, part: o.part! }))
+      picks = out.flatMap((o) => (o.polys && o.part ? o.polys.map((poly) => ({ poly, part: o.part! })) : []))
     },
     /** The part under a point in viewBox units, front-most first; null for none. */
     pick(p: Vec2): string | null {

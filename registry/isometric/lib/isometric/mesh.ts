@@ -11,7 +11,8 @@ import type { Vec2, Vec3 } from "./iso"
  * mirrored).
  */
 
-export type Mesh = { v: Vec3[]; f: number[][] }
+/** `soft` marks the facets of a curved surface: a smooth drawable hides their seams. */
+export type Mesh = { v: Vec3[]; f: number[][]; soft?: boolean[] }
 
 const add = (a: Vec3, b: Vec3): Vec3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]]
 const sub = (a: Vec3, b: Vec3): Vec3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
@@ -62,7 +63,7 @@ export const area = (poly: readonly Vec2[]) => {
  * either way round; it is turned counter-clockwise first. It may be concave:
  * its lid and floor are drawn whole, as single faces.
  */
-export function extrude(poly: readonly Vec2[], z0: number, z1: number): Mesh {
+export function extrude(poly: readonly Vec2[], z0: number, z1: number, curved = false): Mesh {
   const p = area(poly) < 0 ? poly.slice().reverse() : poly.slice()
   const n = p.length
   const v: Vec3[] = [...p.map(([x, y]) => [x, y, z0] as Vec3), ...p.map(([x, y]) => [x, y, z1] as Vec3)]
@@ -74,7 +75,7 @@ export function extrude(poly: readonly Vec2[], z0: number, z1: number): Mesh {
     const j = (i + 1) % n
     f.push([i, j, n + j, n + i])
   }
-  return { v, f }
+  return { v, f, soft: curved ? f.map((_, i) => i >= 2) : undefined }
 }
 
 /** A regular polygon about (cx, cy): the outline of a cylinder, a gear, a bolt head. */
@@ -86,7 +87,7 @@ export const ngon = (cx: number, cy: number, r: number, sides: number, turn = 0)
 
 /** An upright cylinder with `sides` facets. Draw it `smooth` to hide the facet lines. */
 export const cylinder = (cx: number, cy: number, z0: number, r: number, h: number, sides = 24) =>
-  extrude(ngon(cx, cy, r, sides), z0, z0 + h)
+  extrude(ngon(cx, cy, r, sides), z0, z0 + h, true)
 
 /** A pyramid on a ground polygon, its apex at (ax, ay, az). */
 export function pyramid(base: readonly Vec2[], z0: number, apex: Vec3): Mesh {
@@ -112,7 +113,7 @@ export function gable(x0: number, y0: number, z0: number, len: number, wide: num
 
 /* ---------- transforms ---------- */
 
-export const translate = (m: Mesh, d: Vec3): Mesh => ({ v: m.v.map((p) => add(p, d)), f: m.f })
+export const translate = (m: Mesh, d: Vec3): Mesh => ({ ...m, v: m.v.map((p) => add(p, d)) })
 
 function rotate(m: Mesh, axis: 0 | 1 | 2, a: number, pivot: Vec3): Mesh {
   if (!a) return m
@@ -124,6 +125,7 @@ function rotate(m: Mesh, axis: 0 | 1 | 2, a: number, pivot: Vec3): Mesh {
       return add(r, pivot)
     }),
     f: m.f,
+    soft: m.soft,
   }
 }
 
@@ -139,16 +141,17 @@ export function scale(m: Mesh, s: Vec3 | number, pivot: Vec3 = [0, 0, 0]): Mesh 
   return {
     v: m.v.map((p) => add(pivot, [(p[0] - pivot[0]) * k[0], (p[1] - pivot[1]) * k[1], (p[2] - pivot[2]) * k[2]])),
     f: flip % 2 ? m.f.map((face) => face.slice().reverse()) : m.f,
+    soft: m.soft,
   }
 }
 
 /** Several meshes as one. Only for meshes that do not overlap: they are sorted as a single solid. */
 export function merge(...ms: Mesh[]): Mesh {
-  const v: Vec3[] = [], f: number[][] = []
+  const v: Vec3[] = [], f: number[][] = [], soft: boolean[] = []
   for (const m of ms) {
     const o = v.length
     v.push(...m.v)
-    for (const face of m.f) f.push(face.map((i) => i + o))
+    m.f.forEach((face, i) => { f.push(face.map((k) => k + o)); soft.push(!!m.soft?.[i]) })
   }
-  return { v, f }
+  return { v, f, soft: soft.some(Boolean) ? soft : undefined }
 }

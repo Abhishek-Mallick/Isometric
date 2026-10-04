@@ -55,7 +55,7 @@ export type Entity<S, P> = {
 /** Moves drawables by an offset: how a world places an entity. */
 export function offset(items: (Drawable | Stroke)[], d: Vec3): (Drawable | Stroke)[] {
   const t = (p: Vec3): Vec3 => [p[0] + d[0], p[1] + d[1], p[2] + d[2]]
-  return items.map((it) => ("pts" in it ? { ...it, pts: it.pts.map(t) } : { ...it, mesh: { v: it.mesh.v.map(t), f: it.mesh.f } }))
+  return items.map((it) => ("pts" in it ? { ...it, pts: it.pts.map(t) } : { ...it, mesh: { ...it.mesh, v: it.mesh.v.map(t) } }))
 }
 
 /** A camera that fits `pts` inside the 400 × 320 box with a margin. */

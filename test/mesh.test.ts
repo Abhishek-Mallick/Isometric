@@ -61,7 +61,10 @@ describe("scene", () => {
 
   it("smooth solids hide facet lines and add one outline", () => {
     const out = compose(cam(), [{ mesh: cylinder(5, 5, 0, 3, 4, 20), smooth: true }])
-    expect(out.filter((o) => o.cls.includes("facet")).length).toBeGreaterThan(4)
+    // the visible facets become one seamless path with a subpath per facet
+    const facets = out.filter((o) => o.cls.includes("facet"))
+    expect(facets).toHaveLength(1)
+    expect((facets[0].d.match(/M/g) ?? []).length).toBeGreaterThan(4)
     expect(out.filter((o) => o.cls.includes("line edge"))).toHaveLength(1)
   })
 
