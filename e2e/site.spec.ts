@@ -37,6 +37,34 @@ for (const item of docItems.filter((i) => i.interactive)) {
   })
 }
 
+test("the playground draws a world you can build in", async ({ page }) => {
+  const errors: string[] = []
+  page.on("pageerror", (e) => errors.push(e.message))
+  await page.goto("/playground/")
+  const world = page.locator("[data-iso=world]")
+  await expect(world.locator("svg path[d]:not([d=''])").first()).toBeAttached()
+  const caption = page.locator("[data-slot=world] [aria-live]")
+  await page.getByRole("button", { name: "Church" }).click()
+  await expect(caption).toHaveText(/^Church: /)
+  await page.getByRole("button", { name: "Build" }).click()
+  await expect(page.getByRole("listbox", { name: "Block to place" })).toBeVisible()
+  // find a ground cell by its hover caption, then place a block on it
+  const box = (await world.boundingBox())!
+  let spot: [number, number] | null = null
+  for (let y = 0.55; y < 0.85 && !spot; y += 0.04) for (let x = 0.5; x < 0.85 && !spot; x += 0.04) {
+    await page.mouse.move(box.x + box.width * x, box.y + box.height * y)
+    if ((await caption.innerText()).startsWith("Place")) spot = [box.x + box.width * x, box.y + box.height * y]
+  }
+  expect(spot).not.toBeNull()
+  await page.mouse.click(spot![0], spot![1])
+  await expect(caption).toHaveText(/^Placed /)
+  await page.keyboard.down("Shift")
+  await page.mouse.click(spot![0], spot![1] - 4)
+  await page.keyboard.up("Shift")
+  await expect(caption).toHaveText(/^Mined /)
+  expect(errors).toEqual([])
+})
+
 test("home, docs and llms.txt are served", async ({ page, request }) => {
   await page.goto("/")
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()

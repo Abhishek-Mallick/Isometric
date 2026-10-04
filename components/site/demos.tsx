@@ -21,6 +21,7 @@ import { HeartsMeter } from "@/registry/isometric/ui/isometric/hearts-meter"
 import { Hotbar } from "@/registry/isometric/ui/isometric/hotbar"
 import { Inventory } from "@/registry/isometric/ui/isometric/inventory"
 import { XpBar } from "@/registry/isometric/ui/isometric/xp-bar"
+import { World } from "@/registry/isometric/ui/isometric/world"
 import { Steps } from "@/registry/isometric/ui/isometric/steps"
 
 function ProgressDemo() {
@@ -145,6 +146,7 @@ export const demos: Record<string, () => React.ReactNode> = {
   inventory: () => <Inventory columns={6} size={18} items={[...bar, { type: "dirt", count: 18 }, { type: "stone", count: 64 }]} />,
   "hearts-meter": () => <HealthDemo />,
   "xp-bar": () => <XpDemo />,
+  world: () => <World className="w-full [&>div:first-child]:h-[520px]" />,
   "iso-grid": () => (
     <div className="relative grid h-56 w-full place-items-center overflow-hidden rounded-md">
       <IsoGrid className="absolute inset-0" />

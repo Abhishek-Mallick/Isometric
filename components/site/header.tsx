@@ -15,6 +15,7 @@ export function Header() {
         </Link>
         <nav className="ml-auto flex items-center gap-1 text-sm text-muted-foreground">
           <Link href="/components" className="rounded-md px-2.5 py-1.5 transition-colors hover:text-foreground">Components</Link>
+          <Link href="/playground" className="rounded-md px-2.5 py-1.5 transition-colors hover:text-foreground">Playground</Link>
           <Link href="/docs" className="rounded-md px-2.5 py-1.5 transition-colors hover:text-foreground">Docs</Link>
           <a href={siteConfig.github} className="hidden rounded-md px-2.5 py-1.5 transition-colors hover:text-foreground sm:block">GitHub</a>
           <ThemeToggle />

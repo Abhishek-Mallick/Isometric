@@ -305,6 +305,27 @@ const [liked, setLiked] = useState(false)
     ],
   },
 
+  {
+    name: "world",
+    title: "World",
+    description: "A small isometric town where everything works: the church, a reactor in the square, a pulley yard, a PC, a garden, trees, chests and torches. Pan, zoom, and build with blocks.",
+    category: "world",
+    type: "registry:ui",
+    files: [ui("world")],
+    internal: ["isometric-engine", "church", "reactor", "pulley", "pc-case", "heart", "chest", "block", "torch", "tree", "hotbar", "iso-button"],
+    shadcn: ["utils"],
+    usage: `import { World } from "@/components/ui/isometric/world"
+
+<World
+  className="[&>div:first-child]:h-[640px]"
+  onActivate={(object, part) => console.log(object, part)}
+/>`,
+    props: [
+      { name: "defaultBuild", type: "boolean", default: "false", description: "Start in build mode, with the hotbar showing." },
+      { name: "onActivate", type: "(object: string, part: string) => void", description: "Called when a part of an object is clicked or chosen from the list." },
+    ],
+  },
+
   primitive(
     "iso-button",
     "Iso Button",

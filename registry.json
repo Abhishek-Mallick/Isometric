@@ -540,6 +540,36 @@
       ]
     },
     {
+      "name": "world",
+      "type": "registry:ui",
+      "title": "World",
+      "description": "A small isometric town where everything works: the church, a reactor in the square, a pulley yard, a PC, a garden, trees, chests and torches. Pan, zoom, and build with blocks.",
+      "registryDependencies": [
+        "utils",
+        "https://isometric.buildlab.in/r/isometric-engine.json",
+        "https://isometric.buildlab.in/r/church.json",
+        "https://isometric.buildlab.in/r/reactor.json",
+        "https://isometric.buildlab.in/r/pulley.json",
+        "https://isometric.buildlab.in/r/pc-case.json",
+        "https://isometric.buildlab.in/r/heart.json",
+        "https://isometric.buildlab.in/r/chest.json",
+        "https://isometric.buildlab.in/r/block.json",
+        "https://isometric.buildlab.in/r/torch.json",
+        "https://isometric.buildlab.in/r/tree.json",
+        "https://isometric.buildlab.in/r/hotbar.json",
+        "https://isometric.buildlab.in/r/iso-button.json"
+      ],
+      "files": [
+        {
+          "path": "registry/isometric/ui/isometric/world.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "categories": [
+        "world"
+      ]
+    },
+    {
       "name": "iso-button",
       "type": "registry:ui",
       "title": "Iso Button",
@@ -797,6 +827,7 @@
         "https://isometric.buildlab.in/r/inventory.json",
         "https://isometric.buildlab.in/r/hearts-meter.json",
         "https://isometric.buildlab.in/r/xp-bar.json",
+        "https://isometric.buildlab.in/r/world.json",
         "https://isometric.buildlab.in/r/iso-button.json",
         "https://isometric.buildlab.in/r/iso-card.json",
         "https://isometric.buildlab.in/r/iso-switch.json",
