@@ -1,0 +1,54 @@
+name: Bug report
+description: Something isn't working as expected.
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to report a bug. Please search existing issues first.
+  - type: input
+    id: component
+    attributes:
+      label: Component
+      description: Which figure or primitive is affected?
+      placeholder: skyline
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Steps, a code snippet, or a link to a minimal repository or sandbox.
+      render: tsx
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: Browsers affected
+      multiple: true
+      options:
+        - Chrome / Edge / Arc (Chromium)
+        - Safari
+        - Firefox
+        - Mobile Safari (iOS)
+        - Chrome (Android)
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Framework and versions (React, Next.js/Vite, Tailwind CSS, OS).
+      placeholder: Next.js 16, React 19, Tailwind CSS 4.3, macOS 26
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or recording
+      description: Visual bugs are much easier to fix with a screenshot or short video.

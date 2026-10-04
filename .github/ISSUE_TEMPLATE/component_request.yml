@@ -1,0 +1,27 @@
+name: Figure or component request
+description: Propose a new figure, primitive or variant.
+labels: ["component", "triage"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      placeholder: Turbine
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What it draws or does
+      description: For a figure, what it is and how it answers the pointer. For a primitive, what it is for.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Where you would use it
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Sketches, screenshots or links.

@@ -1,0 +1,15 @@
+# Groups the generated part of GitHub release notes by label.
+changelog:
+  exclude:
+    labels: [ignore-for-release]
+  categories:
+    - title: New figures and components
+      labels: [figure, component]
+    - title: Enhancements
+      labels: [enhancement]
+    - title: Fixes
+      labels: [bug]
+    - title: Docs and website
+      labels: [documentation, site]
+    - title: Other changes
+      labels: ["*"]

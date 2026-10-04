@@ -1,0 +1,7 @@
+# Default owner for everything in the repository.
+*                       @Abhishek-Mallick
+
+# Engine, registry manifest and repository tooling.
+/registry/              @Abhishek-Mallick
+/scripts/               @Abhishek-Mallick
+/.github/               @Abhishek-Mallick
