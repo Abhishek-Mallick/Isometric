@@ -39,6 +39,7 @@ const fmt = (n: number, d = 0) => n.toLocaleString("en-US", { minimumFractionDig
 
 /** The engine page's working drawing: the live engine, its controls, instruments and parts. */
 export function EngineView({ spec = V12 }: { spec?: EngineSpec }) {
+  const shell = React.useRef<HTMLElement>(null)
   const host = React.useRef<HTMLDivElement>(null)
   const overlay = React.useRef<SVGSVGElement>(null)
   const api = React.useRef<EngineHandle | null>(null)
@@ -46,6 +47,10 @@ export function EngineView({ spec = V12 }: { spec?: EngineSpec }) {
   const cylinders = React.useMemo(() => layout(spec), [spec])
   const facts = React.useMemo(() => derive(spec), [spec])
   const [reduced, setReduced] = React.useState(false)
+  /** True while the working drawing fills the screen. */
+  const [full, setFull] = React.useState(false)
+  /** When the Fullscreen API is unavailable, pin the shell over the page instead. */
+  const [pseudo, setPseudo] = React.useState(false)
 
   React.useEffect(() => {
     if (!host.current || !overlay.current) return
@@ -65,6 +70,41 @@ export function EngineView({ spec = V12 }: { spec?: EngineSpec }) {
     return () => m.removeEventListener("change", on)
   }, [])
 
+  React.useEffect(() => {
+    const sync = () => {
+      if (document.fullscreenElement === shell.current) {
+        setFull(true)
+        setPseudo(false)
+      } else if (!pseudo) {
+        setFull(false)
+      }
+    }
+    document.addEventListener("fullscreenchange", sync)
+    return () => document.removeEventListener("fullscreenchange", sync)
+  }, [pseudo])
+
+  const toggleFull = React.useCallback(async () => {
+    const el = shell.current
+    if (!el) return
+    if (document.fullscreenElement === el) {
+      await document.exitFullscreen().catch(() => {})
+      return
+    }
+    if (pseudo) {
+      setPseudo(false)
+      setFull(false)
+      return
+    }
+    try {
+      await el.requestFullscreen()
+      host.current?.focus()
+    } catch {
+      setPseudo(true)
+      setFull(true)
+      host.current?.focus()
+    }
+  }, [pseudo])
+
   const mode = s?.mode ?? "xray"
   const run = s?.run ?? "off"
   const on = run === "running" || run === "cranking"
@@ -78,12 +118,104 @@ export function EngineView({ spec = V12 }: { spec?: EngineSpec }) {
     if (svg) download(`${spec.id}-${mode}.svg`, svg)
   }
 
+  const instruments = (
+    <>
+      <Panel title="Instruments">
+        <div className="grid grid-cols-2 gap-2">
+          <Dial
+            value={s?.rpm ?? 0}
+            min={0}
+            max={8000}
+            step={500}
+            every={1000}
+            red={spec.redline}
+            scale={1000}
+            label="Engine speed"
+            unit="rpm"
+            display={fmt(Math.round((s?.rpm ?? 0) / 10) * 10)}
+          />
+          <Dial
+            value={boost}
+            min={-1}
+            max={1.5}
+            step={0.25}
+            every={0.5}
+            label={boost < 0 ? "Manifold vacuum" : "Boost"}
+            unit="bar"
+            display={boost.toFixed(2)}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-3 border-t pt-3">
+          <Figure label="Torque" value={fmt(Math.max(0, s?.torque ?? 0))} unit="N·m" />
+          <Figure label="Power" value={fmt(Math.max(0, s?.power ?? 0))} unit={`kW · ${fmt(Math.max(0, (s?.power ?? 0) * 1.341))} hp`} />
+        </div>
+        <div className="grid gap-2 border-t pt-3">
+          <Meter label="Turbo shaft" value={(s?.turbo ?? 0) / spec.turbo.max} display={`${fmt((s?.turbo ?? 0) / 1000)}k rpm`} />
+          <Meter label="Throttle blade" value={s?.throttle ?? 0} display={`${Math.round((s?.throttle ?? 0) * 100)}%`} />
+          <Meter
+            label={s?.venting ? "Wastegate · blow-off venting" : "Wastegate"}
+            value={s?.gate ?? 0}
+            display={`${Math.round((s?.gate ?? 0) * 100)}%`}
+            tone="warm"
+          />
+        </div>
+      </Panel>
+
+      <Panel title="Firing order" note={spec.firing.join("-")}>
+        <div className="grid grid-cols-[1fr_auto] items-center gap-3">
+          <FiringRing
+            theta={s?.theta ?? 0}
+            cylinders={cylinders}
+            fired={s?.fired ?? 1}
+            only={mode === "cylinder" ? only : undefined}
+            onPick={(n) => {
+              api.current?.setOnly(n)
+              if (mode !== "cylinder") api.current?.setMode("cylinder")
+            }}
+          />
+          <p className="max-w-36 text-[11.5px] leading-snug text-muted-foreground">
+            A face is one cycle, 720° of crank. Each cylinder sits where it fires, every {facts.interval}°. Click one to see it alone.
+          </p>
+        </div>
+      </Panel>
+
+      <Panel title="Pressure and volume" note={`cylinder ${only}`}>
+        {s ? <PVLoop spec={spec} charge={s.charge} theta={s.theta} cylinder={cylinders[only - 1]} /> : <Blank />}
+      </Panel>
+
+      <Panel title="Crank torque" note="all twelve, one cycle">
+        {s ? <TorqueRipple spec={spec} cylinders={cylinders} charge={s.charge} theta={s.theta} /> : <Blank />}
+      </Panel>
+
+      <Panel title="Parts" note="hover to find, click to isolate">
+        <PartsList
+          focus={focus}
+          hover={s?.hover ?? null}
+          onHover={(id: PartId | null) => api.current?.setHover(id)}
+          onFocus={(id) => api.current?.setFocus(id)}
+        />
+      </Panel>
+    </>
+  )
+
   return (
-    <section className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_356px]" aria-label={`${spec.name}, a working drawing`}>
-      <div className="grid content-start gap-3 xl:sticky xl:top-[4.5rem]">
-        <div className="relative overflow-hidden rounded-lg border bg-card">
+    <section
+      ref={shell}
+      className={cn(
+        "grid items-start gap-4",
+        full
+          ? cn(
+              "grid h-full min-h-0 w-full grid-cols-1 gap-3 overflow-hidden bg-background p-3 lg:grid-cols-[minmax(0,1fr)_356px] lg:items-stretch",
+              pseudo && "fixed inset-0 z-50 h-dvh",
+            )
+          : "xl:grid-cols-[minmax(0,1fr)_356px]",
+      )}
+      aria-label={`${spec.name}, a working drawing`}
+    >
+      <div className={cn("grid min-h-0 content-start gap-3", !full && "xl:sticky xl:top-[4.5rem]", full && "min-h-0 grid-rows-[minmax(0,1fr)_auto]")}>
+        <div className={cn("relative flex min-h-0 flex-col overflow-hidden rounded-lg border bg-card", full && "min-h-0 flex-1")}>
           <IsoGrid className="absolute inset-0" cell={26} />
-          <div className="relative h-[min(calc(100dvh-12rem),720px)] min-h-[420px]">
+          <div className={cn("relative min-h-0", full ? "min-h-0 flex-1" : "h-[min(calc(100dvh-12rem),720px)] min-h-[420px]")}>
             <div
               ref={host}
               data-iso=""
@@ -146,13 +278,27 @@ export function EngineView({ spec = V12 }: { spec?: EngineSpec }) {
               </div>
             ) : null}
 
-            <div className="pointer-events-none absolute right-3 bottom-3 flex items-center gap-3 rounded-md border bg-card/85 px-2.5 py-1.5 backdrop-blur-sm">
-              {STROKES.map((st) => (
-                <span key={st} className="flex items-center gap-1.5 text-[11px] text-muted-foreground capitalize">
-                  <span className="size-2 rounded-[1px]" style={{ background: STROKE_COLOR[st] }} />
-                  {st}
-                </span>
-              ))}
+            <div className="absolute right-3 bottom-3 flex items-stretch gap-2">
+              <div className="pointer-events-none flex items-center gap-3 rounded-md border bg-card/85 px-2.5 py-1.5 backdrop-blur-sm">
+                {STROKES.map((st) => (
+                  <span key={st} className="flex items-center gap-1.5 text-[11px] text-muted-foreground capitalize">
+                    <span className="size-2 rounded-[1px]" style={{ background: STROKE_COLOR[st] }} />
+                    {st}
+                  </span>
+                ))}
+              </div>
+              <IsoButton
+                type="button"
+                size="icon"
+                depth={3}
+                variant="outline"
+                aria-label={full ? "Exit full screen" : "Full screen"}
+                aria-pressed={full}
+                onClick={() => void toggleFull()}
+                className="size-[34px] shrink-0 bg-card/85 backdrop-blur-sm [&>span]:size-[34px]"
+              >
+                {full ? <MinimizeIcon /> : <MaximizeIcon />}
+              </IsoButton>
             </div>
           </div>
 
@@ -222,121 +368,69 @@ export function EngineView({ spec = V12 }: { spec?: EngineSpec }) {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 text-[12px] text-muted-foreground">
-          <p id="engine-caption" aria-live="polite" className="font-mono text-[11.5px]">
-            {caption}
-            {reduced ? " Reduced motion: the engine runs and reads out, the drawing holds still; turn the crank by hand." : ""}
-          </p>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-            <span className="flex items-center gap-1">
-              <IsoKbd>1</IsoKbd>–<IsoKbd>4</IsoKbd> view
-            </span>
-            <span className="flex items-center gap-1">
-              <IsoKbd>Space</IsoKbd> start
-            </span>
-            <span className="flex items-center gap-1">
-              <IsoKbd>Q</IsoKbd>
-              <IsoKbd>E</IsoKbd> turn
-            </span>
-            <span className="flex items-center gap-1">
-              <IsoKbd>←</IsoKbd>
-              <IsoKbd>→</IsoKbd> parts
-            </span>
-            <span className="flex items-center gap-1">
-              <IsoKbd>Enter</IsoKbd> isolate
-            </span>
-            <span className="flex items-center gap-1">
-              <IsoKbd>R</IsoKbd> reset view
-            </span>
-            <button
-              type="button"
-              onClick={save}
-              className="rounded-md border bg-card px-2 py-1 font-mono text-[11px] hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-            >
-              Download SVG
-            </button>
+        {!full ? (
+          <div className="flex flex-wrap items-center justify-between gap-3 text-[12px] text-muted-foreground">
+            <p id="engine-caption" aria-live="polite" className="font-mono text-[11.5px]">
+              {caption}
+              {reduced ? " Reduced motion: the engine runs and reads out, the drawing holds still; turn the crank by hand." : ""}
+            </p>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+              <span className="flex items-center gap-1">
+                <IsoKbd>1</IsoKbd>–<IsoKbd>4</IsoKbd> view
+              </span>
+              <span className="flex items-center gap-1">
+                <IsoKbd>Space</IsoKbd> start
+              </span>
+              <span className="flex items-center gap-1">
+                <IsoKbd>Q</IsoKbd>
+                <IsoKbd>E</IsoKbd> turn
+              </span>
+              <span className="flex items-center gap-1">
+                <IsoKbd>←</IsoKbd>
+                <IsoKbd>→</IsoKbd> parts
+              </span>
+              <span className="flex items-center gap-1">
+                <IsoKbd>Enter</IsoKbd> isolate
+              </span>
+              <span className="flex items-center gap-1">
+                <IsoKbd>R</IsoKbd> reset view
+              </span>
+              <button
+                type="button"
+                onClick={save}
+                className="rounded-md border bg-card px-2 py-1 font-mono text-[11px] hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              >
+                Download SVG
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <p id="engine-caption" aria-live="polite" className="sr-only">
+            {caption}
+          </p>
+        )}
       </div>
 
-      <aside className="grid content-start gap-3" aria-label="Instruments">
-        <Panel title="Instruments">
-          <div className="grid grid-cols-2 gap-2">
-            <Dial
-              value={s?.rpm ?? 0}
-              min={0}
-              max={8000}
-              step={500}
-              every={1000}
-              red={spec.redline}
-              scale={1000}
-              label="Engine speed"
-              unit="rpm"
-              display={fmt(Math.round((s?.rpm ?? 0) / 10) * 10)}
-            />
-            <Dial
-              value={boost}
-              min={-1}
-              max={1.5}
-              step={0.25}
-              every={0.5}
-              label={boost < 0 ? "Manifold vacuum" : "Boost"}
-              unit="bar"
-              display={boost.toFixed(2)}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3 border-t pt-3">
-            <Figure label="Torque" value={fmt(Math.max(0, s?.torque ?? 0))} unit="N·m" />
-            <Figure label="Power" value={fmt(Math.max(0, s?.power ?? 0))} unit={`kW · ${fmt(Math.max(0, (s?.power ?? 0) * 1.341))} hp`} />
-          </div>
-          <div className="grid gap-2 border-t pt-3">
-            <Meter label="Turbo shaft" value={(s?.turbo ?? 0) / spec.turbo.max} display={`${fmt((s?.turbo ?? 0) / 1000)}k rpm`} />
-            <Meter label="Throttle blade" value={s?.throttle ?? 0} display={`${Math.round((s?.throttle ?? 0) * 100)}%`} />
-            <Meter
-              label={s?.venting ? "Wastegate · blow-off venting" : "Wastegate"}
-              value={s?.gate ?? 0}
-              display={`${Math.round((s?.gate ?? 0) * 100)}%`}
-              tone="warm"
-            />
-          </div>
-        </Panel>
-
-        <Panel title="Firing order" note={spec.firing.join("-")}>
-          <div className="grid grid-cols-[1fr_auto] items-center gap-3">
-            <FiringRing
-              theta={s?.theta ?? 0}
-              cylinders={cylinders}
-              fired={s?.fired ?? 1}
-              only={mode === "cylinder" ? only : undefined}
-              onPick={(n) => {
-                api.current?.setOnly(n)
-                if (mode !== "cylinder") api.current?.setMode("cylinder")
-              }}
-            />
-            <p className="max-w-36 text-[11.5px] leading-snug text-muted-foreground">
-              A face is one cycle, 720° of crank. Each cylinder sits where it fires, every {facts.interval}°. Click one to see it alone.
-            </p>
-          </div>
-        </Panel>
-
-        <Panel title="Pressure and volume" note={`cylinder ${only}`}>
-          {s ? <PVLoop spec={spec} charge={s.charge} theta={s.theta} cylinder={cylinders[only - 1]} /> : <Blank />}
-        </Panel>
-
-        <Panel title="Crank torque" note="all twelve, one cycle">
-          {s ? <TorqueRipple spec={spec} cylinders={cylinders} charge={s.charge} theta={s.theta} /> : <Blank />}
-        </Panel>
-
-        <Panel title="Parts" note="hover to find, click to isolate">
-          <PartsList
-            focus={focus}
-            hover={s?.hover ?? null}
-            onHover={(id: PartId | null) => api.current?.setHover(id)}
-            onFocus={(id) => api.current?.setFocus(id)}
-          />
-        </Panel>
+      <aside className={cn("grid content-start gap-3", full && "min-h-0 overflow-y-auto lg:max-h-full")} aria-label="Instruments">
+        {instruments}
       </aside>
     </section>
+  )
+}
+
+function MaximizeIcon() {
+  return (
+    <svg aria-hidden viewBox="0 0 16 16" className="size-3.5 stroke-current fill-none" strokeWidth="1.4">
+      <path d="M5.5 2.5H2.5v3M10.5 2.5h3v3M10.5 13.5h3v-3M5.5 13.5h-3v-3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function MinimizeIcon() {
+  return (
+    <svg aria-hidden viewBox="0 0 16 16" className="size-3.5 stroke-current fill-none" strokeWidth="1.4">
+      <path d="M6 2.5H2.5V6M10 2.5h3.5V6M10 13.5h3.5V10M6 13.5H2.5V10" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   )
 }
 
