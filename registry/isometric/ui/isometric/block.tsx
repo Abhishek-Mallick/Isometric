@@ -19,21 +19,41 @@ export type BlockProps = {
   type?: BlockType
 }
 
-const S = 24, REGROW = 1.8
+const S = 24,
+  REGROW = 1.8
 
 type Bit = { p: Vec3; v: Vec3; a: number }
 type State = { type: BlockType; hits: number; broken: number; grow: Spring; bits: Bit[]; spin: number; hover: Spring }
 
 const entity: Entity<State, BlockProps> = {
-  view: { az: 45, fit: [[-S, -S, 0], [S, S, 0], [0, 0, S * 1.6]], zoom: 0.9 },
+  view: {
+    az: 45,
+    fit: [
+      [-S, -S, 0],
+      [S, S, 0],
+      [0, 0, S * 1.6],
+    ],
+    zoom: 0.9,
+  },
   parts: { block: "Block" },
   init: (p) => ({ type: p.type ?? "grass", hits: 0, broken: -1, grow: spring(1, 140, 14, 0.005), bits: [], spin: 0, hover: spring(0, 160, 18, 0.01) }),
-  update: (s, p) => { if (p.type && p.type !== s.type) { s.type = p.type; s.hits = 0 } },
-  pointer: (s, e) => { s.hover.to = e?.part ? 1 : 0 },
+  update: (s, p) => {
+    if (p.type && p.type !== s.type) {
+      s.type = p.type
+      s.hits = 0
+    }
+  },
+  pointer: (s, e) => {
+    s.hover.to = e?.part ? 1 : 0
+  },
   step: (s, dt, ctx, now) => {
     let moving = stepAll([s.grow, s.hover], dt)
     s.spin += dt * 1.6
-    for (const b of s.bits) { b.v[2] -= 90 * dt; b.p = [b.p[0] + b.v[0] * dt, b.p[1] + b.v[1] * dt, Math.max(0, b.p[2] + b.v[2] * dt)]; b.a += dt * 5 }
+    for (const b of s.bits) {
+      b.v[2] -= 90 * dt
+      b.p = [b.p[0] + b.v[0] * dt, b.p[1] + b.v[1] * dt, Math.max(0, b.p[2] + b.v[2] * dt)]
+      b.a += dt * 5
+    }
     if (s.bits.length && s.bits.every((b) => b.p[2] === 0)) s.bits = []
     if (s.broken >= 0 && now - s.broken > REGROW * 1000) {
       s.broken = -1
@@ -64,16 +84,29 @@ const entity: Entity<State, BlockProps> = {
   rest: (s) => MATERIAL[s.type].label,
   draw: (s, out) => {
     if (s.broken < 0) {
-      const g = S * s.grow.x, lift = s.hover.x * 1.5
+      const g = S * s.grow.x,
+        lift = s.hover.x * 1.5
       out.push(...block(s.type, -g / 2, -g / 2, lift, g, { part: "block", crack: s.hits }))
     } else {
       // the item it dropped, turning above the spot
-      const it = block(s.type, -3, -3, 0, 6, { inert: true }).map((d) => ("mesh" in d ? { ...d, mesh: translate(rotateZ(d.mesh, s.spin, [0, 0, 0]), [0, 0, 6 + Math.sin(s.spin * 2) * 1.5]) } : null))
+      const it = block(s.type, -3, -3, 0, 6, { inert: true }).map((d) =>
+        "mesh" in d ? { ...d, mesh: translate(rotateZ(d.mesh, s.spin, [0, 0, 0]), [0, 0, 6 + Math.sin(s.spin * 2) * 1.5]) } : null,
+      )
       for (const d of it) if (d) out.push(d)
     }
-    for (const b of s.bits) out.push({ mesh: translate(rotateZ(box(-2, -2, 0, 2, 2, 4), b.a), b.p), shade: true, tint: MATERIAL[s.type].tint, inert: true, bias: 1 })
+    for (const b of s.bits)
+      out.push({ mesh: translate(rotateZ(box(-2, -2, 0, 2, 2, 4), b.a), b.p), shade: true, tint: MATERIAL[s.type].tint, inert: true, bias: 1 })
     // a shadow square on the ground
-    out.push({ pts: [[-S / 2 - 2, -S / 2 - 2, 0], [S / 2 + 2, -S / 2 - 2, 0], [S / 2 + 2, S / 2 + 2, 0], [-S / 2 - 2, S / 2 + 2, 0]], closed: true, cls: "dash lo", bias: -100 })
+    out.push({
+      pts: [
+        [-S / 2 - 2, -S / 2 - 2, 0],
+        [S / 2 + 2, -S / 2 - 2, 0],
+        [S / 2 + 2, S / 2 + 2, 0],
+        [-S / 2 - 2, S / 2 + 2, 0],
+      ],
+      closed: true,
+      cls: "dash lo",
+    })
   },
 }
 

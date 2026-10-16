@@ -11,7 +11,14 @@ import { bag, draw, el, loop, pointer, solid, type Mount, type Solid } from "@/r
  * wake as it comes out. `intensity` pulls out more units.
  */
 
-const W = 70, D = 64, U = 9, N = 8, GAP = 1.6, POST = 4, BASE = 6, OUT = 30
+const W = 70,
+  D = 64,
+  U = 9,
+  N = 8,
+  GAP = 1.6,
+  POST = 4,
+  BASE = 6,
+  OUT = 30
 const H = BASE + N * (U + GAP) + 4
 
 type Unit = { k: number; z: number; sp: Spring; el: Solid; leds: SVGCircleElement[] }
@@ -66,25 +73,39 @@ const mount: Mount<object> = ({ stage, svg, read }, reach) => {
   function retarget(sy: number | null) {
     if (sy === null) {
       over = -1
-      units.forEach((u) => { u.sp.to = u.k === 5 ? 9 : 0 })
+      units.forEach((u) => {
+        u.sp.to = u.k === 5 ? 9 : 0
+      })
       read.textContent = "rack"
     } else {
       let best = 0
-      ys.forEach((y, k) => { if (Math.abs(y - sy) < Math.abs(ys[best] - sy)) best = k })
+      ys.forEach((y, k) => {
+        if (Math.abs(y - sy) < Math.abs(ys[best] - sy)) best = k
+      })
       over = best
-      units.forEach((u) => { u.sp.to = OUT * Math.max(0, 1 - Math.abs(u.k - best) / R) })
+      units.forEach((u) => {
+        u.sp.to = OUT * Math.max(0, 1 - Math.abs(u.k - best) / R)
+      })
       read.textContent = `unit ${String(best + 1).padStart(2, "0")}`
     }
     L.wake()
   }
 
-  b.add(pointer(stage, {
-    move: (p) => retarget(clamp(p[1], ys[N - 1] - 20, ys[0] + 20)),
-    leave: () => retarget(null),
-  }))
+  b.add(
+    pointer(stage, {
+      move: (p) => retarget(clamp(p[1], ys[N - 1] - 20, ys[0] + 20)),
+      leave: () => retarget(null),
+    }),
+  )
   b.add(() => svg.replaceChildren())
 
-  return { set: (v) => { R = v; if (over >= 0) retarget(ys[over]) }, destroy: b.dispose }
+  return {
+    set: (v) => {
+      R = v
+      if (over >= 0) retarget(ys[over])
+    },
+    destroy: b.dispose,
+  }
 }
 
 export const Rack = createFigure("Rack", {

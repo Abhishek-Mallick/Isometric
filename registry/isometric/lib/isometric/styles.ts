@@ -85,6 +85,23 @@ const rules = [
   `${SVG} :where(.glass){fill:color-mix(in oklab,var(--_plate) 35%,transparent);stroke:var(--_edge)}`,
   // curved solids: their facets are one filled path with no lines; the outline is drawn on top
   `${SVG} :where(.facet){stroke:none}`,
+  // the X-ray look: every edge you could see, and the hidden ones dashed and faint
+  `${SVG} :where(.wire){stroke:var(--_edge)}`,
+  `${SVG} :where(.wire.hidden){stroke:var(--_lo);stroke-dasharray:2 3}`,
+  `${SVG} :where(.wire.accent){stroke:var(--_accent)}`,
+  // text lying on a face
+  `${SVG} :where(text){stroke:none;fill:var(--_edge);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:500;letter-spacing:.04em}`,
+  `${SVG} :where(text.hi){fill:var(--_hi)}`,
+  `${SVG} :where(text.lo){fill:var(--_lo)}`,
+  `${SVG} :where(text.mid){fill:var(--_mid)}`,
+  `${SVG} :where(text.accent){fill:var(--_accent)}`,
+  // the debug overlay: normals, pick polygons and painting order
+  `${SVG} :where(.debug){fill:none;stroke:#e5484d;stroke-width:0.6;stroke-dasharray:none}`,
+  `${SVG} :where(.debug.pick){stroke:#3b82f6;stroke-dasharray:2 2}`,
+  `${SVG} :where(text.debug){fill:#e5484d;stroke:none}`,
+  // a scene panned and zoomed as a group keeps its lines at their drawn width
+  `${SVG} :where(g.zoom path){vector-effect:non-scaling-stroke}`,
+  `:where([data-iso]>canvas){position:absolute;inset:0;width:100%;height:100%;display:block}`,
 ].join("")
 
 export const css = `@layer base{${rules}}`
@@ -110,5 +127,5 @@ export function inject(root: Document | ShadowRoot) {
   const style = doc.createElement("style")
   style.setAttribute("data-iso-style", "")
   style.textContent = css
-  ;(root.nodeType === 9 ? doc.head ?? doc.documentElement : root).appendChild(style)
+  ;(root.nodeType === 9 ? (doc.head ?? doc.documentElement) : root).appendChild(style)
 }

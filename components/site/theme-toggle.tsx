@@ -2,15 +2,25 @@
 
 import * as React from "react"
 
+const listeners = new Set<() => void>()
+const subscribe = (fn: () => void) => {
+  listeners.add(fn)
+  return () => {
+    listeners.delete(fn)
+  }
+}
+const isDark = () => document.documentElement.classList.contains("dark")
+
 /** Paper or blueprint. */
 export function ThemeToggle() {
-  const [dark, setDark] = React.useState<boolean | null>(null)
-  React.useEffect(() => setDark(document.documentElement.classList.contains("dark")), [])
+  const dark = React.useSyncExternalStore(subscribe, isDark, () => null)
   const toggle = () => {
-    const next = !document.documentElement.classList.contains("dark")
+    const next = !isDark()
     document.documentElement.classList.toggle("dark", next)
-    try { localStorage.setItem("theme", next ? "dark" : "light") } catch {}
-    setDark(next)
+    try {
+      localStorage.setItem("theme", next ? "dark" : "light")
+    } catch {}
+    listeners.forEach((fn) => fn())
   }
   return (
     <button

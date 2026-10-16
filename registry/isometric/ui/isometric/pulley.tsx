@@ -5,7 +5,7 @@ import { createFigure } from "@/registry/isometric/lib/isometric/figure"
 import { clamp, type Vec3 } from "@/registry/isometric/lib/isometric/iso"
 import { box, cylinder, rotateX, translate } from "@/registry/isometric/lib/isometric/mesh"
 import { spring, step, type Spring } from "@/registry/isometric/lib/isometric/motion"
-import type { Drawable, Stroke } from "@/registry/isometric/lib/isometric/scene"
+import type { Item } from "@/registry/isometric/lib/isometric/scene"
 
 /**
  * Pulley — a block and tackle on a frame. Drag the rope's handle down and the
@@ -23,7 +23,12 @@ export type PulleyProps = {
 }
 
 /** PULL is the most rope the handle can take in: it travels exactly that far, so it stays above the base. */
-const R = 5.5, TOP = 74, FIX = 63, PULL = 34, REST = 16, HAND = 40
+const R = 5.5,
+  TOP = 74,
+  FIX = 63,
+  PULL = 34,
+  REST = 16,
+  HAND = 40
 
 type State = { ratio: 2 | 4; kg: number; pull: Spring; held: number | null; grab: number }
 
@@ -36,7 +41,7 @@ function layout(ratio: 2 | 4) {
 }
 
 /** A wheel facing the camera's front (axis along y): disc, axle and spokes turned by `a`. */
-function wheel(out: (Drawable | Stroke)[], x: number, z: number, a: number, part: string) {
+function wheel(out: Item[], x: number, z: number, a: number, part: string) {
   const disc = translate(rotateX(cylinder(0, 0, -1.2, R, 2.4, 24), -Math.PI / 2), [x, 0, z])
   out.push({ mesh: disc, smooth: true, part })
   const spokes: Vec3[] = []
@@ -55,17 +60,35 @@ const arc = (x: number, z: number, down: boolean): Vec3[] =>
   })
 
 const entity: Entity<State, PulleyProps> = {
-  view: { az: 24, fit: [[-36, -6, 0], [46, 6, 0], [-36, -6, TOP + 6], [46, 6, TOP + 6]], zoom: 0.98 },
+  view: {
+    az: 24,
+    fit: [
+      [-36, -6, 0],
+      [46, 6, 0],
+      [-36, -6, TOP + 6],
+      [46, 6, TOP + 6],
+    ],
+    zoom: 0.98,
+  },
   parts: { rope: "Rope end: drag down to lift", load: "Load", fixed: "Fixed pulley", moving: "Moving pulley" },
   init: (p) => ({ ratio: p.ratio === 4 ? 4 : 2, kg: p.load ?? 40, pull: spring(0, 90, 15, 0.01), held: null, grab: 0 }),
   update: (s, p) => {
     const r = p.ratio === 4 ? 4 : 2
-    if (r !== s.ratio) { s.ratio = r; s.pull.to = s.pull.x = 0 }
+    if (r !== s.ratio) {
+      s.ratio = r
+      s.pull.to = s.pull.x = 0
+    }
     s.kg = p.load ?? 40
   },
   pointer: (s, e, ctx) => {
-    if (!e || !e.down) { s.held = null; return }
-    if (s.held === null && e.from && e.part === "rope") { s.held = e.from[1]; s.grab = s.pull.to }
+    if (!e || !e.down) {
+      s.held = null
+      return
+    }
+    if (s.held === null && e.from && e.part === "rope") {
+      s.held = e.from[1]
+      s.grab = s.pull.to
+    }
     if (s.held === null) return
     // screen units to world height, then the intensity's gain
     const perUnit = 1 / (ctx.camera.s * Math.sqrt(1 - ctx.camera.k ** 2))
@@ -81,8 +104,14 @@ const entity: Entity<State, PulleyProps> = {
     return moving
   },
   activate: (s, part) => {
-    if (part === "load") { s.pull.to = 0; return "Ratchet released: the load comes down" }
-    if (part === "rope") { s.pull.to = Math.min(PULL, s.pull.to + 6); return `Pulled a notch · lift ${(s.pull.to / s.ratio).toFixed(0)}` }
+    if (part === "load") {
+      s.pull.to = 0
+      return "Ratchet released: the load comes down"
+    }
+    if (part === "rope") {
+      s.pull.to = Math.min(PULL, s.pull.to + 6)
+      return `Pulled a notch · lift ${(s.pull.to / s.ratio).toFixed(0)}`
+    }
     if (part === "fixed") return `Fixed pulley: turns the pull downward`
     if (part === "moving") return `Moving pulley: ${s.ratio} lines share ${s.kg} kg`
     return undefined
@@ -91,27 +120,51 @@ const entity: Entity<State, PulleyProps> = {
   draw: (s, out) => {
     const { moving, fixed, anchor, hand } = layout(s.ratio)
     const lift = s.pull.x / s.ratio
-    const mz = REST + lift + 18, turn = s.pull.x / R
+    const mz = REST + lift + 18,
+      turn = s.pull.x / R
 
     // the frame: a base, two posts and the beam
-    out.push({ mesh: box(-36, -8, 0, 46, 8, 2), shade: true, bias: -100 })
+    out.push({ mesh: box(-36, -8, 0, 46, 8, 2), shade: true })
     out.push({ mesh: box(-34, -3, 2, -30, 3, TOP), shade: true })
     out.push({ mesh: box(40, -3, 2, 44, 3, TOP), shade: true })
     out.push({ mesh: box(-34, -3, TOP, 44, 3, TOP + 4), shade: true })
 
     // fixed wheels on their hangers, moving wheels on the load bar
     for (const x of fixed) {
-      out.push({ pts: [[x, 0, TOP], [x, 0, FIX + R]], cls: "mid", part: "fixed" })
+      out.push({
+        pts: [
+          [x, 0, TOP],
+          [x, 0, FIX + R],
+        ],
+        cls: "mid",
+        part: "fixed",
+      })
       wheel(out, x, FIX, turn, "fixed")
     }
     for (const x of moving) wheel(out, x, mz, -turn, "moving")
     out.push({ mesh: box(moving[0] - 2, -1.6, mz - 1, moving[moving.length - 1] + 2, -1.2, mz + 1), part: "moving", bias: 0.2 })
 
     // the load, on a hook under the bar
-    const cx = (moving[0] + moving[moving.length - 1]) / 2, lz = mz - R - 14
-    out.push({ pts: [[cx, 0, mz - R + 0.5], [cx, 0, lz + 11]], cls: "mid", part: "load" })
+    const cx = (moving[0] + moving[moving.length - 1]) / 2,
+      lz = mz - R - 14
+    out.push({
+      pts: [
+        [cx, 0, mz - R + 0.5],
+        [cx, 0, lz + 11],
+      ],
+      cls: "mid",
+      part: "load",
+    })
     out.push({ mesh: box(cx - 8, -6, lz - 1, cx + 8, 6, lz + 11), shade: true, part: "load", cls: s.pull.x > 0.5 ? "hi" : "" })
-    out.push({ pts: [[cx - 8, 6.05, lz + 3], [cx + 8, 6.05, lz + 3]], cls: "lo", part: "load", bias: 0.1 })
+    out.push({
+      pts: [
+        [cx - 8, 6.05, lz + 3],
+        [cx + 8, 6.05, lz + 3],
+      ],
+      cls: "lo",
+      part: "load",
+      bias: 0.1,
+    })
 
     // the rope: from the anchor, under and over each wheel in turn, down to the handle
     const rope: Vec3[] = [[anchor, 1.3, TOP]]

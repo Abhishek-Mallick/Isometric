@@ -27,12 +27,17 @@ function XpBar({ level, value, segments = 18, className, ...props }: XpBarProps)
       className={cn("relative grid w-full max-w-md justify-items-center gap-1 pt-1", className)}
       {...props}
     >
-      <span className="font-mono text-sm leading-none font-semibold text-[color:var(--iso-xp,var(--primary))] tabular-nums [text-shadow:1px_1px_0_var(--background)]">{level}</span>
+      <span className="font-mono text-sm leading-none font-semibold text-[color:var(--iso-xp,var(--primary))] tabular-nums [text-shadow:1px_1px_0_var(--background)]">
+        {level}
+      </span>
       <div className="flex h-2 w-full border border-[color:var(--iso-line,color-mix(in_oklab,var(--foreground)_62%,var(--background)))] bg-background shadow-[inset_1px_1px_0_0_var(--iso-side,var(--muted))]">
         {Array.from({ length: segments }, (_, i) => (
           <span
             key={i}
-            className={cn("h-full flex-1 border-r border-[color:var(--iso-side,var(--muted))] transition-colors duration-200 last:border-r-0", i < lit && "bg-[color:var(--iso-xp,var(--primary))]")}
+            className={cn(
+              "h-full flex-1 border-r border-[color:var(--iso-side,var(--muted))] transition-colors duration-200 last:border-r-0",
+              i < lit && "bg-[color:var(--iso-xp,var(--primary))]",
+            )}
             style={{ transitionDelay: `${i * 12}ms` }}
           />
         ))}

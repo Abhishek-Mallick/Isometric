@@ -27,10 +27,7 @@ function IsoSwitch({ className, ...props }: React.ComponentProps<typeof SwitchPr
       >
         <IsoDepth sink={[]} />
         <span
-          className={cn(
-            isoFace,
-            "block size-4 bg-background group-data-[state=checked]/switch:border-primary group-data-[state=checked]/switch:bg-primary",
-          )}
+          className={cn(isoFace, "block size-4 bg-background group-data-[state=checked]/switch:border-primary group-data-[state=checked]/switch:bg-primary")}
         />
       </SwitchPrimitive.Thumb>
     </SwitchPrimitive.Root>

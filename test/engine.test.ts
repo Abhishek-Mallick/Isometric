@@ -7,7 +7,12 @@ describe("projection", () => {
   it("unproject inverts project on any plane", () => {
     const c = camera(45, 0.5, 1.7)
     const P = project(c)
-    for (const [x, y, z] of [[0, 0, 0], [12, -30, 0], [40, 7, 18], [-5, 66, 3]]) {
+    for (const [x, y, z] of [
+      [0, 0, 0],
+      [12, -30, 0],
+      [40, 7, 18],
+      [-5, 66, 3],
+    ]) {
       const [sx, sy] = P(x, y, z)
       const [u, v] = unproject(c, sx, sy, z)
       expect(u).toBeCloseTo(x, 6)
@@ -20,14 +25,16 @@ describe("projection", () => {
     const pts = corners(0, 0, 50, 30, 0, 20)
     fit(c, pts, 200, 160)
     const P = project(c)
-    const xs = pts.map((p) => P(...p)[0]), ys = pts.map((p) => P(...p)[1])
+    const xs = pts.map((p) => P(...p)[0]),
+      ys = pts.map((p) => P(...p)[1])
     expect((Math.min(...xs) + Math.max(...xs)) / 2).toBeCloseTo(200, 6)
     expect((Math.min(...ys) + Math.max(...ys)) / 2).toBeCloseTo(160, 6)
   })
 
   it("lifts z straight up the screen", () => {
     const P = project(camera(30, 0.5, 1))
-    const a = P(5, 5, 0), b = P(5, 5, 10)
+    const a = P(5, 5, 0),
+      b = P(5, 5, 10)
     expect(b[0]).toBeCloseTo(a[0])
     expect(b[1]).toBeLessThan(a[1])
   })
@@ -35,7 +42,14 @@ describe("projection", () => {
 
 describe("outlines", () => {
   it("hull keeps only the outside points", () => {
-    const h = hull([[0, 0], [10, 0], [10, 10], [0, 10], [5, 5], [3, 7]])
+    const h = hull([
+      [0, 0],
+      [10, 0],
+      [10, 10],
+      [0, 10],
+      [5, 5],
+      [3, 7],
+    ])
     expect(h).toHaveLength(4)
   })
 
@@ -94,8 +108,12 @@ describe("motion", () => {
   it("a spring settles on its target", () => {
     const s = spring(0)
     s.to = 10
-    let moving = true, frames = 0
-    while (moving && frames < 600) { moving = step(s, 1 / 60); frames++ }
+    let moving = true,
+      frames = 0
+    while (moving && frames < 600) {
+      moving = step(s, 1 / 60)
+      frames++
+    }
     expect(moving).toBe(false)
     expect(s.x).toBe(10)
   })

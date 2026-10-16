@@ -8,13 +8,7 @@ import { IsoDepth, isoDepth, isoFace, isoSink } from "@/registry/isometric/ui/is
 
 /** A row of keys. A key that is on stays pressed down. */
 function IsoToggleGroup({ className, ...props }: React.ComponentProps<typeof ToggleGroupPrimitive.Root>) {
-  return (
-    <ToggleGroupPrimitive.Root
-      data-slot="iso-toggle-group"
-      className={cn("inline-flex w-fit items-center gap-1.5 pr-1 pb-1", className)}
-      {...props}
-    />
-  )
+  return <ToggleGroupPrimitive.Root data-slot="iso-toggle-group" className={cn("inline-flex w-fit items-center gap-1.5 pr-1 pb-1", className)} {...props} />
 }
 
 function IsoToggleGroupItem({ className, children, style, ...props }: React.ComponentProps<typeof ToggleGroupPrimitive.Item>) {

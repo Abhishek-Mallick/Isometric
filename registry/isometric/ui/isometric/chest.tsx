@@ -17,15 +17,29 @@ export type ChestProps = {
   items?: BlockType[]
 }
 
-const W = 28, D = 20, H = 14, LID = 6
+const W = 28,
+  D = 20,
+  H = 14,
+  LID = 6
 
 type State = { lid: Spring; rise: Spring; items: BlockType[]; spin: number }
 
 const entity: Entity<State, ChestProps> = {
-  view: { az: 40, fit: [[-W / 2, -D / 2, 0], [W / 2, D / 2, 0], [-W / 2, -D / 2, H + LID + 22], [W / 2, D / 2, H + LID + 22]], zoom: 0.92 },
+  view: {
+    az: 40,
+    fit: [
+      [-W / 2, -D / 2, 0],
+      [W / 2, D / 2, 0],
+      [-W / 2, -D / 2, H + LID + 22],
+      [W / 2, D / 2, H + LID + 22],
+    ],
+    zoom: 0.92,
+  },
   parts: { chest: "Chest", latch: "Latch" },
   init: (p) => ({ lid: spring(0, 90, 13, 0.002), rise: spring(0, 60, 11, 0.01), items: (p.items ?? ["ore", "planks", "grass"]).slice(0, 4), spin: 0 }),
-  update: (s, p) => { s.items = (p.items ?? ["ore", "planks", "grass"]).slice(0, 4) },
+  update: (s, p) => {
+    s.items = (p.items ?? ["ore", "planks", "grass"]).slice(0, 4)
+  },
   step: (s, dt) => {
     const moving = stepAll([s.lid, s.rise], dt)
     s.spin += dt * 1.4
@@ -43,16 +57,43 @@ const entity: Entity<State, ChestProps> = {
     // the body: planks, with iron bands at the corners
     out.push({ mesh: box(-W / 2, -D / 2, 0, W / 2, D / 2, H), shade: true, tint, part: "chest" })
     // the hollow under the lid, shaded, seen once the lid lifts
-    if (s.lid.x > 0.05) out.push({ mesh: pane([[-W / 2 + 1.5, -D / 2 + 1.5, H + 0.05], [W / 2 - 1.5, -D / 2 + 1.5, H + 0.05], [W / 2 - 1.5, D / 2 - 1.5, H + 0.05], [-W / 2 + 1.5, D / 2 - 1.5, H + 0.05]], [0, 0, 1]), cls: "tone-right", part: "chest", bias: 0.02 })
-    for (const z of [4, 9]) out.push({ pts: [[-W / 2, D / 2 + 0.05, z], [W / 2, D / 2 + 0.05, z], [W / 2 + 0.05, D / 2, z], [W / 2 + 0.05, -D / 2, z]], cls: "lo", part: "chest", bias: 0.01 })
+    if (s.lid.x > 0.05)
+      out.push({
+        mesh: pane(
+          [
+            [-W / 2 + 1.5, -D / 2 + 1.5, H + 0.05],
+            [W / 2 - 1.5, -D / 2 + 1.5, H + 0.05],
+            [W / 2 - 1.5, D / 2 - 1.5, H + 0.05],
+            [-W / 2 + 1.5, D / 2 - 1.5, H + 0.05],
+          ],
+          [0, 0, 1],
+        ),
+        cls: "tone-right",
+        part: "chest",
+        bias: 0.02,
+      })
+    for (const z of [4, 9])
+      out.push({
+        pts: [
+          [-W / 2, D / 2 + 0.05, z],
+          [W / 2, D / 2 + 0.05, z],
+          [W / 2 + 0.05, D / 2, z],
+          [W / 2 + 0.05, -D / 2, z],
+        ],
+        cls: "lo",
+        part: "chest",
+        bias: 0.01,
+      })
     // items, rising out of the open chest and turning
     // items come up out of the opening, growing as they rise; while the chest is shut there are none to see
-    if (s.rise.x > 0.03) s.items.forEach((t, i) => {
-      const x = -W / 2 + 6 + i * ((W - 12) / Math.max(1, s.items.length - 1 || 1))
-      const z = H + 1 + s.rise.x * (6 + ctx.value * 6 + (i % 2) * 3) + Math.sin(s.spin + i) * s.rise.x
-      const k = 5 * Math.min(1, s.rise.x * 1.4)
-      for (const d of block(t, -k / 2, -k / 2, 0, k, { inert: true })) if ("mesh" in d) out.push({ ...d, mesh: translate(rotateZ(d.mesh, s.spin + i), [x, 0, z]), bias: 0.5 })
-    })
+    if (s.rise.x > 0.03)
+      s.items.forEach((t, i) => {
+        const x = -W / 2 + 6 + i * ((W - 12) / Math.max(1, s.items.length - 1 || 1))
+        const z = H + 1 + s.rise.x * (6 + ctx.value * 6 + (i % 2) * 3) + Math.sin(s.spin + i) * s.rise.x
+        const k = 5 * Math.min(1, s.rise.x * 1.4)
+        for (const d of block(t, -k / 2, -k / 2, 0, k, { inert: true }))
+          if ("mesh" in d) out.push({ ...d, mesh: translate(rotateZ(d.mesh, s.spin + i), [x, 0, z]), bias: 0.5 })
+      })
     // the lid turns up and back on its hinge along the back edge
     const angle = s.lid.x * 1.9
     const lid = rotateX(box(-W / 2 - 0.5, -D / 2 - 0.5, H, W / 2 + 0.5, D / 2 + 0.5, H + LID), angle, [0, -D / 2, H])

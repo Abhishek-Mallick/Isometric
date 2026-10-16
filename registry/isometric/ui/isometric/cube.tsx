@@ -1,7 +1,23 @@
 "use client"
 
 import { createFigure } from "@/registry/isometric/lib/isometric/figure"
-import { camera, clamp, corners, deg, facing, fit, line, prism, project, roundRect, turn, type Projector, type Ring, type Sample, type Shape } from "@/registry/isometric/lib/isometric/iso"
+import {
+  camera,
+  clamp,
+  corners,
+  deg,
+  facing,
+  fit,
+  line,
+  prism,
+  project,
+  roundRect,
+  turn,
+  type Projector,
+  type Ring,
+  type Sample,
+  type Shape,
+} from "@/registry/isometric/lib/isometric/iso"
 import { spring, step } from "@/registry/isometric/lib/isometric/motion"
 import { bag, draw, el, loop, pointer, solid, type Mount, type Solid } from "@/registry/isometric/lib/isometric/stage"
 
@@ -12,14 +28,26 @@ import { bag, draw, el, loop, pointer, solid, type Mount, type Solid } from "@/r
  * sweep across twist it further.
  */
 
-const U = 19, G = 1.6, PITCH = U + G, SIDE = 3 * PITCH - G, MID = SIDE / 2, LIFT = 5
+const U = 19,
+  G = 1.6,
+  PITCH = U + G,
+  SIDE = 3 * PITCH - G,
+  MID = SIDE / 2,
+  LIFT = 5
 const NAMES = ["bottom", "middle", "top"]
 
 /** A cubelet: a prism with a bevel, plus the one vertical edge nearest the camera. */
 function cubelet(P: Projector, front: (q: Sample) => boolean, ring: Ring, bevel: Ring, z0: number, z1: number): Shape {
   const s = prism(P, front, ring, bevel, z0, z1)
-  let near = ring[0], ny = -Infinity
-  for (const q of ring) { const y = P(q.u, q.v, z0)[1]; if (y > ny) { ny = y; near = q } }
+  let near = ring[0],
+    ny = -Infinity
+  for (const q of ring) {
+    const y = P(q.u, q.v, z0)[1]
+    if (y > ny) {
+      ny = y
+      near = q
+    }
+  }
   return { outline: s.outline, inner: s.inner + line(P(near.u, near.v, z1), P(near.u, near.v, z0)) }
 }
 
@@ -29,7 +57,8 @@ const mount: Mount<object> = ({ stage, svg, read }, maxTwist) => {
   const b = bag()
   const c = camera(45, 0.5, 2.05)
   fit(c, corners(-6, -6, SIDE + 6, SIDE + 6, 0, SIDE + LIFT), 200, 162)
-  const P = project(c), front = facing(c)
+  const P = project(c),
+    front = facing(c)
   let top = maxTwist
   let pick = -1
   const twist = spring(0, 110, 16, 0.05)
@@ -39,16 +68,18 @@ const mount: Mount<object> = ({ stage, svg, read }, maxTwist) => {
   const groups = [0, 1, 2].map(() => el("g", null, g))
   const pieces: Piece[] = []
   for (let layer = 0; layer < 3; layer++) {
-    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
-      const x0 = i * PITCH, y0 = j * PITCH
-      pieces.push({
-        layer,
-        ring: roundRect(x0, y0, x0 + U, y0 + U, 1.6),
-        bevel: roundRect(x0 + 1.4, y0 + 1.4, x0 + U - 1.4, y0 + U - 1.4, 0.6),
-        el: solid(groups[layer]),
-        depth: 0,
-      })
-    }
+    for (let i = 0; i < 3; i++)
+      for (let j = 0; j < 3; j++) {
+        const x0 = i * PITCH,
+          y0 = j * PITCH
+        pieces.push({
+          layer,
+          ring: roundRect(x0, y0, x0 + U, y0 + U, 1.6),
+          bevel: roundRect(x0 + 1.4, y0 + 1.4, x0 + U - 1.4, y0 + U - 1.4, 0.6),
+          el: solid(groups[layer]),
+          depth: 0,
+        })
+      }
   }
 
   let held = -1
@@ -64,7 +95,8 @@ const mount: Mount<object> = ({ stage, svg, read }, maxTwist) => {
       for (const p of list) {
         const ring = a ? turn(p.ring, a, MID, MID) : p.ring
         const bevel = a ? turn(p.bevel, a, MID, MID) : p.bevel
-        const cu = ring.reduce((s, q) => s + q.u, 0) / ring.length, cv = ring.reduce((s, q) => s + q.v, 0) / ring.length
+        const cu = ring.reduce((s, q) => s + q.u, 0) / ring.length,
+          cv = ring.reduce((s, q) => s + q.v, 0) / ring.length
         p.depth = P(cu, cv, 0)[1]
         draw(p.el, cubelet(P, front, ring, bevel, z0, z0 + U))
         p.el.g.classList.toggle("accent", layer === pick)
@@ -73,7 +105,10 @@ const mount: Mount<object> = ({ stage, svg, read }, maxTwist) => {
       list.sort((m, n) => m.depth - n.depth).forEach((p) => groups[layer].appendChild(p.el.g))
     }
     // a settled quarter turn looks the same as none, so fold it away
-    if (!moving && pick < 0 && held >= 0) { twist.x = twist.to = 0; held = -1 }
+    if (!moving && pick < 0 && held >= 0) {
+      twist.x = twist.to = 0
+      held = -1
+    }
     return moving
   })
   b.add(L.stop)
@@ -81,29 +116,42 @@ const mount: Mount<object> = ({ stage, svg, read }, maxTwist) => {
   // the screen height of each layer's middle, for picking by the pointer's height
   const ys = [0, 1, 2].map((k) => P(SIDE, SIDE, k * PITCH + U / 2)[1])
 
-  b.add(pointer(stage, {
-    move: (p) => {
-      let best = 0
-      ys.forEach((y, k) => { if (Math.abs(y - p[1]) < Math.abs(ys[best] - p[1])) best = k })
-      if (best !== pick && pick >= 0) twist.x = twist.to = 0
-      pick = best
-      held = best
-      twist.to = clamp((p[0] - 200) / 170, -1, 1) * top
-      lifts.forEach((l, k) => { l.to = k === best ? LIFT : 0 })
-      read.textContent = `${NAMES[best]} · ${Math.round(twist.to)}°`
-      L.wake()
-    },
-    leave: () => {
-      pick = -1
-      twist.to = Math.round(twist.x / 90) * 90
-      lifts.forEach((l) => { l.to = 0 })
-      read.textContent = "cube"
-      L.wake()
-    },
-  }))
+  b.add(
+    pointer(stage, {
+      move: (p) => {
+        let best = 0
+        ys.forEach((y, k) => {
+          if (Math.abs(y - p[1]) < Math.abs(ys[best] - p[1])) best = k
+        })
+        if (best !== pick && pick >= 0) twist.x = twist.to = 0
+        pick = best
+        held = best
+        twist.to = clamp((p[0] - 200) / 170, -1, 1) * top
+        lifts.forEach((l, k) => {
+          l.to = k === best ? LIFT : 0
+        })
+        read.textContent = `${NAMES[best]} · ${Math.round(twist.to)}°`
+        L.wake()
+      },
+      leave: () => {
+        pick = -1
+        twist.to = Math.round(twist.x / 90) * 90
+        lifts.forEach((l) => {
+          l.to = 0
+        })
+        read.textContent = "cube"
+        L.wake()
+      },
+    }),
+  )
   b.add(() => svg.replaceChildren())
 
-  return { set: (v) => { top = v }, destroy: b.dispose }
+  return {
+    set: (v) => {
+      top = v
+    },
+    destroy: b.dispose,
+  }
 }
 
 export const Cube = createFigure("Cube", {

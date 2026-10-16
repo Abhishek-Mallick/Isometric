@@ -11,13 +11,19 @@ import { bag, draw, el, loop, pointer, solid, type Mount, type Solid } from "@/r
  * the accent. `intensity` widens the district that rises.
  */
 
-const N = 7, CELL = 16, FOOT = 11, EXT = N * CELL, LIFT = 46, BASE = 5
+const N = 7,
+  CELL = 16,
+  FOOT = 11,
+  EXT = N * CELL,
+  LIFT = 46,
+  BASE = 5
 
 type Tower = { i: number; j: number; h0: number; sp: Spring; el: Solid }
 
 /** A designed rest: a dense core toward the back, with a scatter of shorter blocks. */
 const rest = (i: number, j: number) => {
-  const u = i / (N - 1), v = j / (N - 1)
+  const u = i / (N - 1),
+    v = j / (N - 1)
   const core = 34 * Math.exp(-((u - 0.4) ** 2 + (v - 0.35) ** 2) / 0.09)
   const grain = 6 * (0.5 + 0.5 * Math.sin(i * 12.9898 + j * 78.233))
   return Math.round(6 + core + grain)
@@ -27,7 +33,8 @@ const mount: Mount<object> = ({ stage, svg, read }, radius) => {
   const b = bag()
   const c = camera(45, 0.5, 1.62)
   fit(c, corners(-6, -6, EXT + 6, EXT + 6, -BASE, 50), 200, 164)
-  const P = project(c), front = facing(c)
+  const P = project(c),
+    front = facing(c)
   let R = radius
   let over: [number, number] | null = null
 
@@ -51,7 +58,8 @@ const mount: Mount<object> = ({ stage, svg, read }, radius) => {
     let moving = false
     for (const t of towers) {
       if (step(t.sp, dt)) moving = true
-      const x0 = t.i * CELL + (CELL - FOOT) / 2, y0 = t.j * CELL + (CELL - FOOT) / 2
+      const x0 = t.i * CELL + (CELL - FOOT) / 2,
+        y0 = t.j * CELL + (CELL - FOOT) / 2
       draw(t.el, block(P, x0, y0, x0 + FOOT, y0 + FOOT, 0, Math.max(0.5, t.sp.x)))
       t.el.g.classList.toggle("hi", t.sp.x > 44)
       t.el.g.classList.toggle("accent", t === target)
@@ -63,12 +71,16 @@ const mount: Mount<object> = ({ stage, svg, read }, radius) => {
   function retarget() {
     target = null
     for (const t of towers) {
-      if (!over) { t.sp.to = t.h0; continue }
+      if (!over) {
+        t.sp.to = t.h0
+        continue
+      }
       const d = Math.hypot((t.i + 0.5) * CELL - over[0], (t.j + 0.5) * CELL - over[1]) / (R * CELL)
       t.sp.to = t.h0 + LIFT * Math.max(0, 1 - d * d)
     }
     if (over) {
-      const i = Math.floor(over[0] / CELL), j = Math.floor(over[1] / CELL)
+      const i = Math.floor(over[0] / CELL),
+        j = Math.floor(over[1] / CELL)
       if (i >= 0 && i < N && j >= 0 && j < N) {
         target = towers.find((t) => t.i === i && t.j === j) ?? null
         read.textContent = `block ${i + 1}·${j + 1}`
@@ -77,13 +89,28 @@ const mount: Mount<object> = ({ stage, svg, read }, radius) => {
     L.wake()
   }
 
-  b.add(pointer(stage, {
-    move: (p) => { const [x, y] = unproject(c, p[0], p[1], 0); over = [clamp(x, -CELL, EXT + CELL), clamp(y, -CELL, EXT + CELL)]; retarget() },
-    leave: () => { over = null; retarget() },
-  }))
+  b.add(
+    pointer(stage, {
+      move: (p) => {
+        const [x, y] = unproject(c, p[0], p[1], 0)
+        over = [clamp(x, -CELL, EXT + CELL), clamp(y, -CELL, EXT + CELL)]
+        retarget()
+      },
+      leave: () => {
+        over = null
+        retarget()
+      },
+    }),
+  )
   b.add(() => svg.replaceChildren())
 
-  return { set: (v) => { R = v; if (over) retarget() }, destroy: b.dispose }
+  return {
+    set: (v) => {
+      R = v
+      if (over) retarget()
+    },
+    destroy: b.dispose,
+  }
 }
 
 export const Skyline = createFigure("Skyline", {

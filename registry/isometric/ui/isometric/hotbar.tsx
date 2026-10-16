@@ -24,11 +24,14 @@ function Hotbar({ items, value, defaultValue = 0, onValueChange, hotkeys = true,
   const slots = React.useMemo(() => Array.from({ length: 9 }, (_, i) => items[i] ?? null), [items])
   const [inner, setInner] = React.useState(defaultValue)
   const current = value ?? inner
-  const choose = React.useCallback((i: number) => {
-    const next = ((i % 9) + 9) % 9
-    if (value === undefined) setInner(next)
-    onValueChange?.(next)
-  }, [value, onValueChange])
+  const choose = React.useCallback(
+    (i: number) => {
+      const next = ((i % 9) + 9) % 9
+      if (value === undefined) setInner(next)
+      onValueChange?.(next)
+    },
+    [value, onValueChange],
+  )
 
   React.useEffect(() => {
     if (!hotkeys) return
@@ -50,12 +53,26 @@ function Hotbar({ items, value, defaultValue = 0, onValueChange, hotkeys = true,
       tabIndex={0}
       data-slot="hotbar"
       onKeyDown={(e) => {
-        if (e.key === "ArrowRight") { e.preventDefault(); choose(current + 1) }
-        if (e.key === "ArrowLeft") { e.preventDefault(); choose(current - 1) }
-        if (e.key === "Home") { e.preventDefault(); choose(0) }
-        if (e.key === "End") { e.preventDefault(); choose(8) }
+        if (e.key === "ArrowRight") {
+          e.preventDefault()
+          choose(current + 1)
+        }
+        if (e.key === "ArrowLeft") {
+          e.preventDefault()
+          choose(current - 1)
+        }
+        if (e.key === "Home") {
+          e.preventDefault()
+          choose(0)
+        }
+        if (e.key === "End") {
+          e.preventDefault()
+          choose(8)
+        }
       }}
-      onWheel={(e) => { if (e.deltaY) choose(current + Math.sign(e.deltaY)) }}
+      onWheel={(e) => {
+        if (e.deltaY) choose(current + Math.sign(e.deltaY))
+      }}
       className={cn(
         "inline-flex w-fit gap-0 border border-[color:var(--iso-line,color-mix(in_oklab,var(--foreground)_62%,var(--background)))] bg-[color-mix(in_oklab,var(--muted)_60%,var(--background))] p-1 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
         className,

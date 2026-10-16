@@ -40,8 +40,12 @@ function HealthDemo() {
     <div className="grid justify-items-center gap-5">
       <HeartsMeter value={hp} />
       <div className="flex gap-3">
-        <IsoButton size="sm" variant="outline" depth={3} onClick={() => setHp((h) => Math.max(0, h - 1.5))}>Take a hit</IsoButton>
-        <IsoButton size="sm" depth={3} onClick={() => setHp((h) => Math.min(10, h + 1))}>Heal</IsoButton>
+        <IsoButton size="sm" variant="outline" depth={3} onClick={() => setHp((h) => Math.max(0, h - 1.5))}>
+          Take a hit
+        </IsoButton>
+        <IsoButton size="sm" depth={3} onClick={() => setHp((h) => Math.min(10, h + 1))}>
+          Heal
+        </IsoButton>
       </div>
     </div>
   )
@@ -52,12 +56,28 @@ function XpDemo() {
   return (
     <div className="grid w-full max-w-md justify-items-center gap-5">
       <XpBar level={xp.level} value={xp.value} className="w-full" />
-      <IsoButton size="sm" depth={3} onClick={() => setXp(({ level, value }) => (value + 0.2 >= 1 ? { level: level + 1, value: value + 0.2 - 1 } : { level, value: value + 0.2 }))}>Gain experience</IsoButton>
+      <IsoButton
+        size="sm"
+        depth={3}
+        onClick={() => setXp(({ level, value }) => (value + 0.2 >= 1 ? { level: level + 1, value: value + 0.2 - 1 } : { level, value: value + 0.2 }))}
+      >
+        Gain experience
+      </IsoButton>
     </div>
   )
 }
 
-const bar = [{ type: "grass", count: 64 }, { type: "stone", count: 24 }, { type: "planks", count: 31 }, { type: "log", count: 8 }, { type: "ore", count: 3 }, null, { type: "glass", count: 12 }, { type: "sand", count: 40 }, { type: "leaves", count: 5 }] as const
+const bar = [
+  { type: "grass", count: 64 },
+  { type: "stone", count: 24 },
+  { type: "planks", count: 31 },
+  { type: "log", count: 8 },
+  { type: "ore", count: 3 },
+  null,
+  { type: "glass", count: 12 },
+  { type: "sand", count: 40 },
+  { type: "leaves", count: 5 },
+] as const
 
 /** A live preview for every primitive, by registry name. */
 export const demos: Record<string, () => React.ReactNode> = {
@@ -72,8 +92,12 @@ export const demos: Record<string, () => React.ReactNode> = {
       <IsoButton>Default</IsoButton>
       <IsoButton variant="solid">Deploy</IsoButton>
       <IsoButton variant="outline">Outline</IsoButton>
-      <IsoButton size="sm" depth={3}>Small</IsoButton>
-      <IsoButton size="lg" depth={6}>Large</IsoButton>
+      <IsoButton size="sm" depth={3}>
+        Small
+      </IsoButton>
+      <IsoButton size="lg" depth={6}>
+        Large
+      </IsoButton>
     </div>
   ),
   "iso-card": () => (
@@ -86,15 +110,23 @@ export const demos: Record<string, () => React.ReactNode> = {
         <IsoInput placeholder="Project name" aria-label="Project name" />
       </IsoCardContent>
       <IsoCardFooter className="justify-end">
-        <IsoButton size="sm" variant="outline" depth={3}>Cancel</IsoButton>
-        <IsoButton size="sm" variant="solid" depth={3}>Create</IsoButton>
+        <IsoButton size="sm" variant="outline" depth={3}>
+          Cancel
+        </IsoButton>
+        <IsoButton size="sm" variant="solid" depth={3}>
+          Create
+        </IsoButton>
       </IsoCardFooter>
     </IsoCard>
   ),
   "iso-switch": () => (
     <div className="grid gap-4 text-sm">
-      <label className="flex items-center gap-3"><IsoSwitch defaultChecked /> Email notifications</label>
-      <label className="flex items-center gap-3"><IsoSwitch /> Weekly digest</label>
+      <label className="flex items-center gap-3">
+        <IsoSwitch defaultChecked /> Email notifications
+      </label>
+      <label className="flex items-center gap-3">
+        <IsoSwitch /> Weekly digest
+      </label>
     </div>
   ),
   "iso-tabs": () => (
@@ -104,17 +136,29 @@ export const demos: Record<string, () => React.ReactNode> = {
         <IsoTabsTrigger value="usage">Usage</IsoTabsTrigger>
         <IsoTabsTrigger value="billing">Billing</IsoTabsTrigger>
       </IsoTabsList>
-      <IsoTabsContent value="overview" className="text-sm text-muted-foreground">Three projects, two deploys today.</IsoTabsContent>
-      <IsoTabsContent value="usage" className="text-sm text-muted-foreground">42% of this month’s build minutes used.</IsoTabsContent>
-      <IsoTabsContent value="billing" className="text-sm text-muted-foreground">Next invoice on the 1st.</IsoTabsContent>
+      <IsoTabsContent value="overview" className="text-sm text-muted-foreground">
+        Three projects, two deploys today.
+      </IsoTabsContent>
+      <IsoTabsContent value="usage" className="text-sm text-muted-foreground">
+        42% of this month’s build minutes used.
+      </IsoTabsContent>
+      <IsoTabsContent value="billing" className="text-sm text-muted-foreground">
+        Next invoice on the 1st.
+      </IsoTabsContent>
     </IsoTabs>
   ),
   "iso-slider": () => <IsoSlider defaultValue={[40]} step={10} ticks className="w-full max-w-sm" aria-label="Volume" />,
   "iso-toggle-group": () => (
     <IsoToggleGroup type="multiple" defaultValue={["bold"]}>
-      <IsoToggleGroupItem value="bold" aria-label="Bold"><b>B</b></IsoToggleGroupItem>
-      <IsoToggleGroupItem value="italic" aria-label="Italic"><i>I</i></IsoToggleGroupItem>
-      <IsoToggleGroupItem value="underline" aria-label="Underline"><u>U</u></IsoToggleGroupItem>
+      <IsoToggleGroupItem value="bold" aria-label="Bold">
+        <b>B</b>
+      </IsoToggleGroupItem>
+      <IsoToggleGroupItem value="italic" aria-label="Italic">
+        <i>I</i>
+      </IsoToggleGroupItem>
+      <IsoToggleGroupItem value="underline" aria-label="Underline">
+        <u>U</u>
+      </IsoToggleGroupItem>
     </IsoToggleGroup>
   ),
   "iso-kbd": () => (
@@ -133,8 +177,16 @@ export const demos: Record<string, () => React.ReactNode> = {
   "iso-input": () => <IsoInput placeholder="name@example.com" type="email" className="max-w-sm" aria-label="Email" />,
   "block-icon": () => (
     <div className="grid justify-items-center gap-6">
-      <div className="flex flex-wrap justify-center gap-3">{BLOCK_TYPES.map((t) => <BlockIcon key={t} type={t} className="size-10" />)}</div>
-      <div className="flex gap-2"><BlockSlot item={{ type: "ore", count: 3 }} /><BlockSlot item={{ type: "planks", count: 32 }} selected /><BlockSlot item={null} /></div>
+      <div className="flex flex-wrap justify-center gap-3">
+        {BLOCK_TYPES.map((t) => (
+          <BlockIcon key={t} type={t} className="size-10" />
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <BlockSlot item={{ type: "ore", count: 3 }} />
+        <BlockSlot item={{ type: "planks", count: 32 }} selected />
+        <BlockSlot item={null} />
+      </div>
     </div>
   ),
   hotbar: () => (
@@ -150,7 +202,9 @@ export const demos: Record<string, () => React.ReactNode> = {
   "iso-grid": () => (
     <div className="relative grid h-56 w-full place-items-center overflow-hidden rounded-md">
       <IsoGrid className="absolute inset-0" />
-      <IsoButton variant="solid" className="relative">On the grid</IsoButton>
+      <IsoButton variant="solid" className="relative">
+        On the grid
+      </IsoButton>
     </div>
   ),
 }
@@ -173,13 +227,23 @@ export function Panel() {
               <IsoTabsTrigger value="deploy">Deploy</IsoTabsTrigger>
             </IsoTabsList>
           </IsoTabs>
-          <label className="flex items-center justify-between text-sm">Run tests first <IsoSwitch defaultChecked /></label>
-          <label className="flex items-center justify-between text-sm">Notify the team <IsoSwitch /></label>
+          <label className="flex items-center justify-between text-sm">
+            Run tests first <IsoSwitch defaultChecked />
+          </label>
+          <label className="flex items-center justify-between text-sm">
+            Notify the team <IsoSwitch />
+          </label>
           <IsoProgress value={(step / 4) * 100} segments={8} />
           <div className="flex items-center gap-3">
-            <IsoButton size="sm" variant="outline" depth={3} onClick={() => setStep((s) => Math.max(1, s - 1))}>Back</IsoButton>
-            <IsoButton size="sm" variant="solid" depth={3} onClick={() => setStep((s) => Math.min(4, s + 1))}>Next step</IsoButton>
-            <span className="ml-auto text-xs text-muted-foreground">Step <IsoKbd>{step}</IsoKbd> of 4</span>
+            <IsoButton size="sm" variant="outline" depth={3} onClick={() => setStep((s) => Math.max(1, s - 1))}>
+              Back
+            </IsoButton>
+            <IsoButton size="sm" variant="solid" depth={3} onClick={() => setStep((s) => Math.min(4, s + 1))}>
+              Next step
+            </IsoButton>
+            <span className="ml-auto text-xs text-muted-foreground">
+              Step <IsoKbd>{step}</IsoKbd> of 4
+            </span>
           </div>
         </div>
         <div className="grid content-start gap-3">

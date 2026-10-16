@@ -26,8 +26,8 @@ export default function Home() {
               Drawings that stand up off the page.
             </h1>
             <p className="sheet-in max-w-[46ch] text-[17px] leading-relaxed text-pretty text-muted-foreground" style={{ "--i": 1 } as React.CSSProperties}>
-              Isometric line figures that answer the pointer, objects you can take apart, a block kit, and UI primitives that stand on
-              their own depth. React and Tailwind, installed as source with the shadcn CLI, themed by the tokens you already have.
+              Isometric line figures that answer the pointer, objects you can take apart, a block kit, and UI primitives that stand on their own depth. React
+              and Tailwind, installed as source with the shadcn CLI, themed by the tokens you already have.
             </p>
             <div className="sheet-in flex flex-wrap items-center gap-4" style={{ "--i": 2 } as React.CSSProperties}>
               <div className="flex h-10 items-center gap-1 rounded-md border bg-card pr-1 pl-3.5 font-mono text-[13px]">
@@ -48,12 +48,18 @@ export default function Home() {
         <section aria-labelledby="objects" className="mx-auto max-w-[1200px] px-5 py-14">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div className="grid gap-1.5">
-              <h2 id="objects" className="text-2xl font-medium tracking-tight">Interactive objects</h2>
-              <p className="max-w-[60ch] text-muted-foreground">Things with parts. Slide the panel off the PC, ring the church bell, haul the pulley. Every part answers a click, and the keyboard.</p>
+              <h2 id="objects" className="text-2xl font-medium tracking-tight">
+                Interactive objects
+              </h2>
+              <p className="max-w-[60ch] text-muted-foreground">
+                Things with parts. Slide the panel off the PC, ring the church bell, haul the pulley. Every part answers a click, and the keyboard.
+              </p>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {objects.map((f) => <Plate key={f.name} name={f.name} title={f.title} href={`/components/${f.name}`} />)}
+            {objects.map((f) => (
+              <Plate key={f.name} name={f.name} title={f.title} href={`/components/${f.name}`} />
+            ))}
           </div>
         </section>
 
@@ -61,10 +67,12 @@ export default function Home() {
           <div className="relative grid gap-6 overflow-hidden rounded-lg border bg-card p-6 sm:p-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <IsoGrid className="absolute inset-0" cell={26} />
             <div className="relative grid gap-2">
-              <h2 id="playground" className="text-2xl font-medium tracking-tight">A whole town, all of it working</h2>
+              <h2 id="playground" className="text-2xl font-medium tracking-tight">
+                A whole town, all of it working
+              </h2>
               <p className="max-w-[58ch] text-muted-foreground">
-                The playground puts every object on one map: a church, a reactor in the square, a pulley yard, a PC, trees and torches. Look
-                around, click anything, and build with blocks. It installs as one component too.
+                The playground puts every object on one map: a church, a reactor in the square, a pulley yard, a PC, trees and torches. Look around, click
+                anything, and build with blocks. It installs as one component too.
               </p>
             </div>
             <IsoButton variant="solid" size="lg" depth={5} asChild className="relative">
@@ -75,37 +83,60 @@ export default function Home() {
 
         <section aria-labelledby="blocks" className="mx-auto max-w-[1200px] px-5 py-14">
           <div className="mb-6 grid gap-1.5">
-            <h2 id="blocks" className="text-2xl font-medium tracking-tight">Blocks</h2>
-            <p className="max-w-[60ch] text-muted-foreground">Mine a block, open a chest, snuff a torch. With a hotbar, an inventory, a hearts meter and an XP bar to go with them.</p>
+            <h2 id="blocks" className="text-2xl font-medium tracking-tight">
+              Blocks
+            </h2>
+            <p className="max-w-[60ch] text-muted-foreground">
+              Mine a block, open a chest, snuff a torch. With a hotbar, an inventory, a hearts meter and an XP bar to go with them.
+            </p>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {blocks.filter(isFigure).map((f) => <Plate key={f.name} name={f.name} title={f.title} href={`/components/${f.name}`} />)}
+            {blocks.filter(isFigure).map((f) => (
+              <Plate key={f.name} name={f.name} title={f.title} href={`/components/${f.name}`} />
+            ))}
           </div>
           <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-sm">
-            {blocks.filter((b) => !isFigure(b)).map((b) => (
-              <li key={b.name}><Link href={`/components/${b.name}`} className="text-muted-foreground transition-colors hover:text-foreground">{b.title}</Link></li>
-            ))}
+            {blocks
+              .filter((b) => !isFigure(b))
+              .map((b) => (
+                <li key={b.name}>
+                  <Link href={`/components/${b.name}`} className="text-muted-foreground transition-colors hover:text-foreground">
+                    {b.title}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </section>
 
         <section aria-labelledby="figures" className="mx-auto max-w-[1200px] px-5 py-14">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div className="grid gap-1.5">
-              <h2 id="figures" className="text-2xl font-medium tracking-tight">Figures</h2>
-              <p className="max-w-[60ch] text-muted-foreground">Move over any of them. Each reads out what it is doing, and each takes the same four options.</p>
+              <h2 id="figures" className="text-2xl font-medium tracking-tight">
+                Figures
+              </h2>
+              <p className="max-w-[60ch] text-muted-foreground">
+                Move over any of them. Each reads out what it is doing, and each takes the same four options.
+              </p>
             </div>
-            <Link href="/components" className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">All components</Link>
+            <Link href="/components" className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
+              All components
+            </Link>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {figures.map((f) => <Plate key={f.name} name={f.name} title={f.title} href={`/components/${f.name}`} />)}
+            {figures.map((f) => (
+              <Plate key={f.name} name={f.name} title={f.title} href={`/components/${f.name}`} />
+            ))}
           </div>
         </section>
 
         <section aria-labelledby="primitives" className="mx-auto max-w-[1200px] px-5 py-14">
           <div className="mb-8 grid gap-1.5">
-            <h2 id="primitives" className="text-2xl font-medium tracking-tight">Primitives</h2>
+            <h2 id="primitives" className="text-2xl font-medium tracking-tight">
+              Primitives
+            </h2>
             <p className="max-w-[60ch] text-muted-foreground">
-              Buttons, cards, tabs and the rest stand on a depth drawn in the same lines, and sink into it when pressed. Built on Radix, so keyboards and screen readers work as you expect.
+              Buttons, cards, tabs and the rest stand on a depth drawn in the same lines, and sink into it when pressed. Built on Radix, so keyboards and screen
+              readers work as you expect.
             </p>
           </div>
           <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
@@ -113,7 +144,9 @@ export default function Home() {
             <ul className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
               {primitives.map((p) => (
                 <li key={p.name}>
-                  <Link href={`/components/${p.name}`} className="block rounded-md py-1.5 text-muted-foreground transition-colors hover:text-foreground">{p.title}</Link>
+                  <Link href={`/components/${p.name}`} className="block rounded-md py-1.5 text-muted-foreground transition-colors hover:text-foreground">
+                    {p.title}
+                  </Link>
                 </li>
               ))}
             </ul>

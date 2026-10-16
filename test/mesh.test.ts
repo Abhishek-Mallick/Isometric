@@ -1,7 +1,23 @@
 import { describe, expect, it } from "vitest"
 
 import { camera, fit, type Vec3 } from "@/registry/isometric/lib/isometric/iso"
-import { box, centroid, cylinder, dot, extrude, gable, merge, normal, pane, pyramid, rotateX, rotateZ, scale, translate, type Mesh } from "@/registry/isometric/lib/isometric/mesh"
+import {
+  box,
+  centroid,
+  cylinder,
+  dot,
+  extrude,
+  gable,
+  merge,
+  normal,
+  pane,
+  pyramid,
+  rotateX,
+  rotateZ,
+  scale,
+  translate,
+  type Mesh,
+} from "@/registry/isometric/lib/isometric/mesh"
 import { compose, toCamera } from "@/registry/isometric/lib/isometric/scene"
 
 /** Every face's normal points away from the solid's centre. */
@@ -15,16 +31,43 @@ function outward(m: Mesh) {
 
 const cam = () => {
   const c = camera(45, 0.5, 2)
-  fit(c, [[0, 0, 0], [10, 10, 10]])
+  fit(c, [
+    [0, 0, 0],
+    [10, 10, 10],
+  ])
   return c
 }
 
 describe("mesh builders keep faces pointing out", () => {
   it.each([
     ["box", box(0, 0, 0, 4, 3, 2)],
-    ["extrude (clockwise input)", extrude([[0, 0], [0, 4], [4, 4], [4, 0]], 0, 2)],
+    [
+      "extrude (clockwise input)",
+      extrude(
+        [
+          [0, 0],
+          [0, 4],
+          [4, 4],
+          [4, 0],
+        ],
+        0,
+        2,
+      ),
+    ],
     ["cylinder", cylinder(0, 0, 0, 3, 5, 16)],
-    ["pyramid", pyramid([[0, 0], [4, 0], [4, 4], [0, 4]], 0, [2, 2, 5])],
+    [
+      "pyramid",
+      pyramid(
+        [
+          [0, 0],
+          [4, 0],
+          [4, 4],
+          [0, 4],
+        ],
+        0,
+        [2, 2, 5],
+      ),
+    ],
     ["gable", gable(0, 0, 0, 6, 4, 2)],
     ["rotated", rotateZ(rotateX(box(0, 0, 0, 2, 2, 2), 0.7, [1, 1, 1]), 1.1, [1, 1, 1])],
     ["mirrored", scale(box(0, 0, 0, 2, 3, 4), [-1, 1, 1])],
@@ -82,7 +125,15 @@ describe("scene", () => {
   })
 
   it("strokes become open lines with the drawable's depth", () => {
-    const out = compose(cam(), [{ pts: [[0, 0, 0], [5, 5, 5]], cls: "dash" }])
+    const out = compose(cam(), [
+      {
+        pts: [
+          [0, 0, 0],
+          [5, 5, 5],
+        ],
+        cls: "dash",
+      },
+    ])
     expect(out[0].cls).toBe("line dash")
     expect(out[0].d.endsWith("Z")).toBe(false)
   })
@@ -95,7 +146,12 @@ describe("scene", () => {
   })
 
   it("a pane faces the way it is told, whichever way its points run", () => {
-    const pts: Vec3[] = [[0, 0, 0], [0, 4, 0], [0, 4, 4], [0, 0, 4]]
+    const pts: Vec3[] = [
+      [0, 0, 0],
+      [0, 4, 0],
+      [0, 4, 4],
+      [0, 0, 4],
+    ]
     for (const order of [pts, pts.slice().reverse()]) {
       const m = pane(order, [1, 0, 0])
       expect(dot(normal(m, m.f[0]), [1, 0, 0])).toBeGreaterThan(0)

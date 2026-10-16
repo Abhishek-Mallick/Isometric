@@ -15,7 +15,11 @@ const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclud
 const hits = []
 for (const file of files) {
   let text
-  try { text = readFileSync(file, "utf8") } catch { continue }
+  try {
+    text = readFileSync(file, "utf8")
+  } catch {
+    continue
+  }
   text.split("\n").forEach((line, i) => {
     if (FORBIDDEN.some((re) => re.test(line))) hits.push(`${file}:${i + 1}: ${line.trim().slice(0, 120)}`)
   })

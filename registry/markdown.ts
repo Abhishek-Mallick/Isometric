@@ -22,8 +22,14 @@ export function componentMarkdown(item: Item, { homepage, registryUrl }: { homep
     ...(item.usage ? ["", "## Usage", "", "```tsx", item.usage, "```"] : []),
     ...(item.intensity ? ["", `**intensity**: ${item.intensity}`] : []),
     ...(props.length
-      ? ["", "## Props", "", "| Prop | Type | Default | Description |", "| --- | --- | --- | --- |",
-        ...props.map((p) => `| \`${p.name}\` | \`${p.type.replace(/\|/g, "\\|")}\` | ${p.default ? `\`${p.default}\`` : ""} | ${p.description} |`)]
+      ? [
+          "",
+          "## Props",
+          "",
+          "| Prop | Type | Default | Description |",
+          "| --- | --- | --- | --- |",
+          ...props.map((p) => `| \`${p.name}\` | \`${p.type.replace(/\|/g, "\\|")}\` | ${p.default ? `\`${p.default}\`` : ""} | ${p.description} |`),
+        ]
       : []),
     "",
     `Source: ${registryUrl}/${item.name}.json`,

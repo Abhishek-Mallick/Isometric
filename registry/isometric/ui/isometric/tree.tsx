@@ -5,7 +5,7 @@ import { type Entity, entityMount } from "@/registry/isometric/lib/isometric/ent
 import { createFigure } from "@/registry/isometric/lib/isometric/figure"
 import type { Vec3 } from "@/registry/isometric/lib/isometric/iso"
 import { reducedMotion, spring, stepAll, type Spring } from "@/registry/isometric/lib/isometric/motion"
-import type { Drawable, Stroke } from "@/registry/isometric/lib/isometric/scene"
+import type { Item } from "@/registry/isometric/lib/isometric/scene"
 
 /**
  * Tree — a block tree: a log trunk under a crown of leaves. Its leaves sway
@@ -17,24 +17,35 @@ const B = 8
 
 /** The crown: a 5 × 5 layer, another 5 × 5 with its corners cut, and a cross on top. */
 const crown: [number, number, number][] = []
-for (let i = -2; i <= 2; i++) for (let j = -2; j <= 2; j++) {
-  crown.push([i, j, 4])
-  if (Math.abs(i) + Math.abs(j) < 4) crown.push([i, j, 5])
-  if (Math.abs(i) <= 1 && Math.abs(j) <= 1 && Math.abs(i) + Math.abs(j) < 2) crown.push([i, j, 6])
-}
+for (let i = -2; i <= 2; i++)
+  for (let j = -2; j <= 2; j++) {
+    crown.push([i, j, 4])
+    if (Math.abs(i) + Math.abs(j) < 4) crown.push([i, j, 5])
+    if (Math.abs(i) <= 1 && Math.abs(j) <= 1 && Math.abs(i) + Math.abs(j) < 2) crown.push([i, j, 6])
+  }
 
 type Leaf = { p: Vec3; t: number }
 type State = { sway: Spring; shake: Spring; t: number; hot: boolean; leaves: Leaf[] }
 
 /** Blocks back to front are sorted by the scene; a draw helper places one by its grid cell. */
-const cell = (out: (Drawable | Stroke)[], type: "log" | "leaves", i: number, j: number, k: number, dx: number, part: string) =>
+const cell = (out: Item[], type: "log" | "leaves", i: number, j: number, k: number, dx: number, part: string) =>
   out.push(...block(type, i * B - B / 2 + dx, j * B - B / 2, k * B, B, { part }))
 
 const entity: Entity<State, object> = {
-  view: { az: 45, fit: [[-3 * B, -3 * B, 0], [3 * B, 3 * B, 0], [0, 0, 7 * B]], zoom: 0.92 },
+  view: {
+    az: 45,
+    fit: [
+      [-3 * B, -3 * B, 0],
+      [3 * B, 3 * B, 0],
+      [0, 0, 7 * B],
+    ],
+    zoom: 0.92,
+  },
   parts: { leaves: "Leaves", trunk: "Trunk" },
   init: () => ({ sway: spring(0, 40, 4, 0.01), shake: spring(0, 160, 6, 0.01), t: 0, hot: false, leaves: [] }),
-  pointer: (s, e) => { s.hot = !!e?.part },
+  pointer: (s, e) => {
+    s.hot = !!e?.part
+  },
   step: (s, dt, ctx) => {
     s.t += dt
     s.sway.to = s.hot && !reducedMotion() ? Math.sin(s.t * 2.2) * 0.9 * ctx.value : 0

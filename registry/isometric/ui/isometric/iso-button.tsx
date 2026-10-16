@@ -44,8 +44,7 @@ function IsoButton({ className, variant, size, depth = 4, asChild = false, style
     ),
     style: isoDepth(depth, style),
   }
-  const side =
-    variant === "solid" ? "color-mix(in oklab, var(--primary) 78%, var(--background))" : variant === "outline" ? "var(--background)" : undefined
+  const side = variant === "solid" ? "color-mix(in oklab, var(--primary) 78%, var(--background))" : variant === "outline" ? "var(--background)" : undefined
   const inner = (content: React.ReactNode) => (
     <>
       <IsoDepth side={side} />

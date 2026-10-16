@@ -27,7 +27,7 @@ polygon between two heights), `pyramid`, `wedge` (a gabled roof), `cylinder`
 
 ### Scene (`lib/isometric/scene.ts`)
 
-A scene takes a list of *drawables*, each a mesh with a part id, a class and
+A scene takes a list of _drawables_, each a mesh with a part id, a class and
 an optional depth bias, and renders them into one svg group:
 
 1. project every vertex once;
@@ -75,23 +75,23 @@ accessible way through the scene.
 
 ## Items
 
-| Item | Kind | Interaction |
-| --- | --- | --- |
-| `pc-case` | entity figure | side panel opens; RAM lifts; GPU slides; power spins fans and lights LEDs |
-| `heart` | entity figure | beats; click toggles liked with a burst of cubes; `liked` prop |
-| `reactor` | entity figure | coils charge as the pointer nears; click pulses |
-| `pulley` | entity figure | drag the rope; load rises by `ratio` (2 or 4); wheels turn |
-| `church` | entity figure | doors open; bell swings; windows light |
-| `block` | entity figure | `type` prop (grass, stone, dirt, wood, ore, sand, glass); click to mine |
-| `chest` | entity figure | lid opens; items rise |
-| `torch` | entity figure | flame flickers; click to snuff and relight |
-| `tree` | entity figure | leaves sway on hover; click to shake |
-| `block-icon` | ui | a static isometric block glyph for slots |
-| `hotbar` | ui | nine slots, number keys and arrows select |
-| `inventory` | ui | a grid of slots with a selected one |
-| `hearts-meter` | ui | health as hearts, halves supported |
-| `xp-bar` | ui | segmented bar with a level |
-| `world` | block | the playground world, installable |
+| Item           | Kind          | Interaction                                                               |
+| -------------- | ------------- | ------------------------------------------------------------------------- |
+| `pc-case`      | entity figure | side panel opens; RAM lifts; GPU slides; power spins fans and lights LEDs |
+| `heart`        | entity figure | beats; click toggles liked with a burst of cubes; `liked` prop            |
+| `reactor`      | entity figure | coils charge as the pointer nears; click pulses                           |
+| `pulley`       | entity figure | drag the rope; load rises by `ratio` (2 or 4); wheels turn                |
+| `church`       | entity figure | doors open; bell swings; windows light                                    |
+| `block`        | entity figure | `type` prop (grass, stone, dirt, wood, ore, sand, glass); click to mine   |
+| `chest`        | entity figure | lid opens; items rise                                                     |
+| `torch`        | entity figure | flame flickers; click to snuff and relight                                |
+| `tree`         | entity figure | leaves sway on hover; click to shake                                      |
+| `block-icon`   | ui            | a static isometric block glyph for slots                                  |
+| `hotbar`       | ui            | nine slots, number keys and arrows select                                 |
+| `inventory`    | ui            | a grid of slots with a selected one                                       |
+| `hearts-meter` | ui            | health as hearts, halves supported                                        |
+| `xp-bar`       | ui            | segmented bar with a level                                                |
+| `world`        | block         | the playground world, installable                                         |
 
 Block colours are subtle material tints mixed into the plate colour
 (`--iso-grass`, `--iso-dirt`, … with defaults), so the kit keeps the

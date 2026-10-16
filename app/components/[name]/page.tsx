@@ -30,7 +30,12 @@ export async function generateMetadata({ params }: { params: Promise<{ name: str
   }
 }
 
-const run = { pnpm: "pnpm dlx shadcn@latest add", npm: "npx shadcn@latest add", yarn: "yarn dlx shadcn@latest add", bun: "bunx --bun shadcn@latest add" } as const
+const run = {
+  pnpm: "pnpm dlx shadcn@latest add",
+  npm: "npx shadcn@latest add",
+  yarn: "yarn dlx shadcn@latest add",
+  bun: "bunx --bun shadcn@latest add",
+} as const
 
 async function installData(name: string): Promise<InstallData> {
   const out: InstallData = {}
@@ -49,7 +54,12 @@ function PropsTable({ props }: { props: Prop[] }) {
     <div className="overflow-x-auto rounded-lg border">
       <table className="w-full text-left text-sm">
         <thead className="border-b bg-muted/50 text-xs text-muted-foreground">
-          <tr><th className="px-4 py-2.5 font-medium">Prop</th><th className="px-4 py-2.5 font-medium">Type</th><th className="px-4 py-2.5 font-medium">Default</th><th className="px-4 py-2.5 font-medium">Description</th></tr>
+          <tr>
+            <th className="px-4 py-2.5 font-medium">Prop</th>
+            <th className="px-4 py-2.5 font-medium">Type</th>
+            <th className="px-4 py-2.5 font-medium">Default</th>
+            <th className="px-4 py-2.5 font-medium">Description</th>
+          </tr>
         </thead>
         <tbody>
           {props.map((p) => (
@@ -72,7 +82,8 @@ export default async function ComponentPage({ params }: { params: Promise<{ name
   if (!item || !docItems.includes(item)) notFound()
 
   const index = docItems.indexOf(item)
-  const prev = docItems[index - 1], next = docItems[index + 1]
+  const prev = docItems[index - 1],
+    next = docItems[index + 1]
   const isFigure = figureItem(item)
   const props = [...(isFigure ? figureProps : []), ...(item.interactive ? interactiveProps : []), ...(item.props ?? [])]
   const files = itemFiles(item)
@@ -87,9 +98,13 @@ export default async function ComponentPage({ params }: { params: Promise<{ name
             <h1 className="text-3xl font-medium tracking-tight">{item.title}</h1>
             <p className="max-w-[62ch] text-[17px] text-muted-foreground">{item.description}</p>
             <p className="text-sm text-muted-foreground">
-              <a className="underline-offset-4 hover:text-foreground hover:underline" href={withBase(`/components/${item.name}.md`)}>Markdown</a>
+              <a className="underline-offset-4 hover:text-foreground hover:underline" href={withBase(`/components/${item.name}.md`)}>
+                Markdown
+              </a>
               <span className="px-2">/</span>
-              <a className="underline-offset-4 hover:text-foreground hover:underline" href={withBase(`/r/${item.name}.json`)}>Registry JSON</a>
+              <a className="underline-offset-4 hover:text-foreground hover:underline" href={withBase(`/r/${item.name}.json`)}>
+                Registry JSON
+              </a>
             </p>
           </header>
 
@@ -98,7 +113,9 @@ export default async function ComponentPage({ params }: { params: Promise<{ name
           ) : (
             <div className="relative grid min-h-64 place-items-center overflow-hidden rounded-lg border bg-card px-6 py-12">
               <IsoGrid className="absolute inset-0 opacity-70" cell={22} />
-              <div className="relative flex w-full justify-center"><Demo name={item.name} /></div>
+              <div className="relative flex w-full justify-center">
+                <Demo name={item.name} />
+              </div>
             </div>
           )}
 
@@ -112,7 +129,11 @@ export default async function ComponentPage({ params }: { params: Promise<{ name
             <section className="grid gap-3">
               <h2 className="text-lg font-medium">Usage</h2>
               <CodeBlock code={item.usage} title="usage.tsx" />
-              {item.intensity ? <p className="text-sm text-muted-foreground"><span className="text-foreground">intensity</span>: {item.intensity.replace(/`/g, "")}</p> : null}
+              {item.intensity ? (
+                <p className="text-sm text-muted-foreground">
+                  <span className="text-foreground">intensity</span>: {item.intensity.replace(/`/g, "")}
+                </p>
+              ) : null}
             </section>
           ) : null}
 
@@ -125,13 +146,29 @@ export default async function ComponentPage({ params }: { params: Promise<{ name
 
           <section className="grid gap-3">
             <h2 className="text-lg font-medium">Source</h2>
-            <p className="text-sm text-muted-foreground">The CLI copies {files.length === 1 ? "this file" : "these files"} into your project. They are yours to edit.</p>
-            {files.map((f) => <CodeBlock key={f.target} code={f.code} lang={f.target.endsWith(".tsx") ? "tsx" : "ts"} title={f.target} />)}
+            <p className="text-sm text-muted-foreground">
+              The CLI copies {files.length === 1 ? "this file" : "these files"} into your project. They are yours to edit.
+            </p>
+            {files.map((f) => (
+              <CodeBlock key={f.target} code={f.code} lang={f.target.endsWith(".tsx") ? "tsx" : "ts"} title={f.target} />
+            ))}
           </section>
 
           <nav aria-label="Pagination" className="flex justify-between gap-4 border-t pt-6 text-sm">
-            {prev ? <Link href={`/components/${prev.name}`} className="text-muted-foreground hover:text-foreground">Previous: {prev.title}</Link> : <span />}
-            {next ? <Link href={`/components/${next.name}`} className="text-muted-foreground hover:text-foreground">Next: {next.title}</Link> : <span />}
+            {prev ? (
+              <Link href={`/components/${prev.name}`} className="text-muted-foreground hover:text-foreground">
+                Previous: {prev.title}
+              </Link>
+            ) : (
+              <span />
+            )}
+            {next ? (
+              <Link href={`/components/${next.name}`} className="text-muted-foreground hover:text-foreground">
+                Next: {next.title}
+              </Link>
+            ) : (
+              <span />
+            )}
           </nav>
         </article>
       </DocsShell>

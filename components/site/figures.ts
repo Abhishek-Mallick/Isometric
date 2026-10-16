@@ -24,7 +24,25 @@ import { Steps } from "@/registry/isometric/ui/isometric/steps"
 
 /** Every figure by registry name. Typed loosely: each takes the shared options. */
 export const figures: Record<string, React.ComponentType<{ intensity?: number; onRead?: (t: string) => void; className?: string; "aria-label"?: string }>> = {
-  skyline: Skyline, stack: Stack, keys: Keys, rack: Rack, laptop: Laptop, bars: Bars,
-  steps: Steps, files: Files, cylinders: Cylinders, parcel: Parcel, nodes: Nodes, cube: Cube,
-  "pc-case": PcCase, heart: Heart, reactor: Reactor, pulley: Pulley, church: Church, block: Block, chest: Chest, torch: Torch, tree: Tree,
+  skyline: Skyline,
+  stack: Stack,
+  keys: Keys,
+  rack: Rack,
+  laptop: Laptop,
+  bars: Bars,
+  steps: Steps,
+  files: Files,
+  cylinders: Cylinders,
+  parcel: Parcel,
+  nodes: Nodes,
+  cube: Cube,
+  "pc-case": PcCase,
+  heart: Heart,
+  reactor: Reactor,
+  pulley: Pulley,
+  church: Church,
+  block: Block,
+  chest: Chest,
+  torch: Torch,
+  tree: Tree,
 }

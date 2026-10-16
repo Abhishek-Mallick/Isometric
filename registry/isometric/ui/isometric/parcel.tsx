@@ -11,7 +11,9 @@ import { bag, draw, el, loop, path, pointer, solid, type Mount } from "@/registr
  * it. `intensity` swings the flaps further.
  */
 
-const S = 66, H = 42, ITEM = 22
+const S = 66,
+  H = 42,
+  ITEM = 22
 
 type Flap = { a: Vec3; b: Vec3; n: [number, number]; far: boolean; node: SVGPathElement }
 
@@ -43,7 +45,9 @@ const mount: Mount<object> = ({ stage, svg, read }, maxAngle) => {
     const a = deg(t)
     const len = S / 2 - 0.6
     for (const f of flaps) {
-      const dx = f.n[0] * Math.cos(a) * len, dy = f.n[1] * Math.cos(a) * len, dz = Math.sin(a) * len
+      const dx = f.n[0] * Math.cos(a) * len,
+        dy = f.n[1] * Math.cos(a) * len,
+        dz = Math.sin(a) * len
       f.node.setAttribute("d", face(P, [f.a, f.b, [f.b[0] + dx, f.b[1] + dy, f.b[2] + dz], [f.a[0] + dx, f.a[1] + dy, f.a[2] + dz]]))
       // a far flap folded past upright hangs behind the box
       const parent = f.far && t > 90 ? behind : above
@@ -52,26 +56,51 @@ const mount: Mount<object> = ({ stage, svg, read }, maxAngle) => {
     // the far flaps are painted before the near ones within each group
     for (const f of flaps) if (f.far && f.node.parentNode === above) above.prepend(f.node)
     const rise = clamp((t - 80) / 70, 0, 1) * ITEM
-    rim.setAttribute("d", t > 20 ? face(P, [[3, 3, H], [S - 3, 3, H], [S - 3, S - 3, H], [3, S - 3, H]]) : "")
+    rim.setAttribute(
+      "d",
+      t > 20
+        ? face(P, [
+            [3, 3, H],
+            [S - 3, 3, H],
+            [S - 3, S - 3, H],
+            [3, S - 3, H],
+          ])
+        : "",
+    )
     const q = (S - ITEM) / 2
     draw(item, rise > 0.3 ? block(P, q, q, q + ITEM, q + ITEM, H, H + rise) : { outline: "", inner: "" })
   }
 
-  const L = loop(stage, (dt) => { const m = stepAll([open], dt); render(); return m })
+  const L = loop(stage, (dt) => {
+    const m = stepAll([open], dt)
+    render()
+    return m
+  })
   b.add(L.stop)
 
-  b.add(pointer(stage, {
-    move: (p) => {
-      const near = clamp(1.3 - Math.hypot(p[0] - 200, p[1] - 160) / 140, 0, 1)
-      open.to = near * top
-      read.textContent = open.to < 4 ? "sealed" : `open ${Math.round(open.to)}°`
-      L.wake()
-    },
-    leave: () => { open.to = 0; read.textContent = "sealed"; L.wake() },
-  }))
+  b.add(
+    pointer(stage, {
+      move: (p) => {
+        const near = clamp(1.3 - Math.hypot(p[0] - 200, p[1] - 160) / 140, 0, 1)
+        open.to = near * top
+        read.textContent = open.to < 4 ? "sealed" : `open ${Math.round(open.to)}°`
+        L.wake()
+      },
+      leave: () => {
+        open.to = 0
+        read.textContent = "sealed"
+        L.wake()
+      },
+    }),
+  )
   b.add(() => svg.replaceChildren())
 
-  return { set: (v) => { top = v }, destroy: b.dispose }
+  return {
+    set: (v) => {
+      top = v
+    },
+    destroy: b.dispose,
+  }
 }
 
 export const Parcel = createFigure("Parcel", {

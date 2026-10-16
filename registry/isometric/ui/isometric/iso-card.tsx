@@ -19,7 +19,13 @@ function IsoCard({ className, depth = 8, style, children, ...props }: IsoCardPro
 }
 
 function IsoCardHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="iso-card-header" className={cn("grid auto-rows-min items-start gap-1 px-5 has-data-[slot=iso-card-action]:grid-cols-[1fr_auto]", className)} {...props} />
+  return (
+    <div
+      data-slot="iso-card-header"
+      className={cn("grid auto-rows-min items-start gap-1 px-5 has-data-[slot=iso-card-action]:grid-cols-[1fr_auto]", className)}
+      {...props}
+    />
+  )
 }
 
 function IsoCardTitle({ className, ...props }: React.ComponentProps<"div">) {

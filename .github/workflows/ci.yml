@@ -20,6 +20,10 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Format
+        run: pnpm format:check
+      - name: Lint
+        run: pnpm lint
       - name: Typecheck
         run: pnpm typecheck
       - name: Unit tests

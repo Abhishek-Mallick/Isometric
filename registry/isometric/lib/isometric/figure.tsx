@@ -27,6 +27,8 @@ export type FigureOptions = {
   onRead?: (text: string) => void
   /** Interactive figures: called with a part's name when it is clicked, or chosen with Enter. */
   onActivate?: (part: string) => void
+  /** Interactive figures: overlay face normals, painting order and pick polygons, for tuning a new object. */
+  debug?: boolean
 }
 
 export type FigureProps<P = object> = FigureOptions & Partial<P> & Omit<React.ComponentProps<"div">, "children" | keyof FigureOptions>
@@ -51,13 +53,26 @@ const useIsoLayoutEffect = typeof window === "undefined" ? React.useEffect : Rea
 
 const report = (err: unknown) => {
   if (typeof reportError === "function") reportError(err)
-  else setTimeout(() => { throw err })
+  else
+    setTimeout(() => {
+      throw err
+    })
 }
 
 export function createFigure<P extends object>(name: string, spec: FigureSpec<P>) {
   const keys = Object.keys(spec.defaults) as (keyof P)[]
 
-  function Figure({ ref, intensity, theme = "auto", label, onRead, onActivate, style, ...rest }: FigureProps<P> & { ref?: React.Ref<HTMLDivElement> }) {
+  function Figure({
+    ref,
+    intensity,
+    theme = "auto",
+    label,
+    onRead,
+    onActivate,
+    debug = false,
+    style,
+    ...rest
+  }: FigureProps<P> & { ref?: React.Ref<HTMLDivElement> }) {
     const own = {} as P
     const attrs: Record<string, unknown> = {}
     for (const [k, v] of Object.entries(rest)) {
@@ -73,7 +88,10 @@ export function createFigure<P extends object>(name: string, spec: FigureSpec<P>
     const act = React.useRef(onActivate)
     const live = React.useRef<HTMLSpanElement | null>(null)
 
-    useIsoLayoutEffect(() => { read.current = onRead; act.current = onActivate })
+    useIsoLayoutEffect(() => {
+      read.current = onRead
+      act.current = onActivate
+    })
 
     useIsoLayoutEffect(() => {
       const host = node.current!
@@ -86,34 +104,59 @@ export function createFigure<P extends object>(name: string, spec: FigureSpec<P>
 
       let text: string | null = null
       const readout: Readout = {
-        get textContent() { return text },
+        get textContent() {
+          return text
+        },
         set textContent(value) {
           const next = value ?? ""
           if (next === text) return
           text = next
           if (live.current) live.current.textContent = next
-          try { read.current?.(next) } catch (err) { report(err) }
+          try {
+            read.current?.(next)
+          } catch (err) {
+            report(err)
+          }
         },
       }
-      const activated = (part: string) => { try { act.current?.(part) } catch (err) { report(err) } }
-      const e = spec.mount({ stage: host, svg, read: readout, activated }, scale(intensity, spec.range), props)
+      const activated = (part: string) => {
+        try {
+          act.current?.(part)
+        } catch (err) {
+          report(err)
+        }
+      }
+      const e = spec.mount({ stage: host, svg, read: readout, activated, debug }, scale(intensity, spec.range), props)
       if (text === null) readout.textContent = spec.rest
       engine.current = e
-      return () => { e.destroy(); svg.remove(); engine.current = null }
+      return () => {
+        e.destroy()
+        svg.remove()
+        engine.current = null
+      }
       // mounts once; changes arrive through the effects below
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    useIsoLayoutEffect(() => { engine.current?.set(scale(intensity, spec.range)) }, [intensity])
+    useIsoLayoutEffect(() => {
+      engine.current?.set(scale(intensity, spec.range))
+    }, [intensity])
+    useIsoLayoutEffect(() => {
+      engine.current?.debug?.(debug)
+    }, [debug])
 
     const signature = JSON.stringify(own)
-    useIsoLayoutEffect(() => { engine.current?.props?.(props) }, [signature])
+    useIsoLayoutEffect(() => {
+      engine.current?.props?.(props)
+    }, [signature])
 
-    const setRef = React.useCallback((el: HTMLDivElement | null) => {
-      node.current = el
-      if (typeof ref === "function") ref(el)
-      else if (ref) (ref as React.RefObject<HTMLDivElement | null>).current = el
-    }, [ref])
+    const setRef = React.useCallback(
+      (el: HTMLDivElement | null) => {
+        node.current = el
+        if (typeof ref === "function") ref(el)
+        else if (ref) (ref as React.RefObject<HTMLDivElement | null>).current = el
+      },
+      [ref],
+    )
 
     return (
       <div

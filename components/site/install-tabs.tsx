@@ -24,7 +24,10 @@ export function InstallTabs({ commands }: { commands: InstallData }) {
               role="tab"
               aria-selected={p === pm}
               onClick={() => setPm(p)}
-              className={cn("h-7 cursor-pointer rounded-md px-2.5 transition-colors", p === pm ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground")}
+              className={cn(
+                "h-7 cursor-pointer rounded-md px-2.5 transition-colors",
+                p === pm ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground",
+              )}
             >
               {p}
             </button>

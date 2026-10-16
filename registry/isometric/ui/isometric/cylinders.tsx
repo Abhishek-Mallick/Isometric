@@ -11,19 +11,35 @@ import { bag, dot, draw, el, loop, path, place, pointer, solid, type Mount, type
  * lights its lamp. `intensity` opens the gap wider.
  */
 
-const R = 46, H = 15, N = 3, REST = 3
+const R = 46,
+  H = 15,
+  N = 3,
+  REST = 3
 
 type Disk = { k: number; z: Spring; el: Solid; band: SVGPathElement; lamp: SVGEllipseElement }
 
 const mount: Mount<object> = ({ stage, svg, read }, maxGap) => {
   const b = bag()
   const c = camera(45, 0.5, 1.75)
-  fit(c, [[-R, -R, 0], [R, R, 0], [-R, R, 0], [R, -R, 0], [0, 0, N * H + 2 * 24 + REST * 2]], 200, 160)
-  const P = project(c), front = facing(c)
+  fit(
+    c,
+    [
+      [-R, -R, 0],
+      [R, R, 0],
+      [-R, R, 0],
+      [R, -R, 0],
+      [0, 0, N * H + 2 * 24 + REST * 2],
+    ],
+    200,
+    160,
+  )
+  const P = project(c),
+    front = facing(c)
   let gap = maxGap
   let pick = -1
 
-  const ring = circle(R, 0, 0, 72), bevel = circle(R - 3.5, 0, 0, 72)
+  const ring = circle(R, 0, 0, 72),
+    bevel = circle(R - 3.5, 0, 0, 72)
   const g = el("g", null, svg)
   path(g, "line dash lo", closed(lift(P, circle(R + 10, 0, 0, 72), 0)))
 
@@ -36,7 +52,10 @@ const mount: Mount<object> = ({ stage, svg, read }, maxGap) => {
   const frontRun = run(ring, front)
 
   const L = loop(stage, (dt) => {
-    const m = stepAll(disks.map((d) => d.z), dt)
+    const m = stepAll(
+      disks.map((d) => d.z),
+      dt,
+    )
     for (const d of disks) {
       const z = d.z.x
       draw(d.el, prism(P, front, ring, bevel, z, z + H))
@@ -59,18 +78,31 @@ const mount: Mount<object> = ({ stage, svg, read }, maxGap) => {
     L.wake()
   }
 
-  b.add(pointer(stage, {
-    move: (p) => {
-      let best = 0
-      ys.forEach((y, k) => { if (Math.abs(y - p[1]) < Math.abs(ys[best] - p[1])) best = k })
-      pick = clamp(best, 0, N - 1)
-      retarget()
-    },
-    leave: () => { pick = -1; retarget() },
-  }))
+  b.add(
+    pointer(stage, {
+      move: (p) => {
+        let best = 0
+        ys.forEach((y, k) => {
+          if (Math.abs(y - p[1]) < Math.abs(ys[best] - p[1])) best = k
+        })
+        pick = clamp(best, 0, N - 1)
+        retarget()
+      },
+      leave: () => {
+        pick = -1
+        retarget()
+      },
+    }),
+  )
   b.add(() => svg.replaceChildren())
 
-  return { set: (v) => { gap = v; retarget() }, destroy: b.dispose }
+  return {
+    set: (v) => {
+      gap = v
+      retarget()
+    },
+    destroy: b.dispose,
+  }
 }
 
 export const Cylinders = createFigure("Cylinders", {

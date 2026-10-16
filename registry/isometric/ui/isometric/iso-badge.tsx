@@ -15,10 +15,11 @@ const badgeVariants = cva("inline-flex h-5 items-center gap-1 px-2 text-[11px] f
   defaultVariants: { variant: "default" },
 })
 
-type IsoBadgeProps = React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & {
-  /** Depth in px. Default 2. */
-  depth?: number
-}
+type IsoBadgeProps = React.ComponentProps<"span"> &
+  VariantProps<typeof badgeVariants> & {
+    /** Depth in px. Default 2. */
+    depth?: number
+  }
 
 /** A small slab for status and counts. */
 function IsoBadge({ className, variant, depth = 2, style, children, ...props }: IsoBadgeProps) {

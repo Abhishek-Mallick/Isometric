@@ -36,7 +36,10 @@ function Inventory({ items, columns = 9, size, value, defaultValue = 0, onValueC
       data-slot="inventory"
       onKeyDown={(e) => {
         const step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: columns, ArrowUp: -columns }[e.key]
-        if (step) { e.preventDefault(); choose(current + step) }
+        if (step) {
+          e.preventDefault()
+          choose(current + step)
+        }
       }}
       className={cn(
         "inline-grid w-fit border border-[color:var(--iso-line,color-mix(in_oklab,var(--foreground)_62%,var(--background)))] bg-[color-mix(in_oklab,var(--muted)_60%,var(--background))] p-1 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",

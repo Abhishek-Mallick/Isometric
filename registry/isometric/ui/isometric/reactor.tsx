@@ -13,12 +13,23 @@ import { reducedMotion, spring, step, type Spring } from "@/registry/isometric/l
  * fast it charges.
  */
 
-const COILS = 10, PLATE = 34
+const COILS = 10,
+  PLATE = 34
 
 type State = { charge: Spring; turn: number; pulses: number[]; near: number }
 
 const entity: Entity<State, object> = {
-  view: { az: 45, fit: [[-PLATE, -PLATE, 0], [PLATE, PLATE, 0], [0, 0, 16], [-PLATE, PLATE, 6], [PLATE, -PLATE, 6]], zoom: 0.96 },
+  view: {
+    az: 45,
+    fit: [
+      [-PLATE, -PLATE, 0],
+      [PLATE, PLATE, 0],
+      [0, 0, 16],
+      [-PLATE, PLATE, 6],
+      [PLATE, -PLATE, 6],
+    ],
+    zoom: 0.96,
+  },
   parts: { core: "Core", coils: "Coil ring" },
   init: () => ({ charge: spring(0.15, 40, 12, 0.002), turn: 0, pulses: [], near: 0 }),
   pointer: (s, e) => {
@@ -41,8 +52,8 @@ const entity: Entity<State, object> = {
   draw: (s, out) => {
     const lit = Math.round(s.charge.x * COILS)
     // the plate and the ring under the coils: flat and wide, so they always paint first
-    out.push({ mesh: cylinder(0, 0, 0, PLATE, 3, 48), smooth: true, bias: -100 })
-    out.push({ mesh: cylinder(0, 0, 3, 27, 2, 48), smooth: true, cls: "mid", bias: -99 })
+    out.push({ mesh: cylinder(0, 0, 0, PLATE, 3, 48), smooth: true })
+    out.push({ mesh: cylinder(0, 0, 3, 27, 2, 48), smooth: true, cls: "mid" })
     // ten coils around the ring, lighting in turn as it charges
     for (let i = 0; i < COILS; i++) {
       const a = s.turn + (i / COILS) * Math.PI * 2
@@ -58,7 +69,7 @@ const entity: Entity<State, object> = {
     for (const t of s.pulses) {
       const r = 8 + t * (PLATE - 6)
       const ring: Vec3[] = Array.from({ length: 48 }, (_, i) => [Math.cos((i / 48) * Math.PI * 2) * r, Math.sin((i / 48) * Math.PI * 2) * r, 3.1])
-      out.push({ pts: ring, closed: true, cls: t < 0.8 ? "accent" : "lo", bias: -10 })
+      out.push({ pts: ring, closed: true, cls: t < 0.8 ? "accent" : "lo" })
     }
   },
 }

@@ -20,12 +20,16 @@ export type Stage = {
   read: Readout
   /** Tells the host a part was activated (clicked, or Enter on it). */
   activated?: (part: string) => void
+  /** Draw the debug overlay: face normals, painting order and pick polygons. */
+  debug?: boolean
 }
 export type Engine<P = object> = {
   /** A new intensity, already mapped to the engine's own number. */
   set(value: number): void
   /** New figure-specific props (data, for example). */
   props?(props: P): void
+  /** Turns the debug overlay on or off, for engines that draw through a scene. */
+  debug?(on: boolean): void
   destroy(): void
 }
 export type Mount<P = object> = (stage: Stage, value: number, props: P) => Engine<P>
@@ -63,8 +67,7 @@ export function draw(s: Solid, shape: Shape) {
 export const path = (parent: Element, cls: string, d = "") => el("path", { class: cls, d }, parent)
 
 /** A dot lying on a horizontal plane: an ellipse squashed by the camera. */
-export const dot = (parent: Element, c: Camera, r: number, cls = "dot") =>
-  el("ellipse", { rx: round(r * c.s), ry: round(r * c.s * c.k), class: cls }, parent)
+export const dot = (parent: Element, c: Camera, r: number, cls = "dot") => el("ellipse", { rx: round(r * c.s), ry: round(r * c.s * c.k), class: cls }, parent)
 export function place(node: SVGElement, p: Vec2) {
   node.setAttribute("cx", String(round(p[0])))
   node.setAttribute("cy", String(round(p[1])))
@@ -79,7 +82,8 @@ type Entry = { node: Element; tick: Tick; visible: boolean; awake: boolean }
 
 let entries: Entry[] = []
 const byNode = new Map<Element, Entry>()
-let raf = 0, last = 0
+let raf = 0,
+  last = 0
 let io: IntersectionObserver | null = null
 let motion: MediaQueryList | null = null
 
@@ -97,21 +101,30 @@ function frame(now: number) {
 
 function wake(e: Entry) {
   e.awake = true
-  if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame) }
+  if (!raf) {
+    last = performance.now()
+    raf = requestAnimationFrame(frame)
+  }
 }
 
-const onMotion = () => { setReducedMotion(!!motion?.matches); entries.forEach(wake) }
+const onMotion = () => {
+  setReducedMotion(!!motion?.matches)
+  entries.forEach(wake)
+}
 
 function start() {
   if (io) return
-  io = new IntersectionObserver((list) => {
-    for (const item of list) {
-      const e = byNode.get(item.target)
-      if (!e) continue
-      e.visible = item.isIntersecting
-      if (e.visible) wake(e)
-    }
-  }, { rootMargin: "80px" })
+  io = new IntersectionObserver(
+    (list) => {
+      for (const item of list) {
+        const e = byNode.get(item.target)
+        if (!e) continue
+        e.visible = item.isIntersecting
+        if (e.visible) wake(e)
+      }
+    },
+    { rootMargin: "80px" },
+  )
   motion = matchMedia("(prefers-reduced-motion: reduce)")
   setReducedMotion(motion.matches)
   motion.addEventListener("change", onMotion)
@@ -120,8 +133,10 @@ function start() {
 function halt() {
   if (raf) cancelAnimationFrame(raf)
   raf = 0
-  io?.disconnect(); io = null
-  motion?.removeEventListener("change", onMotion); motion = null
+  io?.disconnect()
+  io = null
+  motion?.removeEventListener("change", onMotion)
+  motion = null
 }
 
 /**
@@ -138,12 +153,17 @@ export function loop(node: Element, tick: Tick): Loop {
   tick(0, performance.now())
   let gone = false
   return {
-    wake: () => { if (!gone) wake(e) },
+    wake: () => {
+      if (!gone) wake(e)
+    },
     stop: () => {
       if (gone) return
       gone = true
       entries = entries.filter((x) => x !== e)
-      if (byNode.get(node) === e) { byNode.delete(node); io?.unobserve(node) }
+      if (byNode.get(node) === e) {
+        byNode.delete(node)
+        io?.unobserve(node)
+      }
       if (!entries.length) halt()
     },
   }
@@ -170,11 +190,15 @@ export function pointer(stage: HTMLElement, on: PointerHandlers): () => void {
     const r = stage.getBoundingClientRect()
     return [((e.clientX - r.left) / r.width) * 400, ((e.clientY - r.top) / r.height) * 320]
   }
-  const move = (e: PointerEvent) => { clearTimeout(timer); on.move(at(e), e) }
+  const move = (e: PointerEvent) => {
+    clearTimeout(timer)
+    on.move(at(e), e)
+  }
   const down = (e: PointerEvent) => {
     clearTimeout(timer)
     if (e.pointerType !== "mouse") stage.releasePointerCapture?.(e.pointerId)
-    if (on.down) on.down(at(e), e); else on.move(at(e), e)
+    if (on.down) on.down(at(e), e)
+    else on.move(at(e), e)
   }
   const up = (e: PointerEvent) => on.up?.(at(e), e)
   const leave = (e: PointerEvent) => {
@@ -200,7 +224,9 @@ export function pointer(stage: HTMLElement, on: PointerHandlers): () => void {
 export function bag() {
   let fns: Array<() => void> = []
   return {
-    add(fn: () => void) { fns.push(fn) },
+    add(fn: () => void) {
+      fns.push(fn)
+    },
     dispose() {
       const list = fns
       fns = []

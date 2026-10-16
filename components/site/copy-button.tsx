@@ -12,7 +12,11 @@ export function CopyButton({ value, className }: { value: string; className?: st
     <button
       type="button"
       onClick={async () => {
-        try { await navigator.clipboard.writeText(value) } catch { return }
+        try {
+          await navigator.clipboard.writeText(value)
+        } catch {
+          return
+        }
         setCopied(true)
         clearTimeout(timer.current)
         timer.current = window.setTimeout(() => setCopied(false), 1600)

@@ -80,9 +80,15 @@
 }
 
 @layer base {
-  * { @apply border-border outline-ring/50; }
-  html { color-scheme: light; }
-  html.dark { color-scheme: dark; }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "ss01", "cv11";
@@ -91,14 +97,40 @@
 }
 
 /* code, highlighted for both themes at once */
-.shiki, .shiki span { color: var(--shiki-light); background: transparent !important; }
-.dark .shiki, .dark .shiki span { color: var(--shiki-dark); }
-.shiki { font-size: 13px; line-height: 1.7; }
-.shiki code { counter-reset: line; }
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+  background: transparent !important;
+}
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark);
+}
+.shiki {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.shiki code {
+  counter-reset: line;
+}
 
-::selection { background: color-mix(in oklab, var(--ink) 22%, transparent); }
+::selection {
+  background: color-mix(in oklab, var(--ink) 22%, transparent);
+}
 
 /* the hero's one entrance: the sheet is drawn, then its title block fills in */
-@keyframes sheet-in { from { opacity: 0; translate: 0 6px; } }
-.sheet-in { animation: sheet-in 700ms cubic-bezier(0.2, 0.7, 0.1, 1) both; animation-delay: calc(var(--i, 0) * 90ms); }
-@media (prefers-reduced-motion: reduce) { .sheet-in { animation: none; } }
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+.sheet-in {
+  animation: sheet-in 700ms cubic-bezier(0.2, 0.7, 0.1, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet-in {
+    animation: none;
+  }
+}

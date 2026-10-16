@@ -1,0 +1,12 @@
+.next
+out
+public
+references
+node_modules
+test-results
+playwright-report
+pnpm-lock.yaml
+registry.json
+*.tsbuildinfo
+next-env.d.ts
+docs/TODO.md

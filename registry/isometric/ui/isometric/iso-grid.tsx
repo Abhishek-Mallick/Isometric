@@ -16,14 +16,20 @@ type IsoGridProps = React.ComponentProps<"div"> & {
  */
 function IsoGrid({ className, cell = 28, fade = true, style, ...props }: IsoGridProps) {
   const id = React.useId().replace(/:/g, "")
-  const w = cell * Math.sqrt(3), h = cell
+  const w = cell * Math.sqrt(3),
+    h = cell
   return (
     <div
       aria-hidden
       data-slot="iso-grid"
       className={cn("pointer-events-none text-[color:var(--iso-grid,var(--border))]", className)}
       style={{
-        ...(fade ? { maskImage: "radial-gradient(ellipse at center, #000 35%, transparent 75%)", WebkitMaskImage: "radial-gradient(ellipse at center, #000 35%, transparent 75%)" } : null),
+        ...(fade
+          ? {
+              maskImage: "radial-gradient(ellipse at center, #000 35%, transparent 75%)",
+              WebkitMaskImage: "radial-gradient(ellipse at center, #000 35%, transparent 75%)",
+            }
+          : null),
         ...style,
       }}
       {...props}

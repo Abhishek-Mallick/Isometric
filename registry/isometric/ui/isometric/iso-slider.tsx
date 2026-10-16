@@ -13,10 +13,7 @@ type IsoSliderProps = React.ComponentProps<typeof SliderPrimitive.Root> & {
 
 /** A rail with a cube riding it. */
 function IsoSlider({ className, defaultValue, value, min = 0, max = 100, step = 1, ticks = false, ...props }: IsoSliderProps) {
-  const values = React.useMemo(
-    () => (Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min]),
-    [value, defaultValue, min],
-  )
+  const values = React.useMemo(() => (Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min]), [value, defaultValue, min])
   const count = Math.round((max - min) / step)
   return (
     <SliderPrimitive.Root

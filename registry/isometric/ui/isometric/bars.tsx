@@ -19,7 +19,12 @@ export type BarsProps = {
   labels?: string[]
 }
 
-const DEPTH = 18, PITCH = 14, BAR = 9.5, HMAX = 74, LIFT = 9, PAD = 6
+const DEPTH = 18,
+  PITCH = 14,
+  BAR = 9.5,
+  HMAX = 74,
+  LIFT = 9,
+  PAD = 6
 
 const mount: Mount<BarsProps> = ({ stage, svg, read }, radius, initial) => {
   const b = bag()
@@ -51,7 +56,11 @@ const mount: Mount<BarsProps> = ({ stage, svg, read }, radius, initial) => {
     // the floor's gridlines, one under each bar
     const grid = path(g, "line lo")
     const lines: [Vec3, Vec3][] = []
-    for (let i = 0; i <= n; i++) lines.push([[i * PITCH, 0, 0], [i * PITCH, DEPTH, 0]])
+    for (let i = 0; i <= n; i++)
+      lines.push([
+        [i * PITCH, 0, 0],
+        [i * PITCH, DEPTH, 0],
+      ])
     grid.setAttribute("d", segments(P, lines))
     bars = vs.map((_, i) => ({
       h: old[i]?.h ?? spring(0, 120, 17, 0.05),
@@ -76,9 +85,13 @@ const mount: Mount<BarsProps> = ({ stage, svg, read }, radius, initial) => {
   }
 
   const L = loop(stage, (dt) => {
-    const moving = stepAll(bars.flatMap((x) => [x.h, x.lift]), dt)
+    const moving = stepAll(
+      bars.flatMap((x) => [x.h, x.lift]),
+      dt,
+    )
     bars.forEach((bar, i) => {
-      const x0 = i * PITCH + (PITCH - BAR) / 2, y0 = (DEPTH - BAR) / 2
+      const x0 = i * PITCH + (PITCH - BAR) / 2,
+        y0 = (DEPTH - BAR) / 2
       const z0 = bar.lift.x
       draw(bar.el, block(P, x0, y0, x0 + BAR, y0 + BAR, z0, z0 + bar.h.x))
       bar.el.g.classList.toggle("accent", i === over)
@@ -88,23 +101,32 @@ const mount: Mount<BarsProps> = ({ stage, svg, read }, radius, initial) => {
   b.add(L.stop)
   build()
 
-  b.add(pointer(stage, {
-    move: (p) => {
-      const [x] = unproject(c, p[0], p[1], HMAX * 0.3)
-      const i = Math.floor(x / PITCH)
-      over = i >= 0 && i < bars.length ? i : -1
-      retarget()
-    },
-    leave: () => { over = -1; retarget() },
-  }))
+  b.add(
+    pointer(stage, {
+      move: (p) => {
+        const [x] = unproject(c, p[0], p[1], HMAX * 0.3)
+        const i = Math.floor(x / PITCH)
+        over = i >= 0 && i < bars.length ? i : -1
+        retarget()
+      },
+      leave: () => {
+        over = -1
+        retarget()
+      },
+    }),
+  )
   b.add(() => svg.replaceChildren())
 
   return {
-    set: (v) => { R = v; retarget() },
+    set: (v) => {
+      R = v
+      retarget()
+    },
     props: (next) => {
       const grow = next.data.length !== props.data.length
       props = next
-      if (grow) build(); else retarget()
+      if (grow) build()
+      else retarget()
     },
     destroy: b.dispose,
   }

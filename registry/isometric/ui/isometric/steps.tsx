@@ -1,7 +1,7 @@
 "use client"
 
 import { createFigure } from "@/registry/isometric/lib/isometric/figure"
-import { block, camera, clamp, corners, fit, project } from "@/registry/isometric/lib/isometric/iso"
+import { block, camera, clamp, corners, fit, planeMatrix, project } from "@/registry/isometric/lib/isometric/iso"
 import { spring, stepAll } from "@/registry/isometric/lib/isometric/motion"
 import { bag, draw, el, loop, path, pointer, solid, type Mount, type Solid } from "@/registry/isometric/lib/isometric/stage"
 
@@ -19,13 +19,17 @@ export type StepsProps = {
   current: number
 }
 
-const RUN = 15, RISE = 9, WIDE = 40, TOKEN = 7
+const RUN = 15,
+  RISE = 9,
+  WIDE = 40,
+  TOKEN = 7
 
 const mount: Mount<StepsProps> = ({ stage, svg, read }, stiffness, initial) => {
   const b = bag()
   let props = initial
   const g = el("g", null, svg)
   let solids: Solid[] = []
+  let nums: SVGTextElement[] = []
   let token: Solid
   let shadow: SVGPathElement
   let n = 0
@@ -50,6 +54,14 @@ const mount: Mount<StepsProps> = ({ stage, svg, read }, stiffness, initial) => {
       draw(s, block(P, i * RUN, 0, (i + 1) * RUN, WIDE, 0, (i + 1) * RISE))
       solids[i] = s
     }
+    // each riser carries its number, painted like a stadium step
+    nums = []
+    for (let i = 0; i < n; i++) {
+      const m = planeMatrix(P, [i * RUN, WIDE - 9, i * RISE + 2.4], [0, 1, 0], [0, 0, 1], 4.2)
+      const t = el("text", { "font-size": 16, "text-anchor": "middle", ...(m ? { transform: m } : { display: "none" }) }, g)
+      t.textContent = String(i + 1)
+      nums[i] = t
+    }
     shadow = path(g, "line dash lo")
     token = solid(g, "accent")
     at = resting()
@@ -63,16 +75,23 @@ const mount: Mount<StepsProps> = ({ stage, svg, read }, stiffness, initial) => {
     const frac = x - Math.floor(x)
     const arc = Math.sin(Math.PI * frac) * RISE * 0.9
     const floor = (clamp(x, 0, n - 1) + 1) * RISE
-    const cx = (x + 0.5) * RUN, cy = WIDE / 2
+    const cx = (x + 0.5) * RUN,
+      cy = WIDE / 2
     draw(token, block(P, cx - TOKEN / 2, cy - TOKEN / 2, cx + TOKEN / 2, cy + TOKEN / 2, floor + arc, floor + arc + TOKEN))
     const ground = (i + 1) * RISE
-    const a = P(cx, cy, ground), t = P(cx, cy, floor + arc)
+    const a = P(cx, cy, ground),
+      t = P(cx, cy, floor + arc)
     shadow.setAttribute("d", arc > 1 ? `M${a[0]} ${a[1]}L${t[0]} ${t[1]}` : "")
     solids.forEach((s, k) => s.g.classList.toggle("hi", k <= i))
+    nums.forEach((t, k) => t.classList.toggle("lo", k > i))
   }
 
   build()
-  const L = loop(stage, (dt) => { const m = stepAll([pos], dt); render(); return m })
+  const L = loop(stage, (dt) => {
+    const m = stepAll([pos], dt)
+    render()
+    return m
+  })
   b.add(L.stop)
   read.textContent = `step ${at + 1} of ${n}`
 
@@ -83,23 +102,32 @@ const mount: Mount<StepsProps> = ({ stage, svg, read }, stiffness, initial) => {
     L.wake()
   }
 
-  b.add(pointer(stage, {
-    move: (p) => {
-      // project each step's tread centre and take the nearest along the screen
-      let best = 0, bd = Infinity
-      for (let k = 0; k < n; k++) {
-        const q = P((k + 0.5) * RUN, WIDE / 2, (k + 1) * RISE)
-        const d = Math.abs(q[0] - p[0])
-        if (d < bd) { bd = d; best = k }
-      }
-      go(best)
-    },
-    leave: () => go(resting()),
-  }))
+  b.add(
+    pointer(stage, {
+      move: (p) => {
+        // project each step's tread centre and take the nearest along the screen
+        let best = 0,
+          bd = Infinity
+        for (let k = 0; k < n; k++) {
+          const q = P((k + 0.5) * RUN, WIDE / 2, (k + 1) * RISE)
+          const d = Math.abs(q[0] - p[0])
+          if (d < bd) {
+            bd = d
+            best = k
+          }
+        }
+        go(best)
+      },
+      leave: () => go(resting()),
+    }),
+  )
   b.add(() => svg.replaceChildren())
 
   return {
-    set: (v) => { pos.k = v; pos.c = 2 * Math.sqrt(v) * 0.75 },
+    set: (v) => {
+      pos.k = v
+      pos.c = 2 * Math.sqrt(v) * 0.75
+    },
     props: (next) => {
       const rebuild = clamp(Math.round(next.steps) || 5, 2, 9) !== n
       props = next

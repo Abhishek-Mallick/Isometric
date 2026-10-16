@@ -18,7 +18,9 @@ export type HeartProps = {
   liked?: boolean
 }
 
-const R = 1.35, THICK = 7, FLOAT = 10
+const R = 1.35,
+  THICK = 7,
+  FLOAT = 10
 
 /** The classic heart curve, tip at the bottom, stood on the ground plane as x and up. */
 const outline: Vec2[] = Array.from({ length: 48 }, (_, i) => {
@@ -35,11 +37,28 @@ type State = { liked: boolean; bpm: Spring; phase: number; hot: boolean; bits: B
 const thump = (t: number) => Math.exp(-((t / 0.07) ** 2)) + 0.55 * Math.exp(-(((t - 0.2) / 0.07) ** 2))
 
 const entity: Entity<State, HeartProps> = {
-  view: { az: 18, fit: [[-24, -10, 0], [24, 10, 0], [-24, -10, FLOAT + TOP + 8], [24, 10, FLOAT + TOP + 8]], zoom: 0.9 },
+  view: {
+    az: 18,
+    fit: [
+      [-24, -10, 0],
+      [24, 10, 0],
+      [-24, -10, FLOAT + TOP + 8],
+      [24, 10, FLOAT + TOP + 8],
+    ],
+    zoom: 0.9,
+  },
   parts: { heart: "Heart" },
   init: (p) => ({ liked: !!p.liked, bpm: spring(72, 30, 11, 0.5), phase: 0, hot: false, bits: [], fill: spring(p.liked ? 1 : 0, 120, 16, 0.01) }),
-  update: (s, p) => { if (p.liked !== undefined && p.liked !== s.liked) { s.liked = p.liked; s.fill.to = s.liked ? 1 : 0 } },
-  pointer: (s, e, ctx) => { s.hot = !!e?.part; s.bpm.to = ctx.value * (s.hot ? 1.6 : 1) },
+  update: (s, p) => {
+    if (p.liked !== undefined && p.liked !== s.liked) {
+      s.liked = p.liked
+      s.fill.to = s.liked ? 1 : 0
+    }
+  },
+  pointer: (s, e, ctx) => {
+    s.hot = !!e?.part
+    s.bpm.to = ctx.value * (s.hot ? 1.6 : 1)
+  },
   step: (s, dt, ctx) => {
     if (!s.hot) s.bpm.to = ctx.value
     const moving = stepAll([s.bpm, s.fill], dt)
@@ -77,7 +96,7 @@ const entity: Entity<State, HeartProps> = {
       const a = (i / 32) * Math.PI * 2
       return [Math.cos(a) * 15 * k, Math.sin(a) * 5, 0]
     })
-    out.push({ pts: ring, closed: true, cls: "dash lo", bias: -50 })
+    out.push({ pts: ring, closed: true, cls: "dash lo" })
     for (const b of s.bits) {
       const c = rotateZ(box(-1.4, -1.4, -1.4, 1.4, 1.4, 1.4), b.a)
       out.push({ mesh: translate(c, b.p), cls: b.life > 0.3 ? "glow hi" : "lo", inert: true, bias: 2 })

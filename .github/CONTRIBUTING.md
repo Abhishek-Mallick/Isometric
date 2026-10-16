@@ -13,13 +13,13 @@ Node 22 or later and pnpm 10 are required.
 
 ## Where things are
 
-| Path | What |
-| --- | --- |
+| Path                                | What                                                                       |
+| ----------------------------------- | -------------------------------------------------------------------------- |
 | `registry/isometric/lib/isometric/` | The engine: projection, solids, motion, the shared loop, the React factory |
-| `registry/isometric/ui/isometric/` | Every figure and primitive, one file each |
-| `registry/index.ts` | The manifest. Every item, its files, dependencies, usage and props |
-| `scripts/generate-registry.mts` | Turns the manifest into `registry.json`, `llms.txt` and Markdown |
-| `app/`, `components/site/` | The documentation site |
+| `registry/isometric/ui/isometric/`  | Every figure and primitive, one file each                                  |
+| `registry/index.ts`                 | The manifest. Every item, its files, dependencies, usage and props         |
+| `scripts/generate-registry.mts`     | Turns the manifest into `registry.json`, `llms.txt` and Markdown           |
+| `app/`, `components/site/`          | The documentation site                                                     |
 
 ## Adding a figure
 

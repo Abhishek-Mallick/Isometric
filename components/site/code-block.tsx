@@ -3,7 +3,17 @@ import { highlight } from "@/lib/highlight"
 import { CopyButton } from "@/components/site/copy-button"
 
 /** Highlighted code with a copy button; `title` names the file. */
-export async function CodeBlock({ code, lang = "tsx", title, className }: { code: string; lang?: "tsx" | "ts" | "bash" | "json" | "css"; title?: string; className?: string }) {
+export async function CodeBlock({
+  code,
+  lang = "tsx",
+  title,
+  className,
+}: {
+  code: string
+  lang?: "tsx" | "ts" | "bash" | "json" | "css"
+  title?: string
+  className?: string
+}) {
   const html = await highlight(code, lang)
   return (
     <div className={cn("overflow-hidden rounded-lg border bg-card", className)}>

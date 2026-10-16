@@ -37,8 +37,7 @@ export const isoSink = {
   pressed:
     "group-data-[pressed=true]/iso:translate-x-(--iso-d) group-data-[pressed=true]/iso:translate-y-(--iso-d) group-data-[state=on]/iso:translate-x-(--iso-d) group-data-[state=on]/iso:translate-y-(--iso-d)",
   /** For tabs: the ones not chosen are pressed flat. */
-  inactive:
-    "group-data-[state=inactive]/iso:translate-x-(--iso-d) group-data-[state=inactive]/iso:translate-y-(--iso-d)",
+  inactive: "group-data-[state=inactive]/iso:translate-x-(--iso-d) group-data-[state=inactive]/iso:translate-y-(--iso-d)",
 }
 
 const fade = {

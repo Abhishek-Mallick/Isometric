@@ -19,16 +19,28 @@ export type TorchProps = {
   lit?: boolean
 }
 
-const S = 20, STICK = 16
+const S = 20,
+  STICK = 16
 
 type Puff = { p: Vec3; t: number }
 type State = { lit: boolean; flame: Spring; t: number; smoke: Puff[] }
 
 const entity: Entity<State, TorchProps> = {
-  view: { az: 45, fit: [[-S / 2 - 8, -S / 2 - 8, 0], [S / 2 + 8, S / 2 + 8, 0], [0, 0, S + STICK + 18]], zoom: 0.92 },
+  view: {
+    az: 45,
+    fit: [
+      [-S / 2 - 8, -S / 2 - 8, 0],
+      [S / 2 + 8, S / 2 + 8, 0],
+      [0, 0, S + STICK + 18],
+    ],
+    zoom: 0.92,
+  },
   parts: { torch: "Torch", block: "Stone block" },
   init: (p) => ({ lit: p.lit !== false, flame: spring(p.lit !== false ? 1 : 0, 120, 14, 0.005), t: 0, smoke: [] }),
-  update: (s, p) => { s.lit = p.lit !== false; s.flame.to = s.lit ? 1 : 0 },
+  update: (s, p) => {
+    s.lit = p.lit !== false
+    s.flame.to = s.lit ? 1 : 0
+  },
   step: (s, dt) => {
     const moving = step(s.flame, dt)
     s.t += dt
@@ -50,7 +62,8 @@ const entity: Entity<State, TorchProps> = {
     if (f > 0.02) {
       // the flame: a lit core inside a softer glow, each nudged by a cheap flicker
       const flick = reducedMotion() ? 0 : (Math.sin(s.t * 23) + Math.sin(s.t * 37) * 0.6) * 0.18 * ctx.value
-      const g = 3.2 * f * (1 + flick), c = 1.6 * f * (1 - flick * 0.5)
+      const g = 3.2 * f * (1 + flick),
+        c = 1.6 * f * (1 - flick * 0.5)
       out.push({ mesh: box(-g, -g, S + STICK, g, g, S + STICK + g * 2.2), cls: "glow", part: "torch", bias: 2 })
       out.push({ mesh: box(-c, -c, S + STICK + 0.6, c, c, S + STICK + 0.6 + c * 2.4), cls: "solid", part: "torch", bias: 3 })
       // the light it throws on the block's lid

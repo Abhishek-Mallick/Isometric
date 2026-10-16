@@ -50,10 +50,25 @@ function HeartsMeter({ value, max = 10, className, ...props }: HeartsMeterProps)
         return (
           <svg key={i} viewBox="-0.5 -0.5 10 9" className={cn("size-[18px]", blinking && "animate-pulse")} aria-hidden shapeRendering="crispEdges">
             <defs>
-              <clipPath id={`${id}-${i}`}><rect x="-1" y="-1" width={1 + 9.5 * fill} height="10" /></clipPath>
+              <clipPath id={`${id}-${i}`}>
+                <rect x="-1" y="-1" width={1 + 9.5 * fill} height="10" />
+              </clipPath>
             </defs>
-            <path d={HEART} fill="var(--iso-side, var(--muted))" stroke="var(--iso-line, color-mix(in oklab, var(--foreground) 62%, var(--background)))" strokeWidth="0.7" />
-            {fill > 0 ? <path d={HEART} clipPath={`url(#${id}-${i})`} fill="var(--iso-heart, var(--destructive, #e5484d))" stroke="var(--iso-line, color-mix(in oklab, var(--foreground) 62%, var(--background)))" strokeWidth="0.7" /> : null}
+            <path
+              d={HEART}
+              fill="var(--iso-side, var(--muted))"
+              stroke="var(--iso-line, color-mix(in oklab, var(--foreground) 62%, var(--background)))"
+              strokeWidth="0.7"
+            />
+            {fill > 0 ? (
+              <path
+                d={HEART}
+                clipPath={`url(#${id}-${i})`}
+                fill="var(--iso-heart, var(--destructive, #e5484d))"
+                stroke="var(--iso-line, color-mix(in oklab, var(--foreground) 62%, var(--background)))"
+                strokeWidth="0.7"
+              />
+            ) : null}
             {fill > 0 ? <rect x="2" y="1" width="1" height="1" fill="var(--background, #fff)" opacity="0.7" clipPath={`url(#${id}-${i})`} /> : null}
           </svg>
         )

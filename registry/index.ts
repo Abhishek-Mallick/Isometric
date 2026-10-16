@@ -48,16 +48,30 @@ const lib = (name: string) => ({ path: `registry/isometric/lib/isometric/${name}
 
 /** The options every figure takes. */
 export const figureProps: Prop[] = [
-  { name: "intensity", type: "number", default: "0.5", description: "How strongly the figure answers the pointer, from 0 (subtle) to 1 (strong). Out-of-range values are clamped." },
-  { name: "theme", type: `"auto" | "light" | "dark"`, default: `"auto"`, description: "`auto` follows your shadcn tokens and `.dark`; the others pin a neutral palette." },
+  {
+    name: "intensity",
+    type: "number",
+    default: "0.5",
+    description: "How strongly the figure answers the pointer, from 0 (subtle) to 1 (strong). Out-of-range values are clamped.",
+  },
+  {
+    name: "theme",
+    type: `"auto" | "light" | "dark"`,
+    default: `"auto"`,
+    description: "`auto` follows your shadcn tokens and `.dark`; the others pin a neutral palette.",
+  },
   { name: "label", type: "string", description: "The accessible name. Each figure has a default description in English." },
-  { name: "onRead", type: "(text: string) => void", description: "Called with the figure's caption each time it changes, e.g. `\"step 3 of 5\"`." },
+  { name: "onRead", type: "(text: string) => void", description: 'Called with the figure\'s caption each time it changes, e.g. `"step 3 of 5"`.' },
   { name: "...props", type: `React.ComponentProps<"div">`, description: "Any div attribute. The figure fills its parent's width at a 5:4 aspect ratio." },
 ]
 
 /** The extra option interactive figures take. */
 export const interactiveProps: Prop[] = [
-  { name: "onActivate", type: "(part: string) => void", description: "Called with a part's id when it is clicked, or chosen with Enter. Tab focuses the figure; the arrow keys move between parts." },
+  {
+    name: "onActivate",
+    type: "(part: string) => void",
+    description: "Called with a part's id when it is clicked, or chosen with Enter. Tab focuses the figure; the arrow keys move between parts.",
+  },
 ]
 
 /** An interactive object: a figure whose parts can be clicked and reached from the keyboard. */
@@ -108,7 +122,17 @@ export const items: Item[] = [
       "The engine behind every figure: orthographic projection, meshes with hidden faces removed, picking, springs, one shared animation loop that sleeps offscreen, and the React factory.",
     category: "foundation",
     type: "registry:lib",
-    files: [lib("iso.ts"), lib("motion.ts"), lib("stage.ts"), lib("styles.ts"), lib("figure.tsx"), lib("mesh.ts"), lib("scene.ts"), lib("entity.ts"), lib("blocks.ts")],
+    files: [
+      lib("iso.ts"),
+      lib("motion.ts"),
+      lib("stage.ts"),
+      lib("styles.ts"),
+      lib("figure.tsx"),
+      lib("mesh.ts"),
+      lib("scene.ts"),
+      lib("entity.ts"),
+      lib("blocks.ts"),
+    ],
   },
   {
     name: "iso-depth",
@@ -126,90 +150,217 @@ export const items: Item[] = [
 </button>`,
   },
 
-  figure("skyline", "Skyline", "A city block of towers on a plinth. Towers near the pointer rise, the nearer the higher.", "Widens the district that rises. Reads `block 3·4`."),
-  figure("stack", "Stack", "An app window taken apart into four layers. Moving across opens the gap; moving down picks a layer.", "Opens the layers further. Reads `cards · gap 24`."),
-  figure("keys", "Keys", "A forty-key keyboard. The key under the pointer sinks and its neighbours follow; a click presses it home.", "Widens how far the press reaches. Reads `key G`."),
-  figure("rack", "Rack", "An open server rack of eight units. The pointer's height pulls the nearest units out and wakes their lights.", "Pulls out more units. Reads `unit 05`."),
-  figure("laptop", "Laptop", "A thin laptop. The pointer's height sets how far the lid stands open; the screen lights as it opens.", "Lets the lid open wider. Reads `lid 112°`."),
-  figure("bars", "Bars", "An isometric bar chart drawn from your data. The bar under the pointer lifts and reads its value.", "Spreads the lift over more bars. Reads `Mar · 9`.", {
-    props: [
-      { name: "data", type: "number[]", default: "[4, 7, 5, 9, 6, 11, 8, 12]", description: "The values, left to right. Up to 16 are drawn; bars grow on springs when it changes." },
-      { name: "labels", type: "string[]", description: "One label per value, used in the caption." },
-    ],
-    usage: `import { Bars } from "@/components/ui/isometric/bars"
+  figure(
+    "skyline",
+    "Skyline",
+    "A city block of towers on a plinth. Towers near the pointer rise, the nearer the higher.",
+    "Widens the district that rises. Reads `block 3·4`.",
+  ),
+  figure(
+    "stack",
+    "Stack",
+    "An app window taken apart into four layers. Moving across opens the gap; moving down picks a layer.",
+    "Opens the layers further. Reads `cards · gap 24`.",
+  ),
+  figure(
+    "keys",
+    "Keys",
+    "A forty-key keyboard. The key under the pointer sinks and its neighbours follow; a click presses it home.",
+    "Widens how far the press reaches. Reads `key G`.",
+  ),
+  figure(
+    "rack",
+    "Rack",
+    "An open server rack of eight units. The pointer's height pulls the nearest units out and wakes their lights.",
+    "Pulls out more units. Reads `unit 05`.",
+  ),
+  figure(
+    "laptop",
+    "Laptop",
+    "A thin laptop. The pointer's height sets how far the lid stands open; the screen lights as it opens.",
+    "Lets the lid open wider. Reads `lid 112°`.",
+  ),
+  figure(
+    "bars",
+    "Bars",
+    "An isometric bar chart drawn from your data. The bar under the pointer lifts and reads its value.",
+    "Spreads the lift over more bars. Reads `Mar · 9`.",
+    {
+      props: [
+        {
+          name: "data",
+          type: "number[]",
+          default: "[4, 7, 5, 9, 6, 11, 8, 12]",
+          description: "The values, left to right. Up to 16 are drawn; bars grow on springs when it changes.",
+        },
+        { name: "labels", type: "string[]", description: "One label per value, used in the caption." },
+      ],
+      usage: `import { Bars } from "@/components/ui/isometric/bars"
 
 <Bars
   data={[12, 18, 9, 24, 16, 30]}
   labels={["Jan", "Feb", "Mar", "Apr", "May", "Jun"]}
   onRead={(text) => console.log(text)}
 />`,
-  }),
-  figure("steps", "Steps", "A staircase that reads as progress. A token rests on the current step and hops as the pointer walks it.", "Makes the hop quicker. Reads `step 3 of 5`.", {
-    props: [
-      { name: "steps", type: "number", default: "5", description: "How many steps, from 2 to 9." },
-      { name: "current", type: "number", default: "2", description: "The step the token rests on, counted from 1." },
-    ],
-    usage: `import { Steps } from "@/components/ui/isometric/steps"
+    },
+  ),
+  figure(
+    "steps",
+    "Steps",
+    "A staircase that reads as progress. A token rests on the current step and hops as the pointer walks it.",
+    "Makes the hop quicker. Reads `step 3 of 5`.",
+    {
+      props: [
+        { name: "steps", type: "number", default: "5", description: "How many steps, from 2 to 9." },
+        { name: "current", type: "number", default: "2", description: "The step the token rests on, counted from 1." },
+      ],
+      usage: `import { Steps } from "@/components/ui/isometric/steps"
 
 <Steps steps={4} current={2} />`,
-  }),
-  figure("files", "Files", "An upright folder of five sheets. As the pointer comes near the sheets rise; the nearest rises highest.", "Lifts the sheets further. Reads `file 2 of 5`."),
-  figure("cylinders", "Cylinders", "A database drawn as three stacked disks. The pointer's height parts the stack above the disk it picks.", "Opens the gap wider. Reads `shard 2 of 3`."),
-  figure("parcel", "Parcel", "A sealed box. Its flaps fold open as the pointer comes near, and a cube rises out.", "Swings the flaps further. Reads `open 140°`."),
-  figure("nodes", "Nodes", "A network of a hub and eight nodes. A pulse runs the shortest route to the node nearest the pointer.", "Makes the pulse travel faster. Reads `hub → e`."),
-  figure("cube", "Cube", "A three by three cube. The pointer's height picks a layer and moving across twists it; it settles on a quarter turn.", "Twists further across one sweep. Reads `top · 90°`."),
+    },
+  ),
+  figure(
+    "files",
+    "Files",
+    "An upright folder of five sheets. As the pointer comes near the sheets rise; the nearest rises highest.",
+    "Lifts the sheets further. Reads `file 2 of 5`.",
+  ),
+  figure(
+    "cylinders",
+    "Cylinders",
+    "A database drawn as three stacked disks. The pointer's height parts the stack above the disk it picks.",
+    "Opens the gap wider. Reads `shard 2 of 3`.",
+  ),
+  figure(
+    "parcel",
+    "Parcel",
+    "A sealed box. Its flaps fold open as the pointer comes near, and a cube rises out.",
+    "Swings the flaps further. Reads `open 140°`.",
+  ),
+  figure(
+    "nodes",
+    "Nodes",
+    "A network of a hub and eight nodes. A pulse runs the shortest route to the node nearest the pointer.",
+    "Makes the pulse travel faster. Reads `hub → e`.",
+  ),
+  figure(
+    "cube",
+    "Cube",
+    "A three by three cube. The pointer's height picks a layer and moving across twists it; it settles on a quarter turn.",
+    "Twists further across one sweep. Reads `top · 90°`.",
+  ),
 
-  object("pc-case", "PC Case", "A tower you can take apart: slide the glass panel off, lift the memory out, pull the graphics card, and press power to spin every fan.", "Sets how far parts come out and how fast the fans spin. Reads `Graphics card out`.", {
-    props: [
-      { name: "open", type: "boolean", default: "false", description: "Start with the side panel off." },
-      { name: "on", type: "boolean", default: "false", description: "Start powered on." },
-    ],
-    usage: `import { PcCase } from "@/components/ui/isometric/pc-case"
+  object(
+    "pc-case",
+    "PC Case",
+    "A tower you can take apart: slide the glass panel off, lift the memory out, pull the graphics card, and press power to spin every fan.",
+    "Sets how far parts come out and how fast the fans spin. Reads `Graphics card out`.",
+    {
+      props: [
+        { name: "open", type: "boolean", default: "false", description: "Start with the side panel off." },
+        { name: "on", type: "boolean", default: "false", description: "Start powered on." },
+      ],
+      usage: `import { PcCase } from "@/components/ui/isometric/pc-case"
 
 <PcCase open onActivate={(part) => console.log(part)} />`,
-  }),
+    },
+  ),
 
-  object("heart", "Heart", "A heart cut from a slab, beating. Point at it to quicken the pulse; click to like it, and it fills and throws off a burst of cubes.", "Sets the resting pulse. Reads `Liked · 96 bpm`.", {
-    props: [{ name: "liked", type: "boolean", description: "Whether it is liked. Clicking toggles it; pass it to control it." }],
-    usage: `import { Heart } from "@/components/ui/isometric/heart"
+  object(
+    "heart",
+    "Heart",
+    "A heart cut from a slab, beating. Point at it to quicken the pulse; click to like it, and it fills and throws off a burst of cubes.",
+    "Sets the resting pulse. Reads `Liked · 96 bpm`.",
+    {
+      props: [{ name: "liked", type: "boolean", description: "Whether it is liked. Clicking toggles it; pass it to control it." }],
+      usage: `import { Heart } from "@/components/ui/isometric/heart"
 
 const [liked, setLiked] = useState(false)
 
 <Heart liked={liked} onActivate={() => setLiked(!liked)} />`,
-  }),
-  object("pulley", "Pulley", "A block and tackle on a frame. Drag the rope's handle down and the load rises by the pull divided by the ratio, with the wheels turning as the rope runs.", "Sets how much rope a drag pulls. Reads `pull 24 · lift 6 · 4:1`.", {
-    props: [
-      { name: "ratio", type: "2 | 4", default: "2", description: "Mechanical advantage: how many lines of rope hold the load." },
-      { name: "load", type: "number", default: "40", description: "The load in kilograms, used in the caption." },
-    ],
-    usage: `import { Pulley } from "@/components/ui/isometric/pulley"
+    },
+  ),
+  object(
+    "pulley",
+    "Pulley",
+    "A block and tackle on a frame. Drag the rope's handle down and the load rises by the pull divided by the ratio, with the wheels turning as the rope runs.",
+    "Sets how much rope a drag pulls. Reads `pull 24 · lift 6 · 4:1`.",
+    {
+      props: [
+        { name: "ratio", type: "2 | 4", default: "2", description: "Mechanical advantage: how many lines of rope hold the load." },
+        { name: "load", type: "number", default: "40", description: "The load in kilograms, used in the caption." },
+      ],
+      usage: `import { Pulley } from "@/components/ui/isometric/pulley"
 
 <Pulley ratio={4} load={120} />`,
-  }),
-  object("church", "Church", "A small stone church: a nave under a tiled roof, buttresses between pointed windows, a rose window over arched doors, and a tower with an open belfry and a spire. The doors open, the bell rings and the windows light.", "Sets how far the bell swings. Reads `Ding`.", {
-    props: [{ name: "lit", type: "boolean", default: "false", description: "Start with the windows lit." }],
-    usage: `import { Church } from "@/components/ui/isometric/church"
+    },
+  ),
+  object(
+    "church",
+    "Church",
+    "A small stone church: a nave under a tiled roof, buttresses between pointed windows, a rose window over arched doors, and a tower with an open belfry and a spire. The doors open, the bell rings and the windows light.",
+    "Sets how far the bell swings. Reads `Ding`.",
+    {
+      props: [{ name: "lit", type: "boolean", default: "false", description: "Start with the windows lit." }],
+      usage: `import { Church } from "@/components/ui/isometric/church"
 
 <Church lit onActivate={(part) => part === "bell" && playChime()} />`,
-  }),
-  object("reactor", "Reactor", "A ring-core reactor: a glowing core inside ten coils. The coils charge as the pointer comes near and the ring turns; click to fire a pulse.", "Sets how fast it charges. Reads `charge 80%`."),
+    },
+  ),
+  object(
+    "reactor",
+    "Reactor",
+    "A ring-core reactor: a glowing core inside ten coils. The coils charge as the pointer comes near and the ring turns; click to fire a pulse.",
+    "Sets how fast it charges. Reads `charge 80%`.",
+  ),
 
-  object("block", "Block", "One block you can mine, in nine materials. Each click cracks it; the last breaks it into fragments and drops an item, and the block grows back.", "Sets how hard you hit: fewer clicks to break it. Reads `Stone · 2 of 4`.", {
-    category: "blocks",
-    props: [{ name: "type", type: `"grass" | "dirt" | "stone" | "ore" | "sand" | "log" | "planks" | "leaves" | "glass"`, default: `"grass"`, description: "The material." }],
-    usage: `import { Block } from "@/components/ui/isometric/block"
+  object(
+    "block",
+    "Block",
+    "One block you can mine, in nine materials. Each click cracks it; the last breaks it into fragments and drops an item, and the block grows back.",
+    "Sets how hard you hit: fewer clicks to break it. Reads `Stone · 2 of 4`.",
+    {
+      category: "blocks",
+      props: [
+        {
+          name: "type",
+          type: `"grass" | "dirt" | "stone" | "ore" | "sand" | "log" | "planks" | "leaves" | "glass"`,
+          default: `"grass"`,
+          description: "The material.",
+        },
+      ],
+      usage: `import { Block } from "@/components/ui/isometric/block"
 
 <Block type="ore" onActivate={() => addToInventory("ore")} />`,
-  }),
-  object("chest", "Chest", "A wooden chest with an iron latch. Click to lift the lid on its hinge; what is inside floats up and turns.", "Sets how far the items rise. Reads `Chest open · 3 items`.", {
-    category: "blocks",
-    props: [{ name: "items", type: "BlockType[]", default: `["ore", "planks", "grass"]`, description: "What is inside, up to four block types." }],
-  }),
-  object("torch", "Torch", "A torch set in a stone block. Its flame flickers and lights a ring around it; click to snuff it out in a curl of smoke, and again to light it.", "Sets how much the flame flickers. Reads `Torch · lit`.", {
-    category: "blocks",
-    props: [{ name: "lit", type: "boolean", default: "true", description: "Start lit." }],
-  }),
-  object("tree", "Tree", "A block tree: a log trunk under a crown of leaves. It sways while the pointer is over it; click to shake a few leaves loose.", "Sets how hard it sways. Reads `Tree`.", { category: "blocks" }),
+    },
+  ),
+  object(
+    "chest",
+    "Chest",
+    "A wooden chest with an iron latch. Click to lift the lid on its hinge; what is inside floats up and turns.",
+    "Sets how far the items rise. Reads `Chest open · 3 items`.",
+    {
+      category: "blocks",
+      props: [{ name: "items", type: "BlockType[]", default: `["ore", "planks", "grass"]`, description: "What is inside, up to four block types." }],
+    },
+  ),
+  object(
+    "torch",
+    "Torch",
+    "A torch set in a stone block. Its flame flickers and lights a ring around it; click to snuff it out in a curl of smoke, and again to light it.",
+    "Sets how much the flame flickers. Reads `Torch · lit`.",
+    {
+      category: "blocks",
+      props: [{ name: "lit", type: "boolean", default: "true", description: "Start lit." }],
+    },
+  ),
+  object(
+    "tree",
+    "Tree",
+    "A block tree: a log trunk under a crown of leaves. It sways while the pointer is over it; click to shake a few leaves loose.",
+    "Sets how hard it sways. Reads `Tree`.",
+    { category: "blocks" },
+  ),
 
   {
     name: "block-icon",
@@ -308,21 +459,44 @@ const [liked, setLiked] = useState(false)
   {
     name: "world",
     title: "World",
-    description: "A small isometric town where everything works: the church, a reactor in the square, a pulley yard, a PC, a garden, trees, chests and torches. Pan, zoom, and build with blocks.",
+    description:
+      "A small isometric town where everything works: the church, a reactor in the square, a pulley yard, a PC, a garden, trees, chests and torches. Pan, zoom, and build with blocks.",
     category: "world",
     type: "registry:ui",
     files: [ui("world")],
     internal: ["isometric-engine", "church", "reactor", "pulley", "pc-case", "heart", "chest", "block", "torch", "tree", "hotbar", "iso-button"],
     shadcn: ["utils"],
-    usage: `import { World } from "@/components/ui/isometric/world"
+    usage: `import { TOWN, World } from "@/components/ui/isometric/world"
 
 <World
   className="[&>div:first-child]:h-[640px]"
   onActivate={(object, part) => console.log(object, part)}
+/>
+
+// your own layout: tiles from the far corner, 20 × 20
+<World
+  objects={[
+    { kind: "church", at: [4, 4] },
+    { kind: "tree", at: [9, 6], size: 1.2 },
+    { kind: "pc", at: [14, 12], props: { on: true } },
+    ...TOWN.filter((o) => o.kind === "torch"),
+  ]}
 />`,
     props: [
+      {
+        name: "objects",
+        type: "WorldObject[]",
+        default: "TOWN",
+        description:
+          "What stands in the world: { kind, at: [x, y] in tiles, size?, props?, key?, title? }. Kinds: church, reactor, pulley, pc, heart, chest, block, tree, torch. Objects keep their state across changes by key.",
+      },
       { name: "defaultBuild", type: "boolean", default: "false", description: "Start in build mode, with the hotbar showing." },
-      { name: "onActivate", type: "(object: string, part: string) => void", description: "Called when a part of an object is clicked or chosen from the list." },
+      {
+        name: "onActivate",
+        type: "(object: string, part: string) => void",
+        description: "Called when a part of an object is clicked or chosen from the list.",
+      },
+      { name: "debug", type: "boolean", default: "false", description: "Overlay face normals, the painting order and pick polygons." },
     ],
   },
 
@@ -338,7 +512,12 @@ const [liked, setLiked] = useState(false)
     {
       dependencies: ["class-variance-authority"],
       props: [
-        { name: "variant", type: `"default" | "solid" | "outline"`, default: `"default"`, description: "`solid` fills the face with your primary colour; `outline` leaves the sides unfilled." },
+        {
+          name: "variant",
+          type: `"default" | "solid" | "outline"`,
+          default: `"default"`,
+          description: "`solid` fills the face with your primary colour; `outline` leaves the sides unfilled.",
+        },
         { name: "size", type: `"sm" | "default" | "lg" | "icon"`, default: `"default"`, description: "The face's height and padding." },
         { ...depthProp, default: "4" },
         { name: "asChild", type: "boolean", default: "false", description: "Render the child element (a link, say) as the button." },

@@ -6,7 +6,9 @@ for (const item of docItems) {
   test(`${item.name} renders without errors`, async ({ page }) => {
     const errors: string[] = []
     page.on("pageerror", (e) => errors.push(e.message))
-    page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()) })
+    page.on("console", (m) => {
+      if (m.type() === "error") errors.push(m.text())
+    })
     await page.goto(`/components/${item.name}/`)
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(item.title)
     if (item.category === "figure") {
@@ -51,10 +53,11 @@ test("the playground draws a world you can build in", async ({ page }) => {
   // find a ground cell by its hover caption, then place a block on it
   const box = (await world.boundingBox())!
   let spot: [number, number] | null = null
-  for (let y = 0.55; y < 0.85 && !spot; y += 0.04) for (let x = 0.5; x < 0.85 && !spot; x += 0.04) {
-    await page.mouse.move(box.x + box.width * x, box.y + box.height * y)
-    if ((await caption.innerText()).startsWith("Place")) spot = [box.x + box.width * x, box.y + box.height * y]
-  }
+  for (let y = 0.55; y < 0.85 && !spot; y += 0.04)
+    for (let x = 0.5; x < 0.85 && !spot; x += 0.04) {
+      await page.mouse.move(box.x + box.width * x, box.y + box.height * y)
+      if ((await caption.innerText()).startsWith("Place")) spot = [box.x + box.width * x, box.y + box.height * y]
+    }
   expect(spot).not.toBeNull()
   await page.mouse.click(spot![0], spot![1])
   await expect(caption).toHaveText(/^Placed /)
